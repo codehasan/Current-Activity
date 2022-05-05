@@ -5,7 +5,9 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 <br/><br/>
 
 [![](https://img.shields.io/badge/Current%20Activity-1.5.5-blue)](#)
- [![License](https://img.shields.io/badge/License-GPL-blue)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
+[![License](https://img.shields.io/badge/License-GPL-blue)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
+[![](https://img.shields.io/badge/Contributions-Open-blue)](#)
 
 <h1 align="left">
   <b>&nbsp;License</b>
