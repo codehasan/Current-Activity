@@ -1,0 +1,10 @@
+{
+  "bootclasspath": null,
+  "JavaCompiler": "javac",
+  "MainClass": "",
+  "ProguardConf": "proguard-rules.pro",
+  "ProjectName": "",
+  "ProjectType": null,
+  "mergeLibs": false,
+  "minifyEnabled": false
+}
