@@ -15,7 +15,7 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 <h1 align="left">
   <b>&nbsp;Original Repo</b>
 </h1>
-The original repo of this project is unmaintained and won't accept any pull request. However you can check it from <a href="https://github.com/109021017/android-TopActivity">here</a>.
+The original repo of this project is unmaintained right now. However you can check it from <a href="https://github.com/109021017/android-TopActivity">here</a>.
 
 <h1 align="left">
   <b>&nbsp;License</b>
