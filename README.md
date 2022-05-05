@@ -4,10 +4,10 @@
 An useful tool for Android Developers &amp; Reversers, which shows the package name and class name of current activity which you are in
 <br/><br/>
 
-[![](https://img.shields.io/badge/Current%20Activity-1.5.5-blue)](#)
+[![App](https://img.shields.io/badge/Current%20Activity-1.5.5-blue)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
 [![License](https://img.shields.io/badge/License-GPL-blue)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
-[![](https://img.shields.io/badge/Contributions-Open-blue)](#)
+[![Contributions](https://img.shields.io/badge/Contributions-Open-blue)](https://github.com/RatulHasan8/Current-Activity/pulls)
 
 <h1 align="left">
   <b>&nbsp;License</b>
