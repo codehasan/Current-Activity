@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="148" height="148" src="./app/src/main/res/drawable/ic_launcher_round.png" alt="Logo" border="0">
+  <img width="148" height="148" src="./.resources/images/ic_launcher.png" alt="Logo" border="0">
 </p>
 <h1 align="left">
   <b>&nbsp;Current Activity</b>
