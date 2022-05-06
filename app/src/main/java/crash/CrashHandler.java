@@ -43,6 +43,7 @@ import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.os.Looper;
 
 public final class CrashHandler {
 
@@ -54,7 +55,6 @@ public final class CrashHandler {
 
     public static void init(final Application app, final String crashDir) {
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(){
-
                 @Override
                 public void uncaughtException(Thread thread, Throwable throwable) {
                     try {

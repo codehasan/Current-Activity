@@ -7,8 +7,8 @@
         android:shortcutId="static"
         android:shortcutShortLabel="@string/shortcut_action">
         <intent
-            android:action="com.willme.topactivity.ACTION_TOGGLE_WINDOW"
-            android:targetClass="com.willme.topactivity.AppShortcutsActivity"
-            android:targetPackage="com.willme.topactivity"/>
+            android:action="com.ratul.topactivity.ACTION_TOGGLE_WINDOW"
+            android:targetClass="com.ratul.topactivity.ShortcutHandlerActivity"
+            android:targetPackage="com.ratul.topactivity"/>
     </shortcut>
 </shortcuts>

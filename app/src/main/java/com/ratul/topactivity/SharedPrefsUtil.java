@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,7 +25,7 @@ import android.widget.Toast;
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-public class SPHelper {
+public class SharedPrefsUtil {
     public static boolean isShowWindow(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean("is_show_window", true);

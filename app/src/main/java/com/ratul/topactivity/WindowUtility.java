@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -38,7 +38,7 @@ import android.content.Intent;
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-public class TasksWindow {
+public class WindowUtility {
     private static WindowManager.LayoutParams sWindowParams;
     public static WindowManager sWindowManager;
     private static View sView;
@@ -81,8 +81,8 @@ public class TasksWindow {
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
-                    SPHelper.setIsShowWindow(context, false);
-                    NotificationActionReceiver.cancelNotification(context);
+                    SharedPrefsUtil.setIsShowWindow(context, false);
+                    NotificationMonitor.cancelNotification(context);
                     context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 }
             });
@@ -187,17 +187,17 @@ public class TasksWindow {
         
         if (!viewAdded) {
             viewAdded = true;
-            if (SPHelper.isShowWindow(context))
+            if (SharedPrefsUtil.isShowWindow(context))
                 sWindowManager.addView(sView, sWindowParams);
         }
 
-        if (NotificationActionReceiver.builder != null) {
-            NotificationActionReceiver.builder.setContentTitle(text);
-            NotificationActionReceiver.builder.setContentText(text1);
-            NotificationActionReceiver.notifManager.notify(NotificationActionReceiver.NOTIFICATION_ID, NotificationActionReceiver.builder.build());
+        if (NotificationMonitor.builder != null) {
+            NotificationMonitor.builder.setContentTitle(text);
+            NotificationMonitor.builder.setContentText(text1);
+            NotificationMonitor.notifManager.notify(NotificationMonitor.NOTIFICATION_ID, NotificationMonitor.builder.build());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            QuickSettingTileService.updateTile(context);
+            QuickSettingsService.updateTile(context);
     }
 
     public static void dismiss(Context context) {
@@ -207,6 +207,6 @@ public class TasksWindow {
         } catch (Exception e) {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            QuickSettingTileService.updateTile(context);
+            QuickSettingsService.updateTile(context);
     }
 }

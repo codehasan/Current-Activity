@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.app.ActivityManager;
 import android.app.NotificationManager;
@@ -32,29 +32,29 @@ import javax.crypto.NullCipher;
  * Created by Wen on 4/18/15.
  * Refactored by Ratul on 04/05/2022.
  */
-public class NotificationActionReceiver extends BroadcastReceiver {
+public class NotificationMonitor extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 1;
-    public static final String ACTION_NOTIFICATION_RECEIVER = "com.willme.topactivity.ACTION_NOTIFICATION_RECEIVER";
+    public static final String ACTION_NOTIFICATION_RECEIVER = "com.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER";
     public static final int ACTION_STOP = 2;
     public static final String EXTRA_NOTIFICATION_ACTION = "command";
     public static NotificationCompat.Builder builder;
     public static NotificationManager notifManager;
 
     public static void showNotification(Context context, boolean isPaused) {
-        if (!SPHelper.isNotificationToggleEnabled(context)) {
+        if (!SharedPrefsUtil.isNotificationToggleEnabled(context)) {
             return;
         }
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
         builder = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.is_running,
                         context.getString(R.string.app_name)))
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_shortcut)
                 .setContentText(context.getString(R.string.touch_to_open))
-                .setColor(0xFFe215e0)
+                .setColor(context.getColor(R.color.layerColor))
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setOngoing(!isPaused);
                 
-        builder.addAction(R.drawable.ic_noti_action_stop,
+        builder.addAction(R.drawable.ic_shortcut,
                 context.getString(R.string.noti_action_stop),
                 getPendingIntent(context, ACTION_STOP))
                 .setContentIntent(pIntent);
@@ -79,12 +79,12 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         int command = intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1);
         switch (command) {
             case ACTION_STOP:
-                TasksWindow.dismiss(context);
-                SPHelper.setIsShowWindow(context, false);
+                WindowUtility.dismiss(context);
+                SharedPrefsUtil.setIsShowWindow(context, false);
                 cancelNotification(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 break;
         }
-        context.sendBroadcast(new Intent(QuickSettingTileService.ACTION_UPDATE_TITLE));
+        context.sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
     }
 }

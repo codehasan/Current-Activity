@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.app.*;
 import android.content.*;
@@ -43,7 +43,7 @@ import android.hardware.display.DisplayManager;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
-    public static final String ACTION_STATE_CHANGED = "com.willme.topactivity.ACTION_STATE_CHANGED";
+    public static final String ACTION_STATE_CHANGED = "com.ratul.topactivity.ACTION_STATE_CHANGED";
     CompoundButton mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
     private BroadcastReceiver mReceiver;
     private int theme;
@@ -53,13 +53,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         INSTANCE = this;
-        if (WatchingAccessibilityService.getInstance() == null && SPHelper.hasAccess(this))
-            startService(new Intent().setClass(this, WatchingAccessibilityService.class));
+        if (AccessibilityWatcher.getInstance() == null && SharedPrefsUtil.hasAccess(this))
+            startService(new Intent().setClass(this, AccessibilityWatcher.class));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         theme = FancyDialog.DARK_THEME;
         ColorSetup.setupColors(this, theme);
@@ -80,22 +81,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         showWindow.setTextColor(ColorSetup.messageColor);
         disableNltification.setTextColor(ColorSetup.messageColor);
 
-        mWindowSwitch = (CompoundButton) findViewById(R.id.sw_window);
+        mWindowSwitch = findViewById(R.id.sw_window);
         mWindowSwitch.setOnCheckedChangeListener(this);
         if (Build.VERSION.SDK_INT < 24) {
             findViewById(R.id.useNotificationPref).setVisibility(View.GONE);
             findViewById(R.id.divider_useNotificationPref).setVisibility(View.GONE);
         }
         if (Build.VERSION.SDK_INT < 21) {
-            SPHelper.setHasAccess(this, false);
             findViewById(R.id.useAccessibility).setVisibility(View.GONE);
             findViewById(R.id.divider_useAccess).setVisibility(View.GONE);
         }
-        mNotificationSwitch = (CompoundButton) findViewById(R.id.sw_notification);
+        mNotificationSwitch = findViewById(R.id.sw_notification);
         if (mNotificationSwitch != null) {
             mNotificationSwitch.setOnCheckedChangeListener(this);
         }
-        mAccessibilitySwitch = (CompoundButton) findViewById(R.id.sw_accessibility);
+        mAccessibilitySwitch = findViewById(R.id.sw_accessibility);
         if (mAccessibilitySwitch != null) {
             mAccessibilitySwitch.setOnCheckedChangeListener(this);
         }
@@ -120,21 +120,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         refreshWindowSwitch();
         refreshNotificationSwitch();
         refreshAccessibilitySwitch();
-        NotificationActionReceiver.cancelNotification(this);
+        NotificationMonitor.cancelNotification(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (SPHelper.isShowWindow(this)) {
-            NotificationActionReceiver.showNotification(this, false);
+        if (SharedPrefsUtil.isShowWindow(this)) {
+            NotificationMonitor.showNotification(this, false);
         }
     }
 
     private void refreshWindowSwitch() {
-        mWindowSwitch.setChecked(SPHelper.isShowWindow(this));
+        mWindowSwitch.setChecked(SharedPrefsUtil.isShowWindow(this));
         if (getResources().getBoolean(R.bool.use_accessibility_service)) {
-            if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null) {
+            if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
                 mWindowSwitch.setChecked(false);
             }
         }
@@ -142,13 +142,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
     private void refreshAccessibilitySwitch() {
         if (mAccessibilitySwitch != null) {
-            mAccessibilitySwitch.setChecked(SPHelper.hasAccess(this));
+            mAccessibilitySwitch.setChecked(SharedPrefsUtil.hasAccess(this));
         }
     }
 
     private void refreshNotificationSwitch() {
         if (mNotificationSwitch != null) {
-            mNotificationSwitch.setChecked(!SPHelper.isNotificationToggleEnabled(this));
+            mNotificationSwitch.setChecked(!SharedPrefsUtil.isNotificationToggleEnabled(this));
         }
     }
 
@@ -180,7 +180,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             fancy.show();
         } else if (title.equals("GitHub Repo")) {
             fancy.setTitle("GitHub Repo");
-            fancy.setMessage("Would you like to visit the official github repo of this app");
+            fancy.setMessage("It is an open source project. Would you like to visit the official github repo of this app");
             fancy.setPositiveButton("Yes", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -203,21 +203,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView == mNotificationSwitch) {
-            SPHelper.setNotificationToggleEnabled(this, !isChecked);
+            SharedPrefsUtil.setNotificationToggleEnabled(this, !isChecked);
             buttonView.setChecked(isChecked);
             return;
         }
         if (buttonView == mAccessibilitySwitch) {
-            SPHelper.setHasAccess(this, isChecked);
+            SharedPrefsUtil.setHasAccess(this, isChecked);
             buttonView.setChecked(isChecked);
-            if(isChecked && WatchingAccessibilityService.getInstance() == null)
-                startService(new Intent().setClass(this, WatchingAccessibilityService.class));
+            if(isChecked && AccessibilityWatcher.getInstance() == null)
+                startService(new Intent().setClass(this, AccessibilityWatcher.class));
             return;
         }
         if (isChecked && buttonView == mWindowSwitch && Build.VERSION.SDK_INT >= 21) {
             if (Build.VERSION.SDK_INT >= 29 && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
-                SPHelper.setHasBattery(this, true);
+                SharedPrefsUtil.setHasBattery(this, true);
                 return;
             }
             if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
@@ -244,7 +244,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 onCheckedChanged(buttonView, false);
                 return;
             }
-            if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null) {
+            if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
                 final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
                 fancy.setTitle("Accessibility Permission");
                 fancy.setMessage("Enable my Accessibility Service in order to get current activity info");
@@ -261,7 +261,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 fancy.setNegativeButton("Close", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            SPHelper.setHasAccess(MainActivity.this, false);
+                            SharedPrefsUtil.setHasAccess(MainActivity.this, false);
                             fancy.dismiss();
                         }
                     });
@@ -269,7 +269,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 onCheckedChanged(buttonView, false);
                 return;
             }
-            if (!usageStats(MainActivity.this) && getResources().getBoolean(R.bool.use_watching_service)) {
+            if (!usageStats(MainActivity.this)) {
                 final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
                 fancy.setTitle("Usage Access");
                 fancy.setMessage("Enable my Usage Access permission in order to get current activity info");
@@ -295,13 +295,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             }
         }
         if (buttonView == mWindowSwitch) {
-            SPHelper.setAppInitiated(this, true);
-            SPHelper.setIsShowWindow(this, isChecked);
+            SharedPrefsUtil.setAppInitiated(this, true);
+            SharedPrefsUtil.setIsShowWindow(this, isChecked);
             if (!isChecked) {
-                TasksWindow.dismiss(this);
+                WindowUtility.dismiss(this);
             } else {
-                TasksWindow.show(this, getPackageName(), getClass().getName());
-                startService(new Intent(this, WatchingService.class));
+                WindowUtility.show(this, getPackageName(), getClass().getName());
+                startService(new Intent(this, MonitoringService.class));
             }
         }
     }

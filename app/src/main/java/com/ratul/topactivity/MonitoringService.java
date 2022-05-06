@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.annotation.*;
 import android.app.*;
@@ -32,12 +32,12 @@ import android.widget.Toast;
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-public class WatchingService extends Service {
-    public static boolean serviceAlive = false;
+public class MonitoringService extends Service {
+    public boolean serviceAlive = false;
     private boolean firstRun = true;
-    public static WatchingService INSTANCE;
+    public static MonitoringService INSTANCE;
     private UsageStatsManager usageStats;
-    public static Handler mHandler = new Handler();
+    public Handler mHandler = new Handler();
     private ActivityManager mActivityManager;
     private String text;
     private String text1;
@@ -97,25 +97,20 @@ public class WatchingService extends Service {
         Runnable runner = new Runnable() {
             @Override
             public void run() {
-                if (!SPHelper.isShowWindow(WatchingService.INSTANCE)) {
-                    WatchingService.mHandler.removeCallbacks(this);
-                    WatchingService.INSTANCE.stopSelf();
+                if (!SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                    MonitoringService.INSTANCE.mHandler.removeCallbacks(this);
+                    MonitoringService.INSTANCE.stopSelf();
                 }
 
                 getActivityInfo();
-                if (WatchingService.INSTANCE.text == null)
+                if (MonitoringService.INSTANCE.text == null)
                     return;
 
-                WatchingService.INSTANCE.firstRun = false;
-                if (SPHelper.isShowWindow(WatchingService.INSTANCE)) {
-                    WatchingService.mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                TasksWindow.show(WatchingService.INSTANCE, WatchingService.INSTANCE.text, WatchingService.INSTANCE.text1);
-                            }
-                        });
+                MonitoringService.INSTANCE.firstRun = false;
+                if (SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                    WindowUtility.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
                 } else {
-                    WatchingService.INSTANCE.stopSelf();
+                    MonitoringService.INSTANCE.stopSelf();
                 }
                 mHandler.postDelayed(this, 500);
             }

@@ -18,7 +18,7 @@ package crash;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.willme.topactivity.R;
+import com.ratul.topactivity.R;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.content.ClipboardManager;
@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.ratul.fancy.ColorSetup;
 import android.text.SpannableString;
 import android.app.ActionBar;
-import com.willme.topactivity.TypefaceSpan;
+import com.ratul.topactivity.TypefaceSpan;
 import android.text.Spannable;
 
 public class CrashActivity extends Activity {

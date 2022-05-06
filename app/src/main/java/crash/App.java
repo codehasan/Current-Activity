@@ -17,7 +17,7 @@
 package crash;
 
 import android.app.Application;
-import com.willme.topactivity.R;
+import com.ratul.topactivity.R;
 
 public class App extends Application {
     private static App sApp;
@@ -27,10 +27,6 @@ public class App extends Application {
         super.onCreate();
         sApp = this;
         CrashHandler.init(this);
-    }
-
-    public static boolean isNightMode() {
-        return getApp().getResources().getBoolean(R.bool.night_mode);
     }
 
     public static App getApp() {

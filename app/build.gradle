@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.willme.topactivity"
+        applicationId "com.ratul.topactivity"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 15
@@ -26,6 +26,5 @@ android {
 }
 
 dependencies {
-    //api project(':FancyDialog')
     implementation 'com.android.support:support-v4:25.4.0'
 }

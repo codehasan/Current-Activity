@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -33,13 +33,13 @@ import android.text.style.BackgroundColorSpan;
  * Refactored by Ratul on 04/05/2022.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class QuickSettingTileService extends TileService {
-    public static final String ACTION_UPDATE_TITLE = "com.willme.topactivity.ACTION.UPDATE_TITLE";
+public class QuickSettingsService extends TileService {
+    public static final String ACTION_UPDATE_TITLE = "com.ratul.topactivity.ACTION.UPDATE_TITLE";
     private UpdateTileReceiver mReceiver;
 
     public static void updateTile(Context context) {
-        TileService.requestListeningState(context.getApplicationContext(), new ComponentName(context, QuickSettingTileService.class));
-        context.sendBroadcast(new Intent(QuickSettingTileService.ACTION_UPDATE_TITLE));
+        TileService.requestListeningState(context.getApplicationContext(), new ComponentName(context, QuickSettingsService.class));
+        context.sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
     }
 
     @Override
@@ -50,14 +50,14 @@ public class QuickSettingTileService extends TileService {
 
     @Override
     public void onTileAdded() {
-        SPHelper.setQSTileAdded(this, true);
+        SharedPrefsUtil.setQSTileAdded(this, true);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
     @Override
     public void onTileRemoved() {
         super.onTileRemoved();
-        SPHelper.setQSTileAdded(this, false);
+        SharedPrefsUtil.setQSTileAdded(this, false);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
@@ -76,35 +76,35 @@ public class QuickSettingTileService extends TileService {
 
     @Override
     public void onClick() {
-        if (SPHelper.isShowWindow(this))
+        if (SharedPrefsUtil.isShowWindow(this))
             return;
         if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivityAndCollapse(intent);
         } else {
-            SPHelper.setIsShowWindow(this, !SPHelper.isShowWindow(this));
-            if (SPHelper.isShowWindow(this)) {
+            SharedPrefsUtil.setIsShowWindow(this, !SharedPrefsUtil.isShowWindow(this));
+            if (SharedPrefsUtil.isShowWindow(this)) {
                 startActivity(new Intent(this, BackgroundActivity.class));
-                if (TasksWindow.sWindowManager == null)
-                    TasksWindow.init(this);
-                NotificationActionReceiver.showNotification(this, false);
-                if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null)
-                    startService(new Intent().setClass(this, WatchingAccessibilityService.class));
-                startService(new Intent(this, WatchingService.class));
+                if (WindowUtility.sWindowManager == null)
+                    WindowUtility.init(this);
+                NotificationMonitor.showNotification(this, false);
+                if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null)
+                    startService(new Intent().setClass(this, AccessibilityWatcher.class));
+                startService(new Intent(this, MonitoringService.class));
             } else {
-                TasksWindow.dismiss(this);
-                NotificationActionReceiver.showNotification(this, true);
+                WindowUtility.dismiss(this);
+                NotificationMonitor.showNotification(this, true);
             }
             sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
         }
     }
 
     private void updateTile() {
-        if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null) {
+        if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
             getQsTile().setState(Tile.STATE_INACTIVE);
         } else {
-            getQsTile().setState(SPHelper.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+            getQsTile().setState(SharedPrefsUtil.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         }
         getQsTile().updateTile();
     }

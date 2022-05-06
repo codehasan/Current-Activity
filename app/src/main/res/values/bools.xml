@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="use_process_monitor">false</bool>
-    <bool name="qs_tile_service_availability">false</bool>
-    <bool name="use_watching_service">true</bool>
+    <bool name="quick_settings_availability">false</bool>
     <bool name="use_accessibility_service">false</bool>
-    <bool name="night_mode">true</bool>
-    <bool name="light_status_bar">false</bool>
 </resources>

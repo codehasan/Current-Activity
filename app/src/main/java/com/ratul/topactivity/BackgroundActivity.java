@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.willme.topactivity;
+package com.ratul.topactivity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -31,7 +31,7 @@ import android.content.ClipData;
  */
  @TargetApi(29)
 public class BackgroundActivity extends Activity {
-    public static String STRING_COPY = "com.willme.topactivity.COPY_STRING";
+    public static String STRING_COPY = "com.ratul.topactivity.COPY_STRING";
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
