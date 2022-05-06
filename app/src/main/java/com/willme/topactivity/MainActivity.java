@@ -34,6 +34,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.accessibilityservice.AccessibilityService;
 import java.util.List;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.hardware.display.DisplayManager;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -209,7 +210,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         if (buttonView == mAccessibilitySwitch) {
             SPHelper.setHasAccess(this, isChecked);
             buttonView.setChecked(isChecked);
-            if (WatchingAccessibilityService.getInstance() == null)
+            if(isChecked && WatchingAccessibilityService.getInstance() == null)
                 startService(new Intent().setClass(this, WatchingAccessibilityService.class));
             return;
         }

@@ -66,6 +66,11 @@
             android:name=".WatchingService"
             android:enabled="@bool/use_watching_service"
             android:exported="false"/>
+        
+        <service
+            android:name=".ProcessMonitor"
+            android:enabled="@bool/use_process_monitor"
+            android:exported="false"/>
         <service
             android:name=".WatchingAccessibilityService"
             android:label="@string/accessibility_permission"

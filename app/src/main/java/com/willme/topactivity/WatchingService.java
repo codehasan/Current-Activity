@@ -36,14 +36,11 @@ public class WatchingService extends Service {
     public static boolean serviceAlive = false;
     private boolean firstRun = true;
     public static WatchingService INSTANCE;
-    private final int NOTIF_ID = 1;
     private UsageStatsManager usageStats;
     public static Handler mHandler = new Handler();
     private ActivityManager mActivityManager;
-    private String text = null;
-    private String text1 = null;
-    public static Timer timer;
-    private NotificationManager mNotiManager;
+    private String text;
+    private String text1;
 
     @Override
     public void onCreate() {
@@ -52,7 +49,6 @@ public class WatchingService extends Service {
 
         serviceAlive = true;
         mActivityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        mNotiManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 21) {
             usageStats = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
         }
@@ -98,10 +94,34 @@ public class WatchingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         INSTANCE = this;
-        if (timer == null) {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
-        }
+        Runnable runner = new Runnable() {
+            @Override
+            public void run() {
+                if (!SPHelper.isShowWindow(WatchingService.INSTANCE)) {
+                    WatchingService.mHandler.removeCallbacks(this);
+                    WatchingService.INSTANCE.stopSelf();
+                }
+
+                getActivityInfo();
+                if (WatchingService.INSTANCE.text == null)
+                    return;
+
+                WatchingService.INSTANCE.firstRun = false;
+                if (SPHelper.isShowWindow(WatchingService.INSTANCE)) {
+                    WatchingService.mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                TasksWindow.show(WatchingService.INSTANCE, WatchingService.INSTANCE.text, WatchingService.INSTANCE.text1);
+                            }
+                        });
+                } else {
+                    WatchingService.INSTANCE.stopSelf();
+                }
+                mHandler.postDelayed(this, 500);
+            }
+        };
+        
+        mHandler.postDelayed(runner, 500);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -122,31 +142,5 @@ public class WatchingService extends Service {
                          restartServicePendingIntent);
 
         super.onTaskRemoved(rootIntent);
-    }
-
-    class RefreshTask extends TimerTask {
-        @Override
-        public void run() {
-            if (!SPHelper.isShowWindow(WatchingService.INSTANCE)) {
-                WatchingService.timer.cancel();
-                WatchingService.INSTANCE.stopSelf();
-            }
-
-            getActivityInfo();
-            if (WatchingService.INSTANCE.text == null)
-                return;
-
-            WatchingService.INSTANCE.firstRun = false;
-            if (SPHelper.isShowWindow(WatchingService.INSTANCE)) {
-                WatchingService.mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            TasksWindow.show(WatchingService.INSTANCE, WatchingService.INSTANCE.text, WatchingService.INSTANCE.text1);
-                        }
-                    });
-            } else {
-                WatchingService.INSTANCE.stopSelf();
-            }
-        }
     }
 }

@@ -37,13 +37,15 @@ public class NotificationActionReceiver extends BroadcastReceiver {
     public static final String ACTION_NOTIFICATION_RECEIVER = "com.willme.topactivity.ACTION_NOTIFICATION_RECEIVER";
     public static final int ACTION_STOP = 2;
     public static final String EXTRA_NOTIFICATION_ACTION = "command";
+    public static NotificationCompat.Builder builder;
+    public static NotificationManager notifManager;
 
     public static void showNotification(Context context, boolean isPaused) {
         if (!SPHelper.isNotificationToggleEnabled(context)) {
             return;
         }
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        builder = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.is_running,
                         context.getString(R.string.app_name)))
                 .setSmallIcon(R.drawable.ic_notification)
@@ -57,8 +59,8 @@ public class NotificationActionReceiver extends BroadcastReceiver {
                 getPendingIntent(context, ACTION_STOP))
                 .setContentIntent(pIntent);
 
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(NOTIFICATION_ID, builder.build());
+        notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(NOTIFICATION_ID, builder.build());
     }
 
     public static PendingIntent getPendingIntent(Context context, int command) {
@@ -70,7 +72,6 @@ public class NotificationActionReceiver extends BroadcastReceiver {
     public static void cancelNotification(Context context) {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(NOTIFICATION_ID);
-        
     }
 
     @Override

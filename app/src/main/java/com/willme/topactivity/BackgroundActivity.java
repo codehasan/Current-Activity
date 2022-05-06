@@ -43,9 +43,6 @@ public class BackgroundActivity extends Activity {
             ClipData clip = new ClipData(ClipData.newPlainText("", str));
             clipboard.setPrimaryClip(clip);
         }
-        
-        if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null)
-            startService(new Intent().setClass(this, WatchingAccessibilityService.class));
         finish();
     }
 }

@@ -78,10 +78,7 @@ public class QuickSettingTileService extends TileService {
     public void onClick() {
         if (SPHelper.isShowWindow(this))
             return;
-        /*if (Build.VERSION.SDK_INT >= 29) {
-            startActivityAndCollapse(new Intent(this, AppShortcutsActivity.class));
-        }
-        else */if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
+        if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivityAndCollapse(intent);
@@ -92,6 +89,8 @@ public class QuickSettingTileService extends TileService {
                 if (TasksWindow.sWindowManager == null)
                     TasksWindow.init(this);
                 NotificationActionReceiver.showNotification(this, false);
+                if (SPHelper.hasAccess(this) && WatchingAccessibilityService.getInstance() == null)
+                    startService(new Intent().setClass(this, WatchingAccessibilityService.class));
                 startService(new Intent(this, WatchingService.class));
             } else {
                 TasksWindow.dismiss(this);

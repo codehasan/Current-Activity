@@ -26,6 +26,6 @@ android {
 }
 
 dependencies {
-    api project(':FancyDialog')
+    //api project(':FancyDialog')
     implementation 'com.android.support:support-v4:25.4.0'
 }

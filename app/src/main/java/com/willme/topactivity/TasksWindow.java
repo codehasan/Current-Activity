@@ -49,12 +49,12 @@ public class TasksWindow {
     private static String text, text1;
     private static TextView packageName, className, title;
     private static ClipboardManager clipboard;
-    private static boolean firstLaunch = true;
+    public static boolean viewAdded = false;
 
     public static void init(final Context context) {
         sWindowManager = (WindowManager) context.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE);
-                
+            .getSystemService(Context.WINDOW_SERVICE);
+
         sWindowParams = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT, 
             WindowManager.LayoutParams.WRAP_CONTENT, 
@@ -63,12 +63,12 @@ public class TasksWindow {
             PixelFormat.TRANSPARENT);
         //sWindowParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         sWindowParams.gravity = Gravity.CENTER;
-        sWindowParams.width = (context.getDisplay().getWidth()/2)+300;
+        sWindowParams.width = (context.getDisplay().getWidth() / 2) + 300;
         sWindowParams.windowAnimations = android.R.style.Animation_Toast;
-        
+
         sView = LayoutInflater.from(context).inflate(R.layout.window_tasks,
-                null);
-        
+                                                     null);
+
         clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         LinearLayout bg = (LinearLayout) sView.findViewById(R.id.bg);
         packageName = (TextView) sView.findViewById(R.id.text);
@@ -77,7 +77,7 @@ public class TasksWindow {
         title = (TextView) sView.findViewById(R.id.title);
         overrideFonts(context, sView, "fonts/google_sans_regular.ttf"); 
         title.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/google_sans_bold.ttf"), 0);
-        
+
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
@@ -144,7 +144,7 @@ public class TasksWindow {
                 }
             });
     }
-    
+
     public static void overrideFonts(final Context context, final View v, final String fontName) {
         try {
             Typeface typeace = Typeface.createFromAsset(context.getAssets(), fontName);
@@ -174,28 +174,34 @@ public class TasksWindow {
         }
 
     }
-	
+
     public static void show(Context context, String pkg, String clas) {
         if (sWindowManager == null) {
             init(context);
         }
         text = pkg;
         text1 = clas;
-        
+
         packageName.setText(text);
         className.setText(text1);
         
-        try {
-            sWindowManager.updateViewLayout(sView, sWindowParams);
-        } catch(Exception e) {
+        if (!viewAdded) {
+            viewAdded = true;
             if (SPHelper.isShowWindow(context))
                 sWindowManager.addView(sView, sWindowParams);
+        }
+
+        if (NotificationActionReceiver.builder != null) {
+            NotificationActionReceiver.builder.setContentTitle(text);
+            NotificationActionReceiver.builder.setContentText(text1);
+            NotificationActionReceiver.notifManager.notify(NotificationActionReceiver.NOTIFICATION_ID, NotificationActionReceiver.builder.build());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             QuickSettingTileService.updateTile(context);
     }
 
     public static void dismiss(Context context) {
+        viewAdded = false;
         try {
             sWindowManager.removeView(sView);
         } catch (Exception e) {
