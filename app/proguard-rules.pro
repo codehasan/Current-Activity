@@ -1,1 +1,1 @@
--keep class com.**,crash.**,** { *; }
+# Use Default
