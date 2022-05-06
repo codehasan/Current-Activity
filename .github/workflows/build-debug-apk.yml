@@ -24,9 +24,6 @@ jobs:
         uses: eskatos/gradle-command-action@v2.1.5
         with:
           arguments: assembleDebug
-          distributions-cache-enabled: true
-          dependencies-cache-enabled: true
-          configuration-cache-enabled: true
 
       - name: Upload debug apk
         uses: actions/upload-artifact@v3
