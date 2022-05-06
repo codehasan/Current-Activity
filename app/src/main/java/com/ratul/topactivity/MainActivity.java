@@ -1,19 +1,3 @@
-/*
- *   Copyright (C) 2022 Ratul Hasan
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 package com.ratul.topactivity;
 
 import android.app.*;
@@ -40,7 +24,6 @@ import android.hardware.display.DisplayManager;
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-
 public class MainActivity extends Activity implements OnCheckedChangeListener {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     public static final String ACTION_STATE_CHANGED = "com.ratul.topactivity.ACTION_STATE_CHANGED";
@@ -87,10 +70,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             findViewById(R.id.useNotificationPref).setVisibility(View.GONE);
             findViewById(R.id.divider_useNotificationPref).setVisibility(View.GONE);
         }
-        if (Build.VERSION.SDK_INT < 21) {
-            findViewById(R.id.useAccessibility).setVisibility(View.GONE);
-            findViewById(R.id.divider_useAccess).setVisibility(View.GONE);
-        }
         mNotificationSwitch = findViewById(R.id.sw_notification);
         if (mNotificationSwitch != null) {
             mNotificationSwitch.setOnCheckedChangeListener(this);
@@ -133,10 +112,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
     private void refreshWindowSwitch() {
         mWindowSwitch.setChecked(SharedPrefsUtil.isShowWindow(this));
-        if (getResources().getBoolean(R.bool.use_accessibility_service)) {
-            if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
-                mWindowSwitch.setChecked(false);
-            }
+        if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
+            mWindowSwitch.setChecked(false);
         }
     }
 
@@ -185,7 +162,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                     @Override
                     public void onClick(View v) {
                         fancy.dismiss();
-                        startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(Uri.parse("https://github.com/RatulHasan8/Current-Activity")));
+                        startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
                     }
                 });
             fancy.setNegativeButton("No", new View.OnClickListener() {
@@ -214,7 +191,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 startService(new Intent().setClass(this, AccessibilityWatcher.class));
             return;
         }
-        if (isChecked && buttonView == mWindowSwitch && Build.VERSION.SDK_INT >= 21) {
+        if (isChecked && buttonView == mWindowSwitch) {
             if (Build.VERSION.SDK_INT >= 29 && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
                 SharedPrefsUtil.setHasBattery(this, true);

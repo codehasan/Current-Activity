@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar"> 
+    <style name="AppBaseTheme" parent="android:Theme.Material.Light.DarkActionBar"> 
     </style>
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:colorPrimary">@color/colorPrimary</item>
@@ -22,12 +22,12 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 	<style name="FancyDialogAnimationV1">
-	    <item name="android:windowEnterAnimation">@anim/fancyAnimationEnter</item>
-		<item name="android:windowExitAnimation">@anim/fancyAnimationExit</item>
+	    <item name="android:windowEnterAnimation">@anim/fancy_animation_enter</item>
+		<item name="android:windowExitAnimation">@anim/fancy_animation_exit</item>
 	</style>
     <style name="FancyDialogAnimationV2">
-        <item name="android:windowEnterAnimation">@anim/bottomSheetEnter</item>
-        <item name="android:windowExitAnimation">@anim/bottomSheetClose</item>
+        <item name="android:windowEnterAnimation">@anim/bottom_sheet_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom_sheet_close</item>
 	</style>
     <style name="FancyDialogThemeV1">
         <item name="android:windowBackground">@android:color/transparent</item>
