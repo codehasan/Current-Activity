@@ -13,6 +13,14 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 [![Contributions](https://img.shields.io/badge/Contributions-Open-blue)](https://github.com/RatulHasan8/Current-Activity/pulls)
 
 <h1 align="left">
+  <b>&nbsp;Credits</b>
+</h1>
+
+* [Wen](https://github.com/109021017) for [project base](https://github.com/109021017/android-TopActivity).
+* [Frieder Bluemle](https://github.com/friederbluemle) for project optimization.
+* [Muhtaseem Al Mahmud](https://github.com/KingMahmud) for project optimization.
+
+<h1 align="left">
   <b>&nbsp;License</b>
 </h1>
 
