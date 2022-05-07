@@ -8,9 +8,10 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 <br/><br/>
 
 [![App](https://img.shields.io/badge/Current%20Activity-1.5.5-blue)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
-[![License](https://img.shields.io/badge/License-GPL-blue)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
+[![Api](https://img.shields.io/badge/Android%20OS-5.0+-green)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
+[![License](https://img.shields.io/badge/License-GPL-red)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
-[![Contributions](https://img.shields.io/badge/Contributions-Open-blue)](https://github.com/RatulHasan8/Current-Activity/pulls)
+[![Contributions](https://img.shields.io/badge/Contributions-Open-orange)](https://github.com/RatulHasan8/Current-Activity/pulls)
 
 <h1 align="left">
   <b>&nbsp;Screenshots</b>
