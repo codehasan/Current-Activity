@@ -1,6 +1,6 @@
-<p align="center">
+<div align="center">
   <img width="148" height="148" src="./.resources/images/ic_launcher.png" alt="Logo" border="0">
-</p>
+</div>
 <h1 align="left">
   <b>&nbsp;Current Activity</b>
 </h1>
@@ -11,6 +11,14 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 [![License](https://img.shields.io/badge/License-GPL-blue)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
 [![Contributions](https://img.shields.io/badge/Contributions-Open-blue)](https://github.com/RatulHasan8/Current-Activity/pulls)
+
+<h1 align="left">
+  <b>&nbsp;Screenshots</b>
+</h1>
+
+<div align="center">
+  <img width="148" height="148" src="./.resources/images/screenshot.png" alt="Logo" border="0">
+</div>
 
 <h1 align="left">
   <b>&nbsp;Credits</b>
