@@ -2,32 +2,29 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    // buildToolsVersion '33.0.0 rc1'
     defaultConfig {
         applicationId "com.ratul.topactivity"
-        minSdkVersion 24
-        targetSdkVersion 33
+        minSdkVersion 21
+        targetSdkVersion 25
         versionCode 15
         versionName "1.5.5"
     }
 
     buildTypes {
         release {
-            debuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    // todo : use AndroidX
-    implementation 'com.android.support:support-v4:25.4.0'
+    implementation 'com.android.support:support-v4:26.0.1'
 }

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.ui;
 
 import android.app.*;
 import android.content.*;
@@ -24,23 +24,24 @@ import android.provider.*;
 import android.view.*;
 import android.widget.*;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import com.ratul.fancy.*;
 import android.app.*;
 import android.content.pm.*;
 import android.graphics.drawable.*;
 import android.graphics.*;
 import android.text.*;
-import android.view.accessibility.AccessibilityManager;
-import android.accessibilityservice.AccessibilityService;
 import java.util.List;
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.hardware.display.DisplayManager;
+import com.ratul.topactivity.R;
+import com.ratul.topactivity.dialog.*;
+import com.ratul.topactivity.utils.*;
+import com.ratul.topactivity.model.NotificationMonitor;
+import com.ratul.topactivity.service.*;
+import com.ratul.topactivity.model.TypefaceSpan;
+import java.io.*;
 
 /**
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-
 public class MainActivity extends Activity implements OnCheckedChangeListener {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     public static final String ACTION_STATE_CHANGED = "com.ratul.topactivity.ACTION_STATE_CHANGED";
@@ -53,52 +54,35 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         INSTANCE = this;
-        if (AccessibilityWatcher.getInstance() == null && SharedPrefsUtil.hasAccess(this))
-            startService(new Intent().setClass(this, AccessibilityWatcher.class));
+        if (AccessibilityMonitoringService.getInstance() == null && SharedPrefsUtil.hasAccess(this))
+            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        
         theme = FancyDialog.DARK_THEME;
-        ColorSetup.setupColors(this, theme);
-
+        DialogTheme.setupColors(this, theme);
+        
         SpannableString s = new SpannableString(getString(R.string.app_name));
         s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
                   Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(s);
 
-        TextView showWindow = findViewById(R.id.showWindoww);
-        TextView disaccess = findViewById(R.id.disableAccess);
-        TextView disableNltification = findViewById(R.id.disableNotif);
-        disaccess.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/google_sans_regular.ttf"));
-        showWindow.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/google_sans_regular.ttf"));
-        disableNltification.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/google_sans_regular.ttf"));
-        disaccess.setTextColor(ColorSetup.messageColor);
-        showWindow.setTextColor(ColorSetup.messageColor);
-        disableNltification.setTextColor(ColorSetup.messageColor);
-
         mWindowSwitch = findViewById(R.id.sw_window);
         mWindowSwitch.setOnCheckedChangeListener(this);
-        if (Build.VERSION.SDK_INT < 24) {
-            findViewById(R.id.useNotificationPref).setVisibility(View.GONE);
-            findViewById(R.id.divider_useNotificationPref).setVisibility(View.GONE);
-        }
-        if (Build.VERSION.SDK_INT < 21) {
-            findViewById(R.id.useAccessibility).setVisibility(View.GONE);
-            findViewById(R.id.divider_useAccess).setVisibility(View.GONE);
-        }
         mNotificationSwitch = findViewById(R.id.sw_notification);
-        if (mNotificationSwitch != null) {
-            mNotificationSwitch.setOnCheckedChangeListener(this);
+        mNotificationSwitch.setOnCheckedChangeListener(this);
+        if (Build.VERSION.SDK_INT < 24) {
+            mNotificationSwitch.setVisibility(View.INVISIBLE);
+            findViewById(R.id.divider_useNotificationPref).setVisibility(View.INVISIBLE);
         }
+        
         mAccessibilitySwitch = findViewById(R.id.sw_accessibility);
-        if (mAccessibilitySwitch != null) {
-            mAccessibilitySwitch.setOnCheckedChangeListener(this);
-        }
+        mAccessibilitySwitch.setOnCheckedChangeListener(this);
         if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
             mWindowSwitch.setChecked(true);
         }
@@ -133,10 +117,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
     private void refreshWindowSwitch() {
         mWindowSwitch.setChecked(SharedPrefsUtil.isShowWindow(this));
-        if (getResources().getBoolean(R.bool.use_accessibility_service)) {
-            if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
-                mWindowSwitch.setChecked(false);
-            }
+        if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
+            mWindowSwitch.setChecked(false);
         }
     }
 
@@ -159,8 +141,35 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("GitHub Repo").setIcon(R.drawable.ic_github).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add("About App");
+        SpannableString s = new SpannableString("About App");
+        s.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, s.length(),
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        
+        menu.add(s);
+        s = new SpannableString("Crash Log");
+        s.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, s.length(),
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        menu.add(s);
         return super.onCreateOptionsMenu(menu);
+    }
+    
+    public String readFile(File file) {
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line = br.readLine();
+            while (line != null) {
+                text.append(line);
+                text.append("\n");
+                line = br.readLine();
+            }
+            
+            new FileOutputStream(file).write(text.toString().getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return text.toString();
     }
 
     @Override
@@ -178,6 +187,16 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 });
             fancy.setCancelable(false);
             fancy.show();
+        } else if (title.equals("Crash Log")) {
+            String errorLog = readFile(new File(getFilesDir(), "crash.txt"));
+            if (errorLog.isEmpty())
+                showToast("No log was found", 0);
+            else {
+                Intent intent = new Intent(this, CrashActivity.class);
+                intent.putExtra(CrashActivity.EXTRA_CRASH_INFO, errorLog);
+                intent.putExtra("Restart", false);
+                startActivity(intent);
+            }
         } else if (title.equals("GitHub Repo")) {
             fancy.setTitle("GitHub Repo");
             fancy.setMessage("It is an open source project. Would you like to visit the official github repo of this app");
@@ -185,7 +204,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                     @Override
                     public void onClick(View v) {
                         fancy.dismiss();
-                        startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(Uri.parse("https://github.com/RatulHasan8/Current-Activity")));
+                        startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
                     }
                 });
             fancy.setNegativeButton("No", new View.OnClickListener() {
@@ -210,11 +229,11 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         if (buttonView == mAccessibilitySwitch) {
             SharedPrefsUtil.setHasAccess(this, isChecked);
             buttonView.setChecked(isChecked);
-            if(isChecked && AccessibilityWatcher.getInstance() == null)
-                startService(new Intent().setClass(this, AccessibilityWatcher.class));
+            if(isChecked && AccessibilityMonitoringService.getInstance() == null)
+                startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
             return;
         }
-        if (isChecked && buttonView == mWindowSwitch && Build.VERSION.SDK_INT >= 21) {
+        if (isChecked && buttonView == mWindowSwitch) {
             if (Build.VERSION.SDK_INT >= 29 && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
                 SharedPrefsUtil.setHasBattery(this, true);
@@ -244,7 +263,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 onCheckedChanged(buttonView, false);
                 return;
             }
-            if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
+            if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
                 final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
                 fancy.setTitle("Accessibility Permission");
                 fancy.setMessage("Enable my Accessibility Service in order to get current activity info");
@@ -298,9 +317,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             SharedPrefsUtil.setAppInitiated(this, true);
             SharedPrefsUtil.setIsShowWindow(this, isChecked);
             if (!isChecked) {
-                WindowUtility.dismiss(this);
+                WindowUtil.dismiss(this);
             } else {
-                WindowUtility.show(this, getPackageName(), getClass().getName());
+                WindowUtil.show(this, getPackageName(), getClass().getName());
                 startService(new Intent(this, MonitoringService.class));
             }
         }

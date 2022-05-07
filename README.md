@@ -13,9 +13,12 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 [![Contributions](https://img.shields.io/badge/Contributions-Open-blue)](https://github.com/RatulHasan8/Current-Activity/pulls)
 
 <h1 align="left">
-  <b>&nbsp;Original Repo</b>
+  <b>&nbsp;Credits</b>
 </h1>
-The original repo of this project is unmaintained right now. However you can check it from <a href="https://github.com/109021017/android-TopActivity">here</a>.
+
+* [Wen](https://github.com/109021017) for [project base](https://github.com/109021017/android-TopActivity).
+* [Frieder Bluemle](https://github.com/friederbluemle) for project optimization.
+* [Muhtaseem Al Mahmud](https://github.com/KingMahmud) for project optimization.
 
 <h1 align="left">
   <b>&nbsp;License</b>

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.service;
 
 import android.annotation.*;
 import android.app.*;
@@ -27,6 +27,8 @@ import android.util.*;
 import java.util.*;
 import android.app.usage.*;
 import android.widget.Toast;
+import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.WindowUtil;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -38,7 +40,6 @@ public class MonitoringService extends Service {
     public static MonitoringService INSTANCE;
     private UsageStatsManager usageStats;
     public Handler mHandler = new Handler();
-    private ActivityManager mActivityManager;
     private String text;
     private String text1;
 
@@ -48,10 +49,7 @@ public class MonitoringService extends Service {
         INSTANCE = this;
 
         serviceAlive = true;
-        mActivityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= 21) {
-            usageStats = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        }
+        usageStats = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
     }
 
     @Override
@@ -61,12 +59,6 @@ public class MonitoringService extends Service {
     }
 
     public void getActivityInfo() {
-        if (Build.VERSION.SDK_INT < 21) {
-            List<ActivityManager.RunningTaskInfo> runningTasks = mActivityManager.getRunningTasks(1);
-            text = runningTasks.get(0).topActivity.getPackageName();
-            text1 = runningTasks.get(0).topActivity.getClassName();
-            return;
-        }
         long currentTimeMillis = System.currentTimeMillis();
         UsageEvents queryEvents = usageStats.queryEvents(currentTimeMillis - (firstRun ? 600000 : 60000), currentTimeMillis);
         while (queryEvents.hasNextEvent()) {
@@ -108,7 +100,7 @@ public class MonitoringService extends Service {
 
                 MonitoringService.INSTANCE.firstRun = false;
                 if (SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
-                    WindowUtility.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
+                    WindowUtil.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
                 } else {
                     MonitoringService.INSTANCE.stopSelf();
                 }

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -68,7 +68,7 @@ public class SharedPrefsUtil {
     
     public static boolean hasAccess(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("has_access", context.getResources().getBoolean(R.bool.use_accessibility_service));
+        return sp.getBoolean("has_access", true);
     }
 
     public static void setHasAccess(Context context, boolean added) {

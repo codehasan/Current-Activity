@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.service;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -27,6 +27,11 @@ import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.text.style.BackgroundColorSpan;
+import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.ui.MainActivity;
+import com.ratul.topactivity.utils.WindowUtil;
+import com.ratul.topactivity.model.NotificationMonitor;
+import com.ratul.topactivity.ui.BackgroundActivity;
 
 /**
  * Created by Wen on 5/3/16.
@@ -85,15 +90,14 @@ public class QuickSettingsService extends TileService {
         } else {
             SharedPrefsUtil.setIsShowWindow(this, !SharedPrefsUtil.isShowWindow(this));
             if (SharedPrefsUtil.isShowWindow(this)) {
-                startActivity(new Intent(this, BackgroundActivity.class));
-                if (WindowUtility.sWindowManager == null)
-                    WindowUtility.init(this);
+                if (WindowUtil.sWindowManager == null)
+                    WindowUtil.init(this);
                 NotificationMonitor.showNotification(this, false);
-                if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null)
-                    startService(new Intent().setClass(this, AccessibilityWatcher.class));
+                if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null)
+                    startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
                 startService(new Intent(this, MonitoringService.class));
             } else {
-                WindowUtility.dismiss(this);
+                WindowUtil.dismiss(this);
                 NotificationMonitor.showNotification(this, true);
             }
             sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
@@ -101,7 +105,7 @@ public class QuickSettingsService extends TileService {
     }
 
     private void updateTile() {
-        if (SharedPrefsUtil.hasAccess(this) && AccessibilityWatcher.getInstance() == null) {
+        if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
             getQsTile().setState(Tile.STATE_INACTIVE);
         } else {
             getQsTile().setState(SharedPrefsUtil.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);

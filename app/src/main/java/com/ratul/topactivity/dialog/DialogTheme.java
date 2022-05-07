@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.fancy;
+package com.ratul.topactivity.dialog;
 
 import android.content.*;
 import android.content.res.*;
@@ -22,7 +22,7 @@ import android.content.res.*;
 /**
  * Created by Ratul on 04/05/2022.
  */
-public class ColorSetup {
+public class DialogTheme {
     public static int background = 0xFFFFFFFF;
 	public static int titleColor = 0xFF212121;
     public static int messageColor = 0xFF616161;
@@ -37,21 +37,21 @@ public class ColorSetup {
 	public static void setupColors(Context context, int theme) {
         switch (theme) {
             case FancyDialog.DARK_THEME :
-                ColorSetup.setupDarkColors(); break;
+                DialogTheme.setupDarkColors(); break;
             case FancyDialog.LIGHT_THEME :
-                ColorSetup.setupLightColors(); break;
+                DialogTheme.setupLightColors(); break;
             case FancyDialog.DRACULA_THEME :
-                ColorSetup.setupDraculaColors(); break;
+                DialogTheme.setupDraculaColors(); break;
             case FancyDialog.SUCCESS_THEME :
-                ColorSetup.setupSuccessColors(); break;
+                DialogTheme.setupSuccessColors(); break;
             case FancyDialog.INFO_THEME :
-                ColorSetup.setupInfoColors(); break;
+                DialogTheme.setupInfoColors(); break;
             case FancyDialog.WARNING_THEME :
-                ColorSetup.setupWarningColors(); break;
+                DialogTheme.setupWarningColors(); break;
             case FancyDialog.ERROR_THMEE :
-                ColorSetup.setupErrorColors(); break;
+                DialogTheme.setupErrorColors(); break;
             case FancyDialog.HOLO_THEME :
-                ColorSetup.setupHoloColors(); break;
+                DialogTheme.setupHoloColors(); break;
             default :
                 if (isDark(context))
                     setupDraculaColors();

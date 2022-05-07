@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.model;
 
 import android.app.ActivityManager;
 import android.app.NotificationManager;
@@ -27,6 +27,11 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.List;
 import javax.crypto.NullCipher;
+import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.R;
+import com.ratul.topactivity.ui.MainActivity;
+import com.ratul.topactivity.utils.WindowUtil;
+import com.ratul.topactivity.service.QuickSettingsService;
 
 /**
  * Created by Wen on 4/18/15.
@@ -48,7 +53,7 @@ public class NotificationMonitor extends BroadcastReceiver {
         builder = new NotificationCompat.Builder(context)
                 .setContentTitle(context.getString(R.string.is_running,
                         context.getString(R.string.app_name)))
-                .setSmallIcon(R.drawable.ic_shortcut)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentText(context.getString(R.string.touch_to_open))
                 .setColor(context.getColor(R.color.layerColor))
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
@@ -79,7 +84,7 @@ public class NotificationMonitor extends BroadcastReceiver {
         int command = intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1);
         switch (command) {
             case ACTION_STOP:
-                WindowUtility.dismiss(context);
+                WindowUtil.dismiss(context);
                 SharedPrefsUtil.setIsShowWindow(context, false);
                 cancelNotification(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));

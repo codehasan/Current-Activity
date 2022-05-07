@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package com.ratul.topactivity.utils;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -33,12 +33,17 @@ import android.view.*;
 import android.widget.*;
 import android.graphics.Typeface;
 import android.content.Intent;
+import com.ratul.topactivity.R;
+import com.ratul.topactivity.model.NotificationMonitor;
+import com.ratul.topactivity.ui.MainActivity;
+import com.ratul.topactivity.ui.BackgroundActivity;
+import com.ratul.topactivity.service.QuickSettingsService;
 
 /**
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
-public class WindowUtility {
+public class WindowUtil {
     private static WindowManager.LayoutParams sWindowParams;
     public static WindowManager sWindowManager;
     private static View sView;
@@ -75,9 +80,7 @@ public class WindowUtility {
         className = (TextView) sView.findViewById(R.id.text1);
         ImageView closeBtn = (ImageView) sView.findViewById(R.id.closeBtn);
         title = (TextView) sView.findViewById(R.id.title);
-        overrideFonts(context, sView, "fonts/google_sans_regular.ttf"); 
-        title.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/google_sans_bold.ttf"), 0);
-
+        
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
@@ -143,36 +146,6 @@ public class WindowUtility {
                     return true;
                 }
             });
-    }
-
-    public static void overrideFonts(final Context context, final View v, final String fontName) {
-        try {
-            Typeface typeace = Typeface.createFromAsset(context.getAssets(), fontName);
-            if ((v instanceof ViewGroup)) {
-                ViewGroup vg = (ViewGroup) v;
-                for (int i = 0;
-                     i < vg.getChildCount();
-                i++) {
-                    View child = vg.getChildAt(i);
-                    overrideFonts(context, child, fontName);
-                }
-            } else {
-                if ((v instanceof TextView)) {
-                    ((TextView) v).setTypeface(typeace);
-                } else {
-                    if ((v instanceof EditText)) {
-                        ((EditText) v).setTypeface(typeace);
-                    } else {
-                        if ((v instanceof Button)) {
-                            ((Button) v).setTypeface(typeace);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(context, e.toString(), 1).show();
-        }
-
     }
 
     public static void show(Context context, String pkg, String clas) {
