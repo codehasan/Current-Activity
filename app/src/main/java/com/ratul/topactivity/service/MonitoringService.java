@@ -1,4 +1,20 @@
-package com.ratul.topactivity;
+/*
+ *   Copyright (C) 2022 Ratul Hasan
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.ratul.topactivity.service;
 
 import android.annotation.*;
 import android.app.*;
@@ -11,6 +27,8 @@ import android.util.*;
 import java.util.*;
 import android.app.usage.*;
 import android.widget.Toast;
+import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.WindowUtil;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -82,7 +100,7 @@ public class MonitoringService extends Service {
 
                 MonitoringService.INSTANCE.firstRun = false;
                 if (SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
-                    WindowUtility.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
+                    WindowUtil.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
                 } else {
                     MonitoringService.INSTANCE.stopSelf();
                 }

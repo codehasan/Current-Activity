@@ -14,7 +14,7 @@
 		android:background="#FFFFFF"
         android:forceDarkAllowed="false"
 		android:orientation="vertical">
-		<TextView
+		<BoldTextView
 			android:id="@+id/t1"
 			android:focusable="false"
 			android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
 			android:paddingRight="20dp"
 			android:textSize="17sp"
 			android:textColor="#212121" />
-		<TextView
+		<NormalTextView
 			android:id="@+id/t2"
 			android:focusable="false"
 			android:layout_width="wrap_content"
@@ -52,16 +52,16 @@
 			android:layout_marginTop="20dp"
 			android:paddingBottom="15dp"
 			android:orientation="horizontal">
-			<TextView
+			<RegularTextView
 				android:id="@+id/b1"
 				android:focusable="false"
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="14dp"
-				android:padding="12dp"
 				android:background="#F5F5F5"
 				android:gravity="center_horizontal|center_vertical"
 				android:text="Close"
+                android:padding="12dp"
 				android:textSize="14sp"
 				android:textColor="#616161"
                 android:forceDarkAllowed="false"
@@ -73,13 +73,13 @@
 				android:gravity="center_horizontal|center_vertical"
 				android:text=" "
 				android:textSize="14sp" />
-			<TextView
+			<RegularTextView
 				android:id="@+id/b2"
 				android:focusable="false"
-				android:layout_width="match_parent"
+                android:padding="12dp"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginRight="14dp"
-				android:padding="12dp"
 				android:background="#6C63FF"
 				android:gravity="center_horizontal|center_vertical"
 				android:text="Ok"

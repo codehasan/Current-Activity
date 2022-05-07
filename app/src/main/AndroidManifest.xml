@@ -12,22 +12,23 @@
     <!-- Prevent phone from sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:name="crash.App"
+        android:name=".App"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme"
         android:allowBackup="true"
+        android:supportsPictureInPicture="true"
         android:resizeableActivity="true"
         android:roundIcon="@drawable/ic_launcher_round">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:exported="true"
-            android:theme="@style/AppTheme"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:hardwareAccelerated="true"
-            android:supportsPictureInPicture="true"
 			android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:maxRecents="1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -38,37 +39,36 @@
         </activity>
         
         <activity
-            android:theme="@style/AppTheme"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:hardwareAccelerated="true"
-            android:supportsPictureInPicture="true"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:name="crash.CrashActivity"
+            android:name=".ui.CrashActivity"
+            android:maxRecents="1"
             android:label="@string/app_name"
             android:exported="true" />
 
         <activity
-            android:name=".ShortcutHandlerActivity"
+            android:name=".ui.ShortcutHandlerActivity"
             android:excludeFromRecents="true"
             android:enabled="true"
             android:exported="true"
             android:theme="@style/TransparentTheme"/>
         
         <activity
-            android:name=".BackgroundActivity"
+            android:name=".ui.BackgroundActivity"
             android:excludeFromRecents="true"
             android:enabled="true"
             android:exported="true"
             android:theme="@style/TransparentTheme"/>
 
         <service
-            android:name=".MonitoringService"
+            android:name=".service.MonitoringService"
             android:enabled="true"
             android:exported="false"/>
         
         <service
-            android:name=".AccessibilityWatcher"
+            android:name=".service.AccessibilityMonitoringService"
             android:label="@string/app_name"
             android:description="@string/accessibility_permission"
             android:enabled="true"
@@ -83,7 +83,7 @@
                 android:resource="@xml/accessibility"/>
         </service>
         <service
-            android:name=".QuickSettingsService"
+            android:name=".service.QuickSettingsService"
             android:enabled="@bool/quick_settings_availability"
             android:icon="@drawable/ic_launcher_foreground"
             android:label="@string/app_name"
@@ -99,7 +99,7 @@
         </service>
 
         <receiver
-                android:name=".NotificationMonitor"
+                android:name=".model.NotificationMonitor"
                 android:exported="false"
                 android:enabled="true">
             <intent-filter>

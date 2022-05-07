@@ -1,4 +1,20 @@
-package com.ratul.fancy;
+/*
+ *   Copyright (C) 2022 Ratul Hasan
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.ratul.topactivity.dialog;
 
 import android.content.*;
 import android.app.*;
@@ -52,7 +68,7 @@ public class FancyDialog {
 		thiz = context;
 		dialog = new AlertDialog.Builder(new ContextThemeWrapper(thiz, R.style.FancyDialogThemeV1)).create();
         
-        ColorSetup.setupColors(thiz, theme);
+        DialogTheme.setupColors(thiz, theme);
         
 		initializeInterface();
 	}
@@ -60,7 +76,7 @@ public class FancyDialog {
 	private void initializeInterface() {
 		setCancelable(false);
 		inflater = LayoutInflater.from(thiz);
-		inflate = inflater.inflate(R.layout.abc_alert_dialog_fancy, null); 
+		inflate = inflater.inflate(R.layout.abc_alert_dialog, null); 
 		dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 		dialog.setView(inflate);
 
@@ -75,19 +91,14 @@ public class FancyDialog {
         window = dialog.getWindow();
         wlp = window.getAttributes();
         
-        title.setTypeface(Typeface.createFromAsset(thiz.getAssets(),"fonts/google_sans_bold.ttf"), 0);
-        message.setTypeface(Typeface.createFromAsset(thiz.getAssets(),"fonts/google_sans_regular.ttf"), 0);
-        positiveButton.setTypeface(Typeface.createFromAsset(thiz.getAssets(),"fonts/google_sans_regular.ttf"), 1);
-        negativeButton.setTypeface(Typeface.createFromAsset(thiz.getAssets(),"fonts/google_sans_regular.ttf"), 1);
+        title.setTextColor(DialogTheme.titleColor);
+        message.setTextColor(DialogTheme.messageColor);
+        positiveButton.setTextColor(DialogTheme.positiveTextColor);
+        negativeButton.setTextColor(DialogTheme.negativeTextColor);
         
-        title.setTextColor(ColorSetup.titleColor);
-        message.setTextColor(ColorSetup.messageColor);
-        positiveButton.setTextColor(ColorSetup.positiveTextColor);
-        negativeButton.setTextColor(ColorSetup.negativeTextColor);
-        
-        rippleRoundStroke(main, ColorSetup.background, ColorSetup.pressedColor, ColorSetup.round, 0, ColorSetup.strokeColor);
-        rippleRoundStroke(negativeButton, ColorSetup.negativeButtonColor, 0xFFE0E0E0, ColorSetup.round, 1, ColorSetup.strokeColor);
-        rippleRoundStroke(positiveButton, ColorSetup.positiveButtonColor, 0x40FFFFFF, ColorSetup.round, 0, ColorSetup.strokeColor);
+        rippleRoundStroke(main, DialogTheme.background, DialogTheme.pressedColor, DialogTheme.round, 0, DialogTheme.strokeColor);
+        rippleRoundStroke(negativeButton, DialogTheme.negativeButtonColor, 0xFFE0E0E0, DialogTheme.round, 1, DialogTheme.strokeColor);
+        rippleRoundStroke(positiveButton, DialogTheme.positiveButtonColor, 0x40FFFFFF, DialogTheme.round, 0, DialogTheme.strokeColor);
 	}
     
     public void showAsBottomSheet(boolean bool) {  
@@ -133,7 +144,7 @@ public class FancyDialog {
 	}
 	
 	public void setBackgroundColor(int color) {
-        rippleRoundStroke(main, color, ColorSetup.pressedColor, ColorSetup.round, 0, ColorSetup.strokeColor);
+        rippleRoundStroke(main, color, DialogTheme.pressedColor, DialogTheme.round, 0, DialogTheme.strokeColor);
     }
 	
 	public void setTitleColor(int color) {
@@ -145,12 +156,12 @@ public class FancyDialog {
 	}
 	
 	public void setPositiveButtonColor(int backgroundColor, int textColor, int pressedColor) {
-        rippleRoundStroke(positiveButton, backgroundColor, pressedColor, ColorSetup.round, 0, ColorSetup.strokeColor);
+        rippleRoundStroke(positiveButton, backgroundColor, pressedColor, DialogTheme.round, 0, DialogTheme.strokeColor);
         positiveButton.setTextColor(textColor);
     }
 
     public void setNegativeButtonColor(int backgroundColor, int textColor, int pressedColor) {
-        rippleRoundStroke(negativeButton, backgroundColor, pressedColor, ColorSetup.round, 1, ColorSetup.strokeColor);
+        rippleRoundStroke(negativeButton, backgroundColor, pressedColor, DialogTheme.round, 1, DialogTheme.strokeColor);
         negativeButton.setTextColor(textColor);
 	}
 	

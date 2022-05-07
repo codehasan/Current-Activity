@@ -1,4 +1,20 @@
-package crash;
+/*
+ *   Copyright (C) 2022 Ratul Hasan
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.ratul.topactivity.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,41 +28,44 @@ import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.Context;
 import android.graphics.Typeface;
-import com.ratul.fancy.FancyDialog;
 import android.view.View;
 import android.widget.Toast;
-import com.ratul.fancy.ColorSetup;
 import android.text.SpannableString;
 import android.app.ActionBar;
-import com.ratul.topactivity.TypefaceSpan;
 import android.text.Spannable;
+import com.ratul.topactivity.dialog.DialogTheme;
+import com.ratul.topactivity.dialog.FancyDialog;
+import com.ratul.topactivity.model.TypefaceSpan;
 
 public class CrashActivity extends Activity {
     public static String EXTRA_CRASH_INFO = "crash";
     private String crashInfo;
-    
+    private boolean restart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crash_view);
-        ColorSetup.setupColors(this, FancyDialog.DARK_THEME);
-        
+
         SpannableString s = new SpannableString(getString(R.string.app_name));
         s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
                   Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(s);
-        
+
+        restart = getIntent().getBooleanExtra("Restart", true);
         String mLog = getIntent().getStringExtra(EXTRA_CRASH_INFO);
         crashInfo = mLog;
         TextView crashed = findViewById(R.id.crashed);
         crashed.setText(mLog);
-        crashed.setTextColor(getColor(R.color.colorAccent));
-        crashed.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/google_sans_regular.ttf"));
     }
-    
+
     @Override
     public void onBackPressed() {
+        if (!restart) {
+            finish();
+            return;
+        }
         final FancyDialog fancy = new FancyDialog(this, FancyDialog.DARK_THEME);
         fancy.setTitle("Exit");
         fancy.setMessage("App will restart, are you sure to exit");
@@ -99,9 +118,18 @@ public class CrashActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, android.R.id.copy, 0, "Copy Log");
-        menu.add(1, android.R.id.redo, 1, "Restart App");
+        SpannableString s = new SpannableString("Copy Log");
+        s.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, s.length(),
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        menu.add(0, android.R.id.copy, 0, s);
+        if (restart) {
+            s = new SpannableString("Restart App");
+            s.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, s.length(),
+                      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            menu.add(1, android.R.id.redo, 1, s);
+        }
         return super.onCreateOptionsMenu(menu);
     }
-    
+
 }

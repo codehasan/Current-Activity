@@ -1,4 +1,20 @@
-package com.ratul.topactivity;
+/*
+ *   Copyright (C) 2022 Ratul Hasan
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.ratul.topactivity.model;
 
 import android.app.ActivityManager;
 import android.app.NotificationManager;
@@ -11,6 +27,11 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.List;
 import javax.crypto.NullCipher;
+import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.R;
+import com.ratul.topactivity.ui.MainActivity;
+import com.ratul.topactivity.utils.WindowUtil;
+import com.ratul.topactivity.service.QuickSettingsService;
 
 /**
  * Created by Wen on 4/18/15.
@@ -63,7 +84,7 @@ public class NotificationMonitor extends BroadcastReceiver {
         int command = intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1);
         switch (command) {
             case ACTION_STOP:
-                WindowUtility.dismiss(context);
+                WindowUtil.dismiss(context);
                 SharedPrefsUtil.setIsShowWindow(context, false);
                 cancelNotification(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));

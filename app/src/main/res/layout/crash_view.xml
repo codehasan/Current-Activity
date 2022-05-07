@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
-            <TextView
+            <NormalTextView
                 android:id="@+id/crashed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -20,7 +20,7 @@
                 android:textSize="14sp"
                 android:padding="12dp"
                 android:forceDarkAllowed="false"
-                android:textColor="#888888" />
+                android:textColor="@color/textPrimary" />
         </HorizontalScrollView>
     </ScrollView>
 </LinearLayout>
