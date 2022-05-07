@@ -16,9 +16,7 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
   <b>&nbsp;Screenshots</b>
 </h1>
 
-<div align="center">
-  <img width="148" height="148" src="./.resources/images/screenshot.png" alt="Logo" border="0">
-</div>
+You can find screenshots of this app <a href="./.resources/images/screenshot.png">here</a>.
 
 <h1 align="left">
   <b>&nbsp;Credits</b>
