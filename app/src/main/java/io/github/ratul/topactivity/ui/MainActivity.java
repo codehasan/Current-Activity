@@ -225,7 +225,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             return;
         }
         if (isChecked && buttonView == mWindowSwitch) {
-            if (Build.VERSION.SDK_INT >= 24 && DatabaseUtil.hasBattery() && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
+            if (Build.VERSION.SDK_INT >= 24 && !DatabaseUtil.hasBattery() && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
                 DatabaseUtil.setHasBattery(true);
                 return;
@@ -351,6 +351,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 @Override
                 public void onClick(View v) {
                     fancy.dismiss();
+                }
+            });
+        fancy.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    refreshWindowSwitch();
+                    refreshAccessibilitySwitch();
                 }
             });
         fancy.setCancelable(false);
