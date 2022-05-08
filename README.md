@@ -12,6 +12,14 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 [![License](https://img.shields.io/badge/License-GPL-red)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
 [![Contributions](https://img.shields.io/badge/Contributions-Open-orange)](https://github.com/RatulHasan8/Current-Activity/pulls)
+<br/>
+
+<a href='https://play.google.com/store/apps/details?id=com.willme.topactivity'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/></a>
+
+<h1 align="left">
+  <b>&nbsp;How it works</b>
+</h1>
+It uses accessibility service api and package usage stats to monitor app activity changes and show it in a freely moveable popup window
 
 <h1 align="left">
   <b>&nbsp;Screenshots</b>
