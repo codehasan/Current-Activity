@@ -7,11 +7,11 @@
 An useful tool for Android Developers &amp; Reversers, which shows the package name and class name of current activity which you are in
 <br/><br/>
 
-[![App](https://img.shields.io/badge/Current%20Activity-1.5.5-blue)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
-[![Api](https://img.shields.io/badge/Android%20OS-5.0+-green)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
-[![License](https://img.shields.io/badge/License-GPL-red)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
-[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green.svg)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
-[![Contributions](https://img.shields.io/badge/Contributions-Open-orange)](https://github.com/RatulHasan8/Current-Activity/pulls)
+[![App](https://img.shields.io/badge/Current%20Activity-1.5.5-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMiAxLjUpIj48cG9seWxpbmUgcG9pbnRzPSI1LjI0NSAxMy4yODEgOC4yMzggOS4zOTEgMTEuNjUyIDEyLjA3MyAxNC41ODEgOC4yOTMiLz48Y2lyY2xlIGN4PSIxNy45OTUiIGN5PSIyLjciIHI9IjEuOTIyIi8+PHBhdGggZD0iTTEyLjkyNDQ4NTIsMS42MjAxMzczMSBMNS42NTY3NTA2LDEuNjIwMTM3MzEgQzIuNjQ1MzA4OTQsMS42MjAxMzczMSAwLjc3ODAzMjA0MSwzLjc1Mjg2MDQzIDAuNzc4MDMyMDQxLDYuNzY0MzAyMDkgTDAuNzc4MDMyMDQxLDE0Ljg0NjY4MiBDMC43NzgwMzIwNDEsMTcuODU4MTIzNyAyLjYwODY5NTY3LDE5Ljk4MTY5MzUgNS42NTY3NTA2LDE5Ljk4MTY5MzUgTDE0LjI2MDg2OTYsMTkuOTgxNjkzNSBDMTcuMjcyMzExMywxOS45ODE2OTM1IDE5LjEzOTU4ODIsMTcuODU4MTIzNyAxOS4xMzk1ODgyLDE0Ljg0NjY4MiBMMTkuMTM5NTg4Miw3LjgwNzc4MDM2Ii8+PC9nPjwvc3ZnPg==)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
+[![Api](https://img.shields.io/badge/Android-5.0%20and%20up-green?logo=android&logoColor=white)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
+[![License](https://img.shields.io/badge/License-GPL-red?logo=gnu&logoColor=white)](https://github.com/RatulHasan8/Current-Activity/blob/main/LICENSE)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-green?logo=supabase&logoColor=white)](https://github.com/RatulHasan8/Current-Activity/graphs/commit-activity)
+[![Contributions](https://img.shields.io/badge/Contributions-Open-orange?logo=dev.to&logoColor=white)](https://github.com/RatulHasan8/Current-Activity/pulls)
 <br/>
 
 <a href='https://play.google.com/store/apps/details?id=io.github.ratul.topactivity'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/></a>
