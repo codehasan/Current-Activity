@@ -14,17 +14,17 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity;
+package io.github.ratul.topactivity;
 
 import android.app.Application;
-import com.ratul.topactivity.R;
-import com.ratul.topactivity.model.CrashHandler;
+import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.model.CrashHandler;
 import android.content.Context;
 import java.io.File;
 import android.app.Activity;
-import com.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.ui.MainActivity;
 import android.content.Intent;
-import com.ratul.topactivity.ui.CrashActivity;
+import io.github.ratul.topactivity.ui.CrashActivity;
 import android.widget.Toast;
 
 public class App extends Application {

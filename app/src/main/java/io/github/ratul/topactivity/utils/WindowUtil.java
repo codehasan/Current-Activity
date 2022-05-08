@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.utils;
+package io.github.ratul.topactivity.utils;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -33,13 +33,13 @@ import android.view.*;
 import android.widget.*;
 import android.graphics.Typeface;
 import android.content.Intent;
-import com.ratul.topactivity.R;
-import com.ratul.topactivity.model.NotificationMonitor;
-import com.ratul.topactivity.ui.MainActivity;
-import com.ratul.topactivity.ui.BackgroundActivity;
-import com.ratul.topactivity.service.QuickSettingsService;
-import com.ratul.topactivity.service.MonitoringService;
-import com.ratul.topactivity.service.AccessibilityMonitoringService;
+import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.model.NotificationMonitor;
+import io.github.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.ui.BackgroundActivity;
+import io.github.ratul.topactivity.service.QuickSettingsService;
+import io.github.ratul.topactivity.service.MonitoringService;
+import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
@@ -84,7 +84,7 @@ public class WindowUtil {
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
-                    DatabaseUtil.setIsShowWindow(context, false);
+                    DatabaseUtil.setIsShowWindow(false);
                     NotificationMonitor.cancelNotification(context);
                     context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 }
@@ -174,7 +174,7 @@ public class WindowUtil {
         
         if (!viewAdded) {
             viewAdded = true;
-            if (DatabaseUtil.isShowWindow(context))
+            if (DatabaseUtil.isShowWindow())
                 sWindowManager.addView(sView, sWindowParams);
         }
 

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -30,7 +30,7 @@ import android.content.ClipData;
  */
  @TargetApi(29)
 public class BackgroundActivity extends Activity {
-    public static String STRING_COPY = "com.ratul.topactivity.COPY_STRING";
+    public static String STRING_COPY = "io.github.ratul.topactivity.COPY_STRING";
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {

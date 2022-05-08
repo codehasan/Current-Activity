@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.dialog;
+package io.github.ratul.topactivity.dialog;
 
 import android.content.*;
 import android.app.*;
@@ -24,7 +24,7 @@ import android.graphics.*;
 import android.view.View.OnClickListener;
 import android.graphics.drawable.*;
 import android.content.res.*;
-import com.ratul.topactivity.R;
+import io.github.ratul.topactivity.R;
 
 /**
  * Created by Ratul on 04/05/2022.

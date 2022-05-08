@@ -14,16 +14,16 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.service;
+package io.github.ratul.topactivity.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
-import com.ratul.topactivity.utils.WindowUtil;
-import com.ratul.topactivity.utils.DatabaseUtil;
-import com.ratul.topactivity.model.NotificationMonitor;
+import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.model.NotificationMonitor;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -38,7 +38,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow(this) && DatabaseUtil.hasAccess(this)) {
+        if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow() && DatabaseUtil.hasAccess()) {
             String act1 = event.getClassName().toString();
             String act2 = event.getPackageName().toString();
             

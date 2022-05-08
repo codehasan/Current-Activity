@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ratul.topactivity">
+    package="io.github.ratul.topactivity">
     <!-- Ask to ignore battery optimizations -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <!-- Retrieve running apps -->
@@ -103,7 +103,7 @@
                 android:exported="false"
                 android:enabled="true">
             <intent-filter>
-                <action android:name="com.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER"/>
+                <action android:name="io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER"/>
             </intent-filter>
         </receiver>
     </application>

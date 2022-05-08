@@ -7,8 +7,8 @@
         android:shortcutId="static"
         android:shortcutShortLabel="@string/shortcut_action">
         <intent
-            android:action="com.ratul.topactivity.ACTION_TOGGLE_WINDOW"
-            android:targetClass="com.ratul.topactivity.ui.ShortcutHandlerActivity"
-            android:targetPackage="com.ratul.topactivity"/>
+            android:action="io.github.ratul.topactivity.ACTION_TOGGLE_WINDOW"
+            android:targetClass="io.github.ratul.topactivity.ui.ShortcutHandlerActivity"
+            android:targetPackage="io.github.ratul.topactivity"/>
     </shortcut>
 </shortcuts>

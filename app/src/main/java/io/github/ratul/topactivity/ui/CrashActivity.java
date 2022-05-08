@@ -14,11 +14,11 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.ratul.topactivity.R;
+import io.github.ratul.topactivity.R;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.content.ClipboardManager;
@@ -33,9 +33,9 @@ import android.widget.Toast;
 import android.text.SpannableString;
 import android.app.ActionBar;
 import android.text.Spannable;
-import com.ratul.topactivity.dialog.DialogTheme;
-import com.ratul.topactivity.dialog.FancyDialog;
-import com.ratul.topactivity.model.TypefaceSpan;
+import io.github.ratul.topactivity.dialog.DialogTheme;
+import io.github.ratul.topactivity.dialog.FancyDialog;
+import io.github.ratul.topactivity.model.TypefaceSpan;
 
 /**
  * Created by Ratul on 04/05/2022.

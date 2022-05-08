@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.model;
+package io.github.ratul.topactivity.model;
 
 import android.util.LruCache;
 import android.graphics.Typeface;

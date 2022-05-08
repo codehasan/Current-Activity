@@ -14,9 +14,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.model;
+package io.github.ratul.topactivity.model;
 
-import com.ratul.topactivity.ui.*;
+import io.github.ratul.topactivity.ui.*;
 import android.app.*;
 import java.text.*;
 import java.io.*;

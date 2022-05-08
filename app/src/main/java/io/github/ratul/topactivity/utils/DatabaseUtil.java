@@ -14,79 +14,69 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.utils;
+package io.github.ratul.topactivity.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
-import com.ratul.topactivity.App;
+import io.github.ratul.topactivity.App;
 
 /**
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
 public class DatabaseUtil {
-    private static SharedPreferences sp = App.getApp().getSharedPreferences("com.ratul.topactivity", 0);
+    private static SharedPreferences sp = App.getApp().getSharedPreferences("io.github.ratul.topactivity", 0);
 
-    public static boolean isShowWindow(Context context) {
+    public static boolean isShowWindow() {
         return sp.getBoolean("is_show_window", false);
     }
-    
-    public static boolean hasBattery(Context context) {
+
+    public static boolean hasBattery() {
         return sp.getBoolean("hasBattery", false);
     }
 
-    public static boolean setHasBattery(Context context, boolean bool) {
+    public static boolean setHasBattery(boolean bool) {
         return sp.edit().putBoolean("hasBattery", bool).commit();
     }
 
-    public static void setIsShowWindow(Context context, boolean isShow) {
+    public static void setIsShowWindow(boolean isShow) {
         sp.edit().putBoolean("is_show_window", isShow).commit();
     }
-    
-    public static boolean setWatchingService(Context context) {
-        return sp.getBoolean("watching_service", false);
+
+    public static boolean appInitiated() {
+        return sp.getBoolean("app_init", false);
     }
 
-    public static void setWatchingService(Context context, boolean added) {
-        sp.edit().putBoolean("watching_service", added).commit();
+    public static void setAppInitiated(boolean added) {
+        sp.edit().putBoolean("app_init", added).commit();
     }
-    
-    public static boolean appInitiated(Context context) {
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-    return sp.getBoolean("app_init", false);
-        }
 
-    public static void setAppInitiated(Context context, boolean added) {
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-    sp.edit().putBoolean("app_init", added).commit();
-        }
-    
-    public static boolean hasAccess(Context context) {
+    public static boolean hasAccess() {
         return sp.getBoolean("has_access", true);
     }
 
-    public static void setHasAccess(Context context, boolean added) {
+    public static void setHasAccess(boolean added) {
         sp.edit().putBoolean("has_access", added).commit();
     }
 
-    public static boolean hasQSTileAdded(Context context) {
+    public static boolean hasQSTileAdded() {
         return sp.getBoolean("has_qs_tile_added", false);
     }
 
-    public static void setQSTileAdded(Context context, boolean added) {
+    public static void setQSTileAdded(boolean added) {
         sp.edit().putBoolean("has_qs_tile_added", added).commit();
     }
 
-    public static boolean isNotificationToggleEnabled(Context context) {
-        if (!hasQSTileAdded(context)) {
+    public static boolean isNotificationToggleEnabled() {
+        if (!hasQSTileAdded()) {
             return true;
         }
         return sp.getBoolean("is_noti_toggle_enabled", true);
     }
 
-    public static void setNotificationToggleEnabled(Context context, boolean isEnabled) {
+    public static void setNotificationToggleEnabled(boolean isEnabled) {
         sp.edit().putBoolean("is_noti_toggle_enabled", isEnabled).commit();
     }
 }

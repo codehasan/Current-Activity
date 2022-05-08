@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.service;
+package io.github.ratul.topactivity.service;
 
 import android.annotation.*;
 import android.app.*;
@@ -27,8 +27,8 @@ import android.util.*;
 import java.util.*;
 import android.app.usage.*;
 import android.widget.Toast;
-import com.ratul.topactivity.utils.DatabaseUtil;
-import com.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.utils.WindowUtil;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -89,7 +89,7 @@ public class MonitoringService extends Service {
         Runnable runner = new Runnable() {
             @Override
             public void run() {
-                if (!DatabaseUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                if (!DatabaseUtil.isShowWindow()) {
                     MonitoringService.INSTANCE.mHandler.removeCallbacks(this);
                     MonitoringService.INSTANCE.stopSelf();
                 }
@@ -99,7 +99,7 @@ public class MonitoringService extends Service {
                     return;
 
                 MonitoringService.INSTANCE.firstRun = false;
-                if (DatabaseUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                if (DatabaseUtil.isShowWindow()) {
                     WindowUtil.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
                 } else {
                     MonitoringService.INSTANCE.stopSelf();

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.service;
+package io.github.ratul.topactivity.service;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -27,11 +27,11 @@ import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.text.style.BackgroundColorSpan;
-import com.ratul.topactivity.utils.DatabaseUtil;
-import com.ratul.topactivity.ui.MainActivity;
-import com.ratul.topactivity.utils.WindowUtil;
-import com.ratul.topactivity.model.NotificationMonitor;
-import com.ratul.topactivity.ui.BackgroundActivity;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.model.NotificationMonitor;
+import io.github.ratul.topactivity.ui.BackgroundActivity;
 
 /**
  * Created by Wen on 5/3/16.
@@ -39,7 +39,7 @@ import com.ratul.topactivity.ui.BackgroundActivity;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class QuickSettingsService extends TileService {
-    public static final String ACTION_UPDATE_TITLE = "com.ratul.topactivity.ACTION.UPDATE_TITLE";
+    public static final String ACTION_UPDATE_TITLE = "io.github.ratul.topactivity.ACTION.UPDATE_TITLE";
     private UpdateTileReceiver mReceiver;
 
     public static void updateTile(Context context) {
@@ -55,14 +55,14 @@ public class QuickSettingsService extends TileService {
 
     @Override
     public void onTileAdded() {
-        DatabaseUtil.setQSTileAdded(this, true);
+        DatabaseUtil.setQSTileAdded(true);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
     @Override
     public void onTileRemoved() {
         super.onTileRemoved();
-        DatabaseUtil.setQSTileAdded(this, false);
+        DatabaseUtil.setQSTileAdded(false);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
@@ -81,7 +81,7 @@ public class QuickSettingsService extends TileService {
 
     @Override
     public void onClick() {
-        if (DatabaseUtil.isShowWindow(this))
+        if (DatabaseUtil.isShowWindow())
             return;
         if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -89,10 +89,10 @@ public class QuickSettingsService extends TileService {
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivityAndCollapse(intent);
         } else {
-            if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null)
+            if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null)
                 startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
-            DatabaseUtil.setIsShowWindow(this, !DatabaseUtil.isShowWindow(this));
-            if (DatabaseUtil.isShowWindow(this)) {
+            DatabaseUtil.setIsShowWindow(!DatabaseUtil.isShowWindow());
+            if (DatabaseUtil.isShowWindow()) {
                 if (WindowUtil.sWindowManager == null)
                     WindowUtil.init(this);
                 NotificationMonitor.showNotification(this, false);
@@ -106,7 +106,7 @@ public class QuickSettingsService extends TileService {
     }
 
     private void updateTile() {
-        getQsTile().setState(DatabaseUtil.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        getQsTile().setState(DatabaseUtil.isShowWindow() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         getQsTile().updateTile();
     }
 

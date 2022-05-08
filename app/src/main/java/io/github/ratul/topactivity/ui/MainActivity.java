@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui;
 
 import android.app.*;
 import android.content.*;
@@ -30,12 +30,12 @@ import android.graphics.drawable.*;
 import android.graphics.*;
 import android.text.*;
 import java.util.List;
-import com.ratul.topactivity.R;
-import com.ratul.topactivity.dialog.*;
-import com.ratul.topactivity.utils.*;
-import com.ratul.topactivity.model.NotificationMonitor;
-import com.ratul.topactivity.service.*;
-import com.ratul.topactivity.model.TypefaceSpan;
+import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.dialog.*;
+import io.github.ratul.topactivity.utils.*;
+import io.github.ratul.topactivity.model.NotificationMonitor;
+import io.github.ratul.topactivity.service.*;
+import io.github.ratul.topactivity.model.TypefaceSpan;
 import java.io.*;
 
 /**
@@ -44,7 +44,7 @@ import java.io.*;
  */
 public class MainActivity extends Activity implements OnCheckedChangeListener {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
-    public static final String ACTION_STATE_CHANGED = "com.ratul.topactivity.ACTION_STATE_CHANGED";
+    public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
     CompoundButton mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
     private BroadcastReceiver mReceiver;
     private int theme;
@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         INSTANCE = this;
-        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess(this))
+        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
             startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
     }
 
@@ -112,24 +112,24 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (DatabaseUtil.isShowWindow(this)) {
+        if (DatabaseUtil.isShowWindow()) {
             NotificationMonitor.showNotification(this, false);
         }
     }
 
     private void refreshWindowSwitch() {
-        mWindowSwitch.setChecked(DatabaseUtil.isShowWindow(this));
-        if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
+        mWindowSwitch.setChecked(DatabaseUtil.isShowWindow());
+        if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
             mWindowSwitch.setChecked(false);
         }
     }
 
     private void refreshAccessibilitySwitch() {
-        mAccessibilitySwitch.setChecked(DatabaseUtil.hasAccess(this));
+        mAccessibilitySwitch.setChecked(DatabaseUtil.hasAccess());
     }
 
     private void refreshNotificationSwitch() {
-        mNotificationSwitch.setChecked(!DatabaseUtil.isNotificationToggleEnabled(this));
+        mNotificationSwitch.setChecked(!DatabaseUtil.isNotificationToggleEnabled());
     }
 
     public void showToast(String str, int length) {
@@ -213,21 +213,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView == mNotificationSwitch) {
-            DatabaseUtil.setNotificationToggleEnabled(this, !isChecked);
+            DatabaseUtil.setNotificationToggleEnabled(!isChecked);
             buttonView.setChecked(isChecked);
             return;
         }
         if (buttonView == mAccessibilitySwitch) {
-            DatabaseUtil.setHasAccess(this, isChecked);
+            DatabaseUtil.setHasAccess(isChecked);
             buttonView.setChecked(isChecked);
             if(isChecked && AccessibilityMonitoringService.getInstance() == null)
                 startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
             return;
         }
         if (isChecked && buttonView == mWindowSwitch) {
-            if (Build.VERSION.SDK_INT >= 24 && DatabaseUtil.hasBattery(this) && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
+            if (Build.VERSION.SDK_INT >= 24 && DatabaseUtil.hasBattery() && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
-                DatabaseUtil.setHasBattery(this, true);
+                DatabaseUtil.setHasBattery(true);
                 return;
             }
             final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
@@ -260,7 +260,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                 fancy.show();
                 return;
             }
-            if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
+            if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
                 fancy.setTitle("Accessibility Permission");
                 fancy.setMessage("As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info");
                 fancy.setPositiveButton("Settings", new View.OnClickListener() {
@@ -292,8 +292,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             }
         }
         if (buttonView == mWindowSwitch) {
-            DatabaseUtil.setAppInitiated(this, true);
-            DatabaseUtil.setIsShowWindow(this, isChecked);
+            DatabaseUtil.setAppInitiated(true);
+            DatabaseUtil.setIsShowWindow(isChecked);
             if (!isChecked) {
                 WindowUtil.dismiss(this);
             } else {

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -22,11 +22,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import com.ratul.topactivity.utils.DatabaseUtil;
-import com.ratul.topactivity.utils.WindowUtil;
-import com.ratul.topactivity.model.NotificationMonitor;
-import com.ratul.topactivity.service.MonitoringService;
-import com.ratul.topactivity.service.AccessibilityMonitoringService;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.model.NotificationMonitor;
+import io.github.ratul.topactivity.service.MonitoringService;
+import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -34,13 +34,6 @@ import com.ratul.topactivity.service.AccessibilityMonitoringService;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutHandlerActivity extends Activity {
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess(this))
-            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +43,11 @@ public class ShortcutHandlerActivity extends Activity {
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivity(intent);
             finish();
-        }
+        } else if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
+            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
 
-        boolean isShow = !DatabaseUtil.isShowWindow(this);
-        DatabaseUtil.setIsShowWindow(this, isShow);
+        boolean isShow = !DatabaseUtil.isShowWindow();
+        DatabaseUtil.setIsShowWindow(isShow);
         if (!isShow) {
             WindowUtil.dismiss(this);
             NotificationMonitor.showNotification(this, true);

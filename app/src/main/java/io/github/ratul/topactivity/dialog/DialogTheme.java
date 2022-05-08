@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.dialog;
+package io.github.ratul.topactivity.dialog;
 
 import android.content.*;
 import android.content.res.*;

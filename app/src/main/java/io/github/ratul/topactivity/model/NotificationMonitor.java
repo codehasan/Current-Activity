@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.ratul.topactivity.model;
+package io.github.ratul.topactivity.model;
 
 import android.app.ActivityManager;
 import android.app.NotificationManager;
@@ -27,11 +27,11 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.List;
 import javax.crypto.NullCipher;
-import com.ratul.topactivity.utils.DatabaseUtil;
-import com.ratul.topactivity.R;
-import com.ratul.topactivity.ui.MainActivity;
-import com.ratul.topactivity.utils.WindowUtil;
-import com.ratul.topactivity.service.QuickSettingsService;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.service.QuickSettingsService;
 import java.lang.reflect.AnnotatedElement;
 import android.app.NotificationChannel;
 import android.graphics.Color;
@@ -50,7 +50,7 @@ public class NotificationMonitor extends BroadcastReceiver {
     public static NotificationManager notifManager;
 
     public static void showNotification(Context context, boolean isPaused) {
-        if (!DatabaseUtil.isNotificationToggleEnabled(context)) {
+        if (!DatabaseUtil.isNotificationToggleEnabled()) {
             return;
         }
         notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -94,9 +94,9 @@ public class NotificationMonitor extends BroadcastReceiver {
 
     public static PendingIntent getPendingIntent(Context context, int command) {
         Intent intent = new Intent(context, NotificationMonitor.class);
-        intent.setAction("com.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
+        intent.setAction("io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
         intent.putExtra(EXTRA_NOTIFICATION_ACTION, command);
-        return PendingIntent.getBroadcast(context, command, intent, 0);
+        return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
     public static void cancelNotification(Context context) {
@@ -110,7 +110,7 @@ public class NotificationMonitor extends BroadcastReceiver {
         switch (command) {
             case ACTION_STOP:
                 WindowUtil.dismiss(context);
-                DatabaseUtil.setIsShowWindow(context, false);
+                DatabaseUtil.setIsShowWindow(false);
                 cancelNotification(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 break;
