@@ -2,10 +2,6 @@ name: Android CI
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "version number for this release."
-        required: true
 
 jobs:
   build:
@@ -32,11 +28,8 @@ jobs:
         with:
           arguments: assembleRelease
       
-      - name: Add apk to release entry
-        uses: softprops/action-gh-release@v0.1.14
+      - name: Upload release apk
+        uses: actions/upload-artifact@v3
         with:
-          draft: true
-          name: ${{ github.event.input.version }} 
-          tag_name: "v${{ github.event.inputs.version }}"
-          target_commitish: ${{ env.TARGET_COMMITISH }}
-          files: ${GITHUB_REPOSITORY}/app/build/outputs/apk/release/app-release.apk
+          name: app-release.apk
+          path: app/build/outputs/apk/release/
