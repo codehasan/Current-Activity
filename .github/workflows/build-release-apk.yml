@@ -34,7 +34,7 @@ jobs:
       
       - name: Push tag
         run: |
-          git push origin "v${{ github.event.inputs.version }}"
+          git push master "v${{ github.event.inputs.version }}"
           
       - name: Add apk to release entry
         uses: softprops/action-gh-release@v0.1.14
