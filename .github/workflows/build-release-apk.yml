@@ -39,4 +39,4 @@ jobs:
           name: ${{ github.event.input.version }} 
           tag_name: "v${{ github.event.inputs.version }}"
           target_commitish: ${{ env.TARGET_COMMITISH }}
-          files: app/build/outputs/apk/release/app-release.apk
+          files: ${GITHUB_REPOSITORY}/app/build/outputs/apk/release/app-release.apk
