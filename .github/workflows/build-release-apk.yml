@@ -32,10 +32,6 @@ jobs:
         with:
           arguments: assembleRelease
       
-      - name: Push tag
-        run: |
-          git push master "v${{ github.event.inputs.version }}"
-          
       - name: Add apk to release entry
         uses: softprops/action-gh-release@v0.1.14
         with:
