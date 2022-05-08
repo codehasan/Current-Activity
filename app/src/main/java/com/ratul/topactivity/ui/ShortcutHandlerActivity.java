@@ -22,8 +22,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.DatabaseUtil;
 import com.ratul.topactivity.utils.WindowUtil;
 import com.ratul.topactivity.model.NotificationMonitor;
 import com.ratul.topactivity.service.MonitoringService;
@@ -36,26 +35,30 @@ import com.ratul.topactivity.service.AccessibilityMonitoringService;
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutHandlerActivity extends Activity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess(this))
+            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null)
-            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
         if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivity(intent);
+            finish();
         }
 
-        boolean isShow = !SharedPrefsUtil.isShowWindow(this);
-        SharedPrefsUtil.setIsShowWindow(this, isShow);
+        boolean isShow = !DatabaseUtil.isShowWindow(this);
+        DatabaseUtil.setIsShowWindow(this, isShow);
         if (!isShow) {
             WindowUtil.dismiss(this);
             NotificationMonitor.showNotification(this, true);
         } else {
-            String act1 = getClass().getName();
-            
-            WindowUtil.show(this, getPackageName(), act1);
+            WindowUtil.init(this);
             NotificationMonitor.showNotification(this, false);
             startService(new Intent(this, MonitoringService.class));
         }

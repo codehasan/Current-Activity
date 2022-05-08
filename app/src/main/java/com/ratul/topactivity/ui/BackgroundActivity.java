@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 
@@ -34,7 +33,7 @@ public class BackgroundActivity extends Activity {
     public static String STRING_COPY = "com.ratul.topactivity.COPY_STRING";
     
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String str = getIntent().getStringExtra(STRING_COPY);
         

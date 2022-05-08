@@ -27,49 +27,74 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.List;
 import javax.crypto.NullCipher;
-import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.DatabaseUtil;
 import com.ratul.topactivity.R;
 import com.ratul.topactivity.ui.MainActivity;
 import com.ratul.topactivity.utils.WindowUtil;
 import com.ratul.topactivity.service.QuickSettingsService;
+import java.lang.reflect.AnnotatedElement;
+import android.app.NotificationChannel;
+import android.graphics.Color;
+import android.app.TaskStackBuilder;
+import android.widget.Toast;
 
 /**
- * Created by Wen on 4/18/15.
- * Refactored by Ratul on 04/05/2022.
+ * Created by Ratul on 04/05/2022.
  */
 public class NotificationMonitor extends BroadcastReceiver {
-    public static final int NOTIFICATION_ID = 1;
-    public static final String ACTION_NOTIFICATION_RECEIVER = "com.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER";
-    public static final int ACTION_STOP = 2;
-    public static final String EXTRA_NOTIFICATION_ACTION = "command";
+    public static final int NOTIFICATION_ID = 696969691;
+    private static String CHANNEL_ID;
+    private static final int ACTION_STOP = 2;
+    private static final String EXTRA_NOTIFICATION_ACTION = "command";
     public static NotificationCompat.Builder builder;
     public static NotificationManager notifManager;
 
     public static void showNotification(Context context, boolean isPaused) {
-        if (!SharedPrefsUtil.isNotificationToggleEnabled(context)) {
+        if (!DatabaseUtil.isNotificationToggleEnabled(context)) {
             return;
         }
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
-        builder = new NotificationCompat.Builder(context)
+        notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CHANNEL_ID = context.getPackageName() + "_channel_007";
+            CharSequence name = "Activity Info";
+            
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription("Shows current activity info");
+            mChannel.enableLights(false);
+            mChannel.enableVibration(false);
+            mChannel.setShowBadge(false);
+            notifManager.createNotificationChannel(mChannel);
+        }
+        
+        Intent intent = new Intent(context, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.is_running,
                         context.getString(R.string.app_name)))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_shortcut)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentText(context.getString(R.string.touch_to_open))
                 .setColor(context.getColor(R.color.layerColor))
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setOngoing(!isPaused);
                 
-        builder.addAction(R.drawable.ic_shortcut,
+        builder.addAction(R.drawable.ic_launcher_foreground,
                 context.getString(R.string.noti_action_stop),
                 getPendingIntent(context, ACTION_STOP))
                 .setContentIntent(pIntent);
-
-        notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                
         notifManager.notify(NOTIFICATION_ID, builder.build());
     }
 
     public static PendingIntent getPendingIntent(Context context, int command) {
-        Intent intent = new Intent(ACTION_NOTIFICATION_RECEIVER);
+        Intent intent = new Intent(context, NotificationMonitor.class);
+        intent.setAction("com.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
         intent.putExtra(EXTRA_NOTIFICATION_ACTION, command);
         return PendingIntent.getBroadcast(context, command, intent, 0);
     }
@@ -85,7 +110,7 @@ public class NotificationMonitor extends BroadcastReceiver {
         switch (command) {
             case ACTION_STOP:
                 WindowUtil.dismiss(context);
-                SharedPrefsUtil.setIsShowWindow(context, false);
+                DatabaseUtil.setIsShowWindow(context, false);
                 cancelNotification(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 break;

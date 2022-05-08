@@ -27,7 +27,7 @@ import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.text.style.BackgroundColorSpan;
-import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.DatabaseUtil;
 import com.ratul.topactivity.ui.MainActivity;
 import com.ratul.topactivity.utils.WindowUtil;
 import com.ratul.topactivity.model.NotificationMonitor;
@@ -43,7 +43,7 @@ public class QuickSettingsService extends TileService {
     private UpdateTileReceiver mReceiver;
 
     public static void updateTile(Context context) {
-        TileService.requestListeningState(context.getApplicationContext(), new ComponentName(context, QuickSettingsService.class));
+        TileService.requestListeningState(context, new ComponentName(context, QuickSettingsService.class));
         context.sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
     }
 
@@ -55,14 +55,14 @@ public class QuickSettingsService extends TileService {
 
     @Override
     public void onTileAdded() {
-        SharedPrefsUtil.setQSTileAdded(this, true);
+        DatabaseUtil.setQSTileAdded(this, true);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
     @Override
     public void onTileRemoved() {
         super.onTileRemoved();
-        SharedPrefsUtil.setQSTileAdded(this, false);
+        DatabaseUtil.setQSTileAdded(this, false);
         sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
     }
 
@@ -81,20 +81,21 @@ public class QuickSettingsService extends TileService {
 
     @Override
     public void onClick() {
-        if (SharedPrefsUtil.isShowWindow(this))
+        if (DatabaseUtil.isShowWindow(this))
             return;
         if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
             startActivityAndCollapse(intent);
         } else {
-            SharedPrefsUtil.setIsShowWindow(this, !SharedPrefsUtil.isShowWindow(this));
-            if (SharedPrefsUtil.isShowWindow(this)) {
+            if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null)
+                startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
+            DatabaseUtil.setIsShowWindow(this, !DatabaseUtil.isShowWindow(this));
+            if (DatabaseUtil.isShowWindow(this)) {
                 if (WindowUtil.sWindowManager == null)
                     WindowUtil.init(this);
                 NotificationMonitor.showNotification(this, false);
-                if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null)
-                    startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
                 startService(new Intent(this, MonitoringService.class));
             } else {
                 WindowUtil.dismiss(this);
@@ -105,11 +106,7 @@ public class QuickSettingsService extends TileService {
     }
 
     private void updateTile() {
-        if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
-            getQsTile().setState(Tile.STATE_INACTIVE);
-        } else {
-            getQsTile().setState(SharedPrefsUtil.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-        }
+        getQsTile().setState(DatabaseUtil.isShowWindow(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         getQsTile().updateTile();
     }
 

@@ -24,7 +24,7 @@
 			android:paddingTop="20dp"
 			android:paddingLeft="20dp"
 			android:paddingRight="20dp"
-			android:textSize="17sp"
+			android:textSize="18sp"
 			android:textColor="#212121" />
 		<NormalTextView
 			android:id="@+id/t2"
@@ -34,7 +34,7 @@
 			android:text="Message"
 			android:paddingLeft="23dp"
 			android:paddingRight="23dp"
-			android:textSize="15sp"
+			android:textSize="16sp"
 			android:textColor="#9E9E9E" />
         <LinearLayout
             android:id="@+id/middle"
@@ -62,7 +62,7 @@
 				android:gravity="center_horizontal|center_vertical"
 				android:text="Close"
                 android:padding="12dp"
-				android:textSize="14sp"
+				android:textSize="15sp"
 				android:textColor="#616161"
                 android:forceDarkAllowed="false"
 				android:layout_weight="1" />
@@ -84,7 +84,7 @@
 				android:gravity="center_horizontal|center_vertical"
 				android:text="Ok"
                 android:forceDarkAllowed="false"
-				android:textSize="14sp"
+				android:textSize="15sp"
 				android:textColor="#FFFFFF"
 				android:layout_weight="1" />
 		</LinearLayout>

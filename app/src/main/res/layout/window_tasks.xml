@@ -9,16 +9,15 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:background="#60111111">
+		android:background="#B6000000">
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:background="#60111111">
+			android:orientation="horizontal">
 			<BoldTextView
                 android:id="@+id/title"
 				android:padding="8dp"
-				android:text="Activity Detector Plus"
+				android:text="Activity Info"
 				android:gravity="center_vertical"
 				android:layout_weight="1"
                 android:textSize="14sp"
@@ -41,13 +40,13 @@
 			android:orientation="horizontal">
 			<NormalTextView
 				android:padding="8dp"
-				android:text="Package Name"
+				android:text="Package"
 				android:gravity="center"
                 android:textSize="13sp"
 				android:layout_marginTop="1dp"
 				android:layout_marginRight="1dp"
 				android:background="#60111111"
-				android:layout_width="120dp"
+				android:layout_width="80dp"
 				android:layout_height="match_parent"
 				android:textColor="#FFFFFF"/>
 			<NormalTextView
@@ -74,8 +73,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginRight="1dp"
                 android:background="#60111111"
-                android:text="Current Activity"
-                android:layout_width="120dp"
+                android:text="Class"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:textColor="#FFFFFF"/>
             <NormalTextView

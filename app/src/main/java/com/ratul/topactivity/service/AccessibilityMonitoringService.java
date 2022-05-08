@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 import com.ratul.topactivity.utils.WindowUtil;
-import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.DatabaseUtil;
 import com.ratul.topactivity.model.NotificationMonitor;
 
 /**
@@ -38,7 +38,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (WindowUtil.viewAdded && SharedPrefsUtil.isShowWindow(this) && SharedPrefsUtil.hasAccess(this)) {
+        if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow(this) && DatabaseUtil.hasAccess(this)) {
             String act1 = event.getClassName().toString();
             String act2 = event.getPackageName().toString();
             
@@ -50,6 +50,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 
     @Override
     public void onInterrupt() {
+        sInstance = null;
     }
 
     @Override

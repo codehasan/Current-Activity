@@ -27,7 +27,7 @@ import android.util.*;
 import java.util.*;
 import android.app.usage.*;
 import android.widget.Toast;
-import com.ratul.topactivity.utils.SharedPrefsUtil;
+import com.ratul.topactivity.utils.DatabaseUtil;
 import com.ratul.topactivity.utils.WindowUtil;
 
 /**
@@ -89,7 +89,7 @@ public class MonitoringService extends Service {
         Runnable runner = new Runnable() {
             @Override
             public void run() {
-                if (!SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                if (!DatabaseUtil.isShowWindow(MonitoringService.INSTANCE)) {
                     MonitoringService.INSTANCE.mHandler.removeCallbacks(this);
                     MonitoringService.INSTANCE.stopSelf();
                 }
@@ -99,7 +99,7 @@ public class MonitoringService extends Service {
                     return;
 
                 MonitoringService.INSTANCE.firstRun = false;
-                if (SharedPrefsUtil.isShowWindow(MonitoringService.INSTANCE)) {
+                if (DatabaseUtil.isShowWindow(MonitoringService.INSTANCE)) {
                     WindowUtil.show(MonitoringService.INSTANCE, MonitoringService.INSTANCE.text, MonitoringService.INSTANCE.text1);
                 } else {
                     MonitoringService.INSTANCE.stopSelf();
