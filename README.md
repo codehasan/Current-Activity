@@ -14,7 +14,7 @@ An useful tool for Android Developers &amp; Reversers, which shows the package n
 [![Contributions](https://img.shields.io/badge/Contributions-Open-orange)](https://github.com/RatulHasan8/Current-Activity/pulls)
 <br/>
 
-<a href='https://play.google.com/store/apps/details?id=com.willme.topactivity'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/></a>
+<a href='https://play.google.com/store/apps/details?id=io.github.ratul.topactivity'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/></a>
 
 <h1 align="left">
   <b>&nbsp;How it works</b>
