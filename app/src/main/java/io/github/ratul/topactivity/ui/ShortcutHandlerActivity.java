@@ -37,6 +37,7 @@ public class ShortcutHandlerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DatabaseUtil.setDisplayWidth(MainActivity.getScreenWidth(this));
 
         if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(this, MainActivity.class);

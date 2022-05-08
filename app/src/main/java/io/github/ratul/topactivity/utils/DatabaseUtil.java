@@ -29,6 +29,14 @@ import io.github.ratul.topactivity.App;
 public class DatabaseUtil {
     private static SharedPreferences sp = App.getApp().getSharedPreferences("io.github.ratul.topactivity", 0);
 
+    public static int getDisplayWidth() {
+        return sp.getInt("width", 720);
+    }
+
+    public static boolean setDisplayWidth(int width) {
+        return sp.edit().putInt("width", width).commit();
+    }
+    
     public static boolean isShowWindow() {
         return sp.getBoolean("is_show_window", false);
     }

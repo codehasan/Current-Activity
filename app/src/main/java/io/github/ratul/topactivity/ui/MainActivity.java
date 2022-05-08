@@ -37,6 +37,7 @@ import io.github.ratul.topactivity.model.NotificationMonitor;
 import io.github.ratul.topactivity.service.*;
 import io.github.ratul.topactivity.model.TypefaceSpan;
 import java.io.*;
+import android.util.DisplayMetrics;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -48,20 +49,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     CompoundButton mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
     private BroadcastReceiver mReceiver;
     private int theme;
-    public static MainActivity INSTANCE;
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        INSTANCE = this;
-        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
-            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
-    }
+    public static MainActivity INSTANCE; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        INSTANCE = this;
+        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
+            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
+        
+        DatabaseUtil.setDisplayWidth(getScreenWidth(this));
         
         theme = FancyDialog.DARK_THEME;
         DialogTheme.setupColors(this, theme);
@@ -90,6 +88,19 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         
         mReceiver = new UpdateSwitchReceiver();
         registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
+    }
+    
+    public static int getScreenWidth(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        } else {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.widthPixels;
+        }
     }
 
     @Override

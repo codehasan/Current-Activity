@@ -70,7 +70,7 @@ public class WindowUtil {
             PixelFormat.TRANSLUCENT);
         
         sWindowParams.gravity = Gravity.CENTER;
-        sWindowParams.width = (context.getDisplay().getWidth() / 2) + 300;
+        sWindowParams.width = (DatabaseUtil.getDisplayWidth() / 2) + 300;
         sWindowParams.windowAnimations = android.R.style.Animation_Toast;
 
         sView = LayoutInflater.from(context).inflate(R.layout.window_tasks,
