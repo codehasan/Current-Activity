@@ -5,13 +5,14 @@ android {
     defaultConfig {
         applicationId "io.github.ratul.topactivity"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode 15
         versionName "1.5.5"
     }
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
