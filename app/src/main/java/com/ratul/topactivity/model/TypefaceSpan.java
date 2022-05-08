@@ -16,7 +16,7 @@
  */
 package com.ratul.topactivity.model;
 
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 import android.graphics.Typeface;
 import android.text.style.MetricAffectingSpan;
 import android.content.Context;

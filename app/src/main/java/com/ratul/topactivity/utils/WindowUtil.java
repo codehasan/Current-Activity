@@ -38,10 +38,13 @@ import com.ratul.topactivity.model.NotificationMonitor;
 import com.ratul.topactivity.ui.MainActivity;
 import com.ratul.topactivity.ui.BackgroundActivity;
 import com.ratul.topactivity.service.QuickSettingsService;
+import com.ratul.topactivity.service.MonitoringService;
+import com.ratul.topactivity.service.AccessibilityMonitoringService;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 /**
- * Created by Wen on 16/02/2017.
- * Refactored by Ratul on 04/05/2022.
+ * Created by Ratul on 04/05/2022.
  */
 public class WindowUtil {
     private static WindowManager.LayoutParams sWindowParams;
@@ -57,34 +60,31 @@ public class WindowUtil {
     public static boolean viewAdded = false;
 
     public static void init(final Context context) {
-        sWindowManager = (WindowManager) context.getApplicationContext()
-            .getSystemService(Context.WINDOW_SERVICE);
+        sWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
         sWindowParams = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT, 
             WindowManager.LayoutParams.WRAP_CONTENT, 
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_PHONE,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSPARENT);
-        //sWindowParams.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            PixelFormat.TRANSLUCENT);
+        
         sWindowParams.gravity = Gravity.CENTER;
         sWindowParams.width = (context.getDisplay().getWidth() / 2) + 300;
         sWindowParams.windowAnimations = android.R.style.Animation_Toast;
 
         sView = LayoutInflater.from(context).inflate(R.layout.window_tasks,
                                                      null);
-
         clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        LinearLayout bg = (LinearLayout) sView.findViewById(R.id.bg);
-        packageName = (TextView) sView.findViewById(R.id.text);
-        className = (TextView) sView.findViewById(R.id.text1);
-        ImageView closeBtn = (ImageView) sView.findViewById(R.id.closeBtn);
-        title = (TextView) sView.findViewById(R.id.title);
+        packageName = sView.findViewById(R.id.text);
+        className = sView.findViewById(R.id.text1);
+        ImageView closeBtn = sView.findViewById(R.id.closeBtn);
+        title = sView.findViewById(R.id.title);
         
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
-                    SharedPrefsUtil.setIsShowWindow(context, false);
+                    DatabaseUtil.setIsShowWindow(context, false);
                     NotificationMonitor.cancelNotification(context);
                     context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 }
@@ -92,24 +92,14 @@ public class WindowUtil {
 
         packageName.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
-                    if (Build.VERSION.SDK_INT < 29) {
-                        ClipData clip = ClipData.newPlainText("", packageName.getText().toString());
-                        clipboard.setPrimaryClip(clip);
-                    } else {
-                        context.startActivity(new Intent(context, BackgroundActivity.class).putExtra(BackgroundActivity.STRING_COPY, packageName.getText().toString()));
-                    }
+                    copyString(context, text);
                     Toast.makeText(context, "Package name copied", 0).show();
                 }
             });
 
         className.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
-                    if (Build.VERSION.SDK_INT < 29) {
-                        ClipData clip = ClipData.newPlainText("", className.getText().toString());
-                        clipboard.setPrimaryClip(clip);
-                    } else {
-                        context.startActivity(new Intent(context, BackgroundActivity.class).putExtra(BackgroundActivity.STRING_COPY, className.getText().toString()));
-                    }
+                    copyString(context, text1);
                     Toast.makeText(context, "Class name copied", 0).show();
                 }
             });
@@ -147,6 +137,29 @@ public class WindowUtil {
                 }
             });
     }
+    
+    private static void copyString(Context context, String str) {
+        if (Build.VERSION.SDK_INT < 29) {
+            ClipData clip = ClipData.newPlainText("Current Activity", str);
+            clipboard.setPrimaryClip(clip);
+        } else {
+            new Intent(context, BackgroundActivity.class)
+                .putExtra(BackgroundActivity.STRING_COPY, str)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+    }
+    
+    public static String getAppName(Context context, String pkg) {
+        String appName = "";
+        
+        try {
+            PackageManager pm = context.getPackageManager();
+            appName = pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
+        } catch(Exception e) {
+            // Ignored
+        }
+        return appName + "-Activity Info";
+    }
 
     public static void show(Context context, String pkg, String clas) {
         if (sWindowManager == null) {
@@ -154,13 +167,14 @@ public class WindowUtil {
         }
         text = pkg;
         text1 = clas;
-
+        
+        title.setText(getAppName(context, pkg));
         packageName.setText(text);
         className.setText(text1);
         
         if (!viewAdded) {
             viewAdded = true;
-            if (SharedPrefsUtil.isShowWindow(context))
+            if (DatabaseUtil.isShowWindow(context))
                 sWindowManager.addView(sView, sWindowParams);
         }
 

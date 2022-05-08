@@ -28,6 +28,10 @@ import java.util.*;
 import java.lang.Thread.UncaughtExceptionHandler;
 import android.widget.Toast;
 
+/**
+ * Created by Ratul on 04/05/2022.
+ */
+
 public class CrashHandler implements UncaughtExceptionHandler {
     private UncaughtExceptionHandler DEFAULT;
     private Application mApp;

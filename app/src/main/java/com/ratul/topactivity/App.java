@@ -29,31 +29,12 @@ import android.widget.Toast;
 
 public class App extends Application {
     private static App sApp;
-    private Thread.UncaughtExceptionHandler getHandler = Thread.getDefaultUncaughtExceptionHandler();
+    private Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
     
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        CrashHandler handleCrash = new CrashHandler(this, getHandler);
-        handleCrash.init(this.getFilesDir());
-    }
-    
-    public void gotoCrashActivity(Exception ex) {
-        if (ex == null) {
-            return;
-        }
-        Intent intent = new Intent(this, CrashActivity.class);
-        intent.putExtra(CrashActivity.EXTRA_CRASH_INFO, ex.toString());
-        startActivity(intent);
-    }
-    
-    public void setSafeContentView(Activity activity, int layout) {
-        try {
-            activity.setContentView(layout);
-        } catch (Exception e) {
-            Toast.makeText(this, "Saving crash log", 0).show();
-            gotoCrashActivity(e);
-        }
+        new CrashHandler(this, defaultHandler).init(this.getFilesDir());
     }
 
     @Override
@@ -64,6 +45,10 @@ public class App extends Application {
 
     public static App getApp() {
         return sApp;
+    }
+    
+    public static void showToast(String str, int length) {
+        Toast.makeText(getApp(), str, length).show();
     }
 
 }

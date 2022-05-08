@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         INSTANCE = this;
-        if (AccessibilityMonitoringService.getInstance() == null && SharedPrefsUtil.hasAccess(this))
+        if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess(this))
             startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
     }
 
@@ -86,6 +86,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
             mWindowSwitch.setChecked(true);
         }
+        NotificationMonitor.cancelNotification(this);
+        
         mReceiver = new UpdateSwitchReceiver();
         registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
     }
@@ -110,28 +112,24 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (SharedPrefsUtil.isShowWindow(this)) {
+        if (DatabaseUtil.isShowWindow(this)) {
             NotificationMonitor.showNotification(this, false);
         }
     }
 
     private void refreshWindowSwitch() {
-        mWindowSwitch.setChecked(SharedPrefsUtil.isShowWindow(this));
-        if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
+        mWindowSwitch.setChecked(DatabaseUtil.isShowWindow(this));
+        if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
             mWindowSwitch.setChecked(false);
         }
     }
 
     private void refreshAccessibilitySwitch() {
-        if (mAccessibilitySwitch != null) {
-            mAccessibilitySwitch.setChecked(SharedPrefsUtil.hasAccess(this));
-        }
+        mAccessibilitySwitch.setChecked(DatabaseUtil.hasAccess(this));
     }
 
     private void refreshNotificationSwitch() {
-        if (mNotificationSwitch != null) {
-            mNotificationSwitch.setChecked(!SharedPrefsUtil.isNotificationToggleEnabled(this));
-        }
+        mNotificationSwitch.setChecked(!DatabaseUtil.isNotificationToggleEnabled(this));
     }
 
     public void showToast(String str, int length) {
@@ -175,17 +173,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final FancyDialog fancy = new FancyDialog(this, theme);
+        fancy.setNegativeButton("Close", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fancy.dismiss();
+                }
+            });
+        fancy.setCancelable(false);
         String title = item.getTitle().toString();
         if (title.equals("About App")) {
             fancy.setTitle("About App");
-            fancy.setMessage("Current Activity 1.5.5\nAn useful tool for Android Developers & Reversers, which shows the package name and class name of current activity which you are in.\n\nWhat's new in 1.5.5:\n1. Added option to disable accessibility usage if needed (Not Recommended)\n2. Disabling notification is stable in this update\n3. Updated UI");
-            fancy.setNegativeButton("Close", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        fancy.dismiss();
-                    }
-                });
-            fancy.setCancelable(false);
+            fancy.setMessage("* Current Activity\nAn useful tool for Android Developers & Reversers, which shows the package name and class name of current activity which you are in.\n\n* Features:\n1. Show current activity info\n2. Copy texts from popup window (Supports android 10 and higher devices as well)\n3. Move the popup window in your screen freely");
             fancy.show();
         } else if (title.equals("Crash Log")) {
             String errorLog = readFile(new File(getFilesDir(), "crash.txt"));
@@ -207,13 +205,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                         startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
                     }
                 });
-            fancy.setNegativeButton("No", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        fancy.dismiss();
-                    }
-                });
-            fancy.setCancelable(false);
             fancy.show();
         }
         return super.onOptionsItemSelected(item);
@@ -222,29 +213,42 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView == mNotificationSwitch) {
-            SharedPrefsUtil.setNotificationToggleEnabled(this, !isChecked);
+            DatabaseUtil.setNotificationToggleEnabled(this, !isChecked);
             buttonView.setChecked(isChecked);
             return;
         }
         if (buttonView == mAccessibilitySwitch) {
-            SharedPrefsUtil.setHasAccess(this, isChecked);
+            DatabaseUtil.setHasAccess(this, isChecked);
             buttonView.setChecked(isChecked);
             if(isChecked && AccessibilityMonitoringService.getInstance() == null)
                 startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
             return;
         }
         if (isChecked && buttonView == mWindowSwitch) {
-            if (Build.VERSION.SDK_INT >= 29 && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
+            if (Build.VERSION.SDK_INT >= 24 && DatabaseUtil.hasBattery(this) && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
                 setupBattery();
-                SharedPrefsUtil.setHasBattery(this, true);
+                DatabaseUtil.setHasBattery(this, true);
                 return;
             }
+            final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
+            fancy.setCancelable(false);
+            fancy.setNegativeButton("Close", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        fancy.dismiss();
+                    }
+                });
+            fancy.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        refreshWindowSwitch();
+                        refreshAccessibilitySwitch();
+                    }
+                });
             if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(this)) {
-                final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
                 fancy.setTitle("Overlay Permission");
                 fancy.setMessage("Please enable overlay permission to show window over other apps");
-                fancy.setCancelable(false);
-                fancy.setPositiveButton("Allow", new View.OnClickListener() {
+                fancy.setPositiveButton("Settings", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -253,22 +257,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                             fancy.dismiss();
                         }
                     });
-                fancy.setNegativeButton("Close", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            fancy.dismiss();
-                        }
-                    });
                 fancy.show();
-                onCheckedChanged(buttonView, false);
                 return;
             }
-            if (SharedPrefsUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
-                final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
+            if (DatabaseUtil.hasAccess(this) && AccessibilityMonitoringService.getInstance() == null) {
                 fancy.setTitle("Accessibility Permission");
-                fancy.setMessage("Enable my Accessibility Service in order to get current activity info");
-                fancy.setCancelable(false);
-                fancy.setPositiveButton("Allow", new View.OnClickListener() {
+                fancy.setMessage("As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info");
+                fancy.setPositiveButton("Settings", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent();
@@ -277,23 +272,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                             fancy.dismiss();
                         }
                     });
-                fancy.setNegativeButton("Close", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            SharedPrefsUtil.setHasAccess(MainActivity.this, false);
-                            fancy.dismiss();
-                        }
-                    });
                 fancy.show();
-                onCheckedChanged(buttonView, false);
                 return;
             }
             if (!usageStats(MainActivity.this)) {
-                final FancyDialog fancy = new FancyDialog(MainActivity.this, theme);
                 fancy.setTitle("Usage Access");
-                fancy.setMessage("Enable my Usage Access permission in order to get current activity info");
-                fancy.setCancelable(false);
-                fancy.setPositiveButton("Allow", new View.OnClickListener() {
+                fancy.setMessage("In order to monitor current task, please grant Usage Access permission for Current Activity app");
+                fancy.setPositiveButton("Settings", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent();
@@ -302,20 +287,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
                             fancy.dismiss();
                         }
                     });
-                fancy.setNegativeButton("Close", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            fancy.dismiss();
-                        }
-                    });
                 fancy.show();
-                onCheckedChanged(buttonView, false);
                 return;
             }
         }
         if (buttonView == mWindowSwitch) {
-            SharedPrefsUtil.setAppInitiated(this, true);
-            SharedPrefsUtil.setIsShowWindow(this, isChecked);
+            DatabaseUtil.setAppInitiated(this, true);
+            DatabaseUtil.setIsShowWindow(this, isChecked);
             if (!isChecked) {
                 WindowUtil.dismiss(this);
             } else {
@@ -358,7 +336,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     public void setupBattery() {
         final FancyDialog fancy = new FancyDialog(this, theme);
         fancy.setTitle("Battery Optimizations");
-        fancy.setMessage("Google has blocked clipboard service from being accessed from background in Android 10 and higher devices. So, remove any battery optimization from this app to ensure it can access clipboard from background without restriction");
+        fancy.setMessage("Please remove battery optimization/restriction from this app in order to run in background with full functionality");
         fancy.setPositiveButton("Ok", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

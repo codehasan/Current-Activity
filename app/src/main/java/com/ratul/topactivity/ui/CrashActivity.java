@@ -37,6 +37,10 @@ import com.ratul.topactivity.dialog.DialogTheme;
 import com.ratul.topactivity.dialog.FancyDialog;
 import com.ratul.topactivity.model.TypefaceSpan;
 
+/**
+ * Created by Ratul on 04/05/2022.
+ */
+
 public class CrashActivity extends Activity {
     public static String EXTRA_CRASH_INFO = "crash";
     private String crashInfo;
