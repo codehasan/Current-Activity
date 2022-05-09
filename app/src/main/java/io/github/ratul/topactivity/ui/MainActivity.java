@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 		SpannableString s = new SpannableString(getString(R.string.app_name));
 		s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
 				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(s);
 
 		mWindowSwitch = findViewById(R.id.sw_window);
