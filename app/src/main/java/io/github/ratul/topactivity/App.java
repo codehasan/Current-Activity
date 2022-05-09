@@ -35,7 +35,7 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        new CrashHandler(this, defaultHandler).init(Environment.getExternalStorageDirectory());
+        new CrashHandler(this, defaultHandler).init(this.getFilesDir());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class App extends Application {
     }
     
     public static File getCrashLogFolder() {
-        return Environment.getExternalStorageDirectory();
+        return sApp.getFilesDir();
     }
 
     public static App getApp() {
