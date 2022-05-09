@@ -28,14 +28,14 @@ import android.view.Menu;
 import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.Toast;
 import android.text.SpannableString;
 import androidx.appcompat.app.ActionBar;
 import android.text.Spannable;
-import io.github.ratul.topactivity.dialog.DialogTheme;
-import io.github.ratul.topactivity.dialog.FancyDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import io.github.ratul.topactivity.model.TypefaceSpan;
 
 /**
@@ -71,24 +71,19 @@ public class CrashActivity extends AppCompatActivity {
 			finish();
 			return;
 		}
-		final FancyDialog fancy = new FancyDialog(this, FancyDialog.DARK_THEME);
-		fancy.setTitle("Exit");
-		fancy.setMessage("App will restart, are you sure to exit");
-		fancy.setPositiveButton("Yes", new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				fancy.dismiss();
-				restart();
-			}
-		});
-		fancy.setNegativeButton("No", new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				fancy.dismiss();
-			}
-		});
-		fancy.setCancelable(false);
-		fancy.show();
+		new MaterialAlertDialogBuilder(this).setTitle("Exit").setMessage("App will restart, are you sure to exit")
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogIntertace di, int btn) {
+						di.dismiss();
+						restart();
+					}
+				}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface di, int btn) {
+						di.dismiss();
+					}
+				}).setCancelable(false).show();
 	}
 
 	private void restart() {

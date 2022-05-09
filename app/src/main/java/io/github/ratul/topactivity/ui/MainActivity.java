@@ -31,10 +31,10 @@ import android.graphics.drawable.*;
 import android.graphics.*;
 import android.text.*;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.List;
 import io.github.ratul.topactivity.*;
-import io.github.ratul.topactivity.dialog.*;
 import io.github.ratul.topactivity.utils.*;
 import io.github.ratul.topactivity.model.NotificationMonitor;
 import io.github.ratul.topactivity.service.*;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 	public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
 	private SwitchMaterial mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
 	private BroadcastReceiver mReceiver;
-	private FancyDialog fancy;
+	private MaterialAlertDialogBuilder fancy;
 	public static MainActivity INSTANCE;
 
 	@Override
@@ -63,14 +63,12 @@ public class MainActivity extends AppCompatActivity {
 			startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
 
 		DatabaseUtil.setDisplayWidth(getScreenWidth(this));
-		fancy = new FancyDialog(this, FancyDialog.DARK_THEME);
-		fancy.setNegativeButton("Close", new View.OnClickListener() {
+		fancy = new MaterialAlertDialogBuilder(this).setNegativeButton("Close", new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				fancy.dismiss();
+			public void onClick(DialogInterface di, int btn) {
+				di.dismiss();
 			}
-		});
-		fancy.setCancelable(false);
+		}).setCancelable(false);
 
 		SpannableString s = new SpannableString(getString(R.string.app_name));
 		s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
@@ -108,48 +106,43 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
 				if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(MainActivity.this)) {
-					fancy.setTitle("Overlay Permission");
-					fancy.setMessage("Please enable overlay permission to show window over other apps");
-					fancy.setPositiveButton("Settings", new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-							intent.setData(Uri.parse("package:" + getPackageName()));
-							startActivity(intent);
-							fancy.dismiss();
-						}
-					});
-					fancy.show();
+					fancy.setTitle("Overlay Permission")
+							.setMessage("Please enable overlay permission to show window over other apps")
+							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface di, int btn) {
+									Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+									intent.setData(Uri.parse("package:" + getPackageName()));
+									startActivity(intent);
+									di.dismiss();
+								}
+							}).show();
 					mWindowSwitch.setChecked(false);
 				} else if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
-					fancy.setTitle("Accessibility Permission");
-					fancy.setMessage(
-							"As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info");
-					fancy.setPositiveButton("Settings", new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							Intent intent = new Intent();
-							intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-							startActivity(intent);
-							fancy.dismiss();
-						}
-					});
-					fancy.show();
+					fancy.setTitle("Accessibility Permission").setMessage(
+							"As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info")
+							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface di, int btn) {
+									Intent intent = new Intent();
+									intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+									startActivity(intent);
+									di.dismiss();
+								}
+							}).show();
 					mWindowSwitch.setChecked(false);
 				} else if (!usageStats(MainActivity.this)) {
-					fancy.setTitle("Usage Access");
-					fancy.setMessage(
-							"In order to monitor current task, please grant Usage Access permission for Current Activity app");
-					fancy.setPositiveButton("Settings", new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							Intent intent = new Intent();
-							intent.setAction("android.settings.USAGE_ACCESS_SETTINGS");
-							startActivity(intent);
-							fancy.dismiss();
-						}
-					});
-					fancy.show();
+					fancy.setTitle("Usage Access").setMessage(
+							"In order to monitor current task, please grant Usage Access permission for Current Activity app")
+							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface di, int btn) {
+									Intent intent = new Intent();
+									intent.setAction("android.settings.USAGE_ACCESS_SETTINGS");
+									startActivity(intent);
+									di.dismiss();
+								}
+							}).show();
 					mWindowSwitch.setChecked(false);
 				} else {
 					DatabaseUtil.setAppInitiated(true);
@@ -264,10 +257,9 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		String title = item.getTitle().toString();
 		if (title.equals("About App")) {
-			fancy.setTitle("About App");
-			fancy.setMessage(
-					"An useful open source tool for Android Developers, which shows the package name and class name of current activity\n\nHere are the main features of this app!\n● It provides a freely moveable popup window to view current activity info\n● It supports text copying from popup window\n● It supports quick settings and app shortcut for easy access to the popup window. Meaning you can get the popup window in your screen from anywhere");
-			fancy.show();
+			fancy.setTitle("About App").setMessage(
+					"An useful open source tool for Android Developers, which shows the package name and class name of current activity\n\nHere are the main features of this app!\n● It provides a freely moveable popup window to view current activity info\n● It supports text copying from popup window\n● It supports quick settings and app shortcut for easy access to the popup window. Meaning you can get the popup window in your screen from anywhere")
+					.show();
 		} else if (title.equals("Crash Log")) {
 			String errorLog = readFile(new File(App.getCrashLogDir(), "crash.txt"));
 			if (errorLog.isEmpty())
@@ -279,33 +271,29 @@ public class MainActivity extends AppCompatActivity {
 				startActivity(intent);
 			}
 		} else if (title.equals("GitHub Repo")) {
-			fancy.setTitle("GitHub Repo");
-			fancy.setMessage(
-					"It is an open source project. Would you like to visit the official github repo of this app");
-			fancy.setPositiveButton("Yes", new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					fancy.dismiss();
-					startActivity(new Intent().setAction(Intent.ACTION_VIEW)
-							.setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
-				}
-			});
-			fancy.show();
+			fancy.setTitle("GitHub Repo").setMessage(
+					"It is an open source project. Would you like to visit the official github repo of this app")
+					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface di, int btn) {
+							di.dismiss();
+							startActivity(new Intent().setAction(Intent.ACTION_VIEW)
+									.setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
+						}
+					}).show();
 		} else if (title.equals("Bug Report")) {
-			fancy.setTitle("Bug Report");
-			fancy.setMessage(
+			fancy.setTitle("Bug Report").setMessage(
 					"If you found a bug while using this app, please take a screenshot of it if possible. If it's a crash then you can find the crash log in this directory: "
 							+ new File(App.getCrashLogDir(), "crash.txt").getAbsolutePath()
-							+ "\n\nAfter you get all necessary things related to the bug, open an issue in github repo of this app with your bug report details");
-			fancy.setPositiveButton("Create", new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					fancy.dismiss();
-					startActivity(new Intent().setAction(Intent.ACTION_VIEW)
-							.setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity/issues/new")));
-				}
-			});
-			fancy.show();
+							+ "\n\nAfter you get all necessary things related to the bug, open an issue in github repo of this app with your bug report details")
+					.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface di, int btn) {
+							di.dismiss();
+							startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(
+									Uri.parse("https://github.com/ratulhasanrahat/Current-Activity/issues/new")));
+						}
+					}).show();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -341,20 +329,18 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void setupBattery() {
-		fancy.setTitle("Battery Optimizations");
-		fancy.setMessage(
-				"Please remove battery optimization/restriction from this app in order to run in background with full functionality");
-		fancy.setPositiveButton("Ok", new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				fancy.dismiss();
-				Intent intent = new Intent();
-				intent.setAction("android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS");
-				intent.setData(Uri.parse("package:" + getPackageName()));
-				startActivity(intent);
-			}
-		});
-		fancy.show();
+		fancy.setTitle("Battery Optimizations").setMessage(
+				"Please remove battery optimization/restriction from this app in order to run in background with full functionality")
+				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface di, int btn) {
+						di.dismiss();
+						Intent intent = new Intent();
+						intent.setAction("android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS");
+						intent.setData(Uri.parse("package:" + getPackageName()));
+						startActivity(intent);
+					}
+				}).show();
 
 	}
 }
