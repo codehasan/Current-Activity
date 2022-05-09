@@ -1,10 +1,8 @@
 name: Android CI(release)
 
 on:
-  # Trigger on every pull request and on push
-  # to the `main` branch.
   # workflow_dispatch:
-  pull_request:
+  # pull_request:
   push:
     branches:
       - master
@@ -37,7 +35,5 @@ jobs:
       - name: Upload release apk
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk
+          name: app-release
           path: app/build/outputs/apk/release/
-      #- name: Build the app
-        #run: ./gradlew build
