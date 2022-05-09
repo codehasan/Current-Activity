@@ -24,6 +24,10 @@ import android.widget.Toast;
 import io.github.ratul.topactivity.utils.WindowUtil;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.model.NotificationMonitor;
+import android.content.pm.PackageManager;
+import java.util.List;
+import android.content.pm.ResolveInfo;
+import android.content.Context;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -31,9 +35,28 @@ import io.github.ratul.topactivity.model.NotificationMonitor;
  */
 public class AccessibilityMonitoringService extends AccessibilityService {
     private static AccessibilityMonitoringService sInstance;
-    
+
     public static AccessibilityMonitoringService getInstance() {
         return sInstance;
+    }
+
+    public boolean isPackageInstalled(String packageName) {
+        final PackageManager packageManager = getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(packageName);
+        if (intent == null) {
+            return false;
+        }
+        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+    
+    public boolean isSystemClass(String className) {
+       try {
+           ClassLoader.getSystemClassLoader().loadClass(className);
+           return true;
+       } catch (ClassNotFoundException e) {
+           return false;
+       }
     }
 
     @Override
@@ -41,8 +64,8 @@ public class AccessibilityMonitoringService extends AccessibilityService {
         if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow() && DatabaseUtil.hasAccess()) {
             String act1 = event.getClassName().toString();
             String act2 = event.getPackageName().toString();
-            
-            if (act1 == null || act1.trim().isEmpty())
+
+            if (isSystemClass(act1))
                 return;
             WindowUtil.show(this, act2, act1);
         }

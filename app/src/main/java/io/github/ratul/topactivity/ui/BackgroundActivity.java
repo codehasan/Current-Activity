@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.content.ClipboardManager;
 import android.content.ClipData;
+import io.github.ratul.topactivity.App;
 
 /**
  * Created by Ratul on 04/05/2022.
@@ -31,16 +32,19 @@ import android.content.ClipData;
  @TargetApi(29)
 public class BackgroundActivity extends Activity {
     public static String STRING_COPY = "io.github.ratul.topactivity.COPY_STRING";
+    public static String COPY_MSG = "io.github.ratul.topactivity.COPY_STRING_MSG";
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String str = getIntent().getStringExtra(STRING_COPY);
+        String msg = getIntent().getStringExtra(STRING_COPY);
         
         if (str != null) {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             ClipData clip = new ClipData(ClipData.newPlainText("", str));
             clipboard.setPrimaryClip(clip);
+            App.showToast(msg, 0);
         }
         finish();
     }
