@@ -30,7 +30,7 @@ import android.graphics.drawable.*;
 import android.graphics.*;
 import android.text.*;
 import java.util.List;
-import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.*;
 import io.github.ratul.topactivity.dialog.*;
 import io.github.ratul.topactivity.utils.*;
 import io.github.ratul.topactivity.model.NotificationMonitor;
@@ -38,7 +38,6 @@ import io.github.ratul.topactivity.service.*;
 import io.github.ratul.topactivity.model.TypefaceSpan;
 import java.io.*;
 import android.util.DisplayMetrics;
-import io.github.ratul.topactivity.App;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -50,7 +49,7 @@ public class MainActivity extends Activity {
     CompoundButton mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
     private BroadcastReceiver mReceiver;
     private FancyDialog fancy;
-    public static MainActivity INSTANCE; 
+    public static MainActivity INSTANCE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -61,10 +61,7 @@ public class DialogTheme {
                 DialogTheme.setupHoloColors();
                 break;
             default :
-                if (isDark(context))
-                    setupDraculaColors();
-                else
-                    setupLightColors();
+                setupLightColors();
         }
 	}
 
@@ -162,19 +159,5 @@ public class DialogTheme {
         positiveButtonColor = 0xFFF7F9FF;
         strokeColor = 0x11E0E0E0;
         round = 35;
-	}
-
-	private static boolean isDark(Context context) {
-		int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		switch (nightModeFlags) {
-			case Configuration.UI_MODE_NIGHT_YES:
-				return true;
-			case Configuration.UI_MODE_NIGHT_NO:
-				return false;
-			case Configuration.UI_MODE_NIGHT_UNDEFINED:
-				return false;
-			default:
-			    return true;
-		}
 	}
 }
