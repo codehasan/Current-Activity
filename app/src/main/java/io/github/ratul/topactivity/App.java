@@ -49,7 +49,7 @@ public class App extends Application {
 	}
 
 	public static File getCrashLogFolder() {
-		return sApp.getFilesDir();
+		return sApp.getExternalFilesDir(null);
 	}
 
 	public static App getApp() {

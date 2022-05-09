@@ -48,7 +48,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 	public CrashHandler(App app) {
 		mApp = app;
-		crashDirectory = app.getFilesDir();
+		crashDirectory = app.getExternalFilesDir(null);
 		try {
 			PackageInfo packageInfo = mApp.getPackageManager().getPackageInfo(mApp.getPackageName(), 0);
 			versionName = packageInfo.versionName;
