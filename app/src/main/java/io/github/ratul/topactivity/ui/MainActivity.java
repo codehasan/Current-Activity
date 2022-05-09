@@ -68,13 +68,6 @@ public class MainActivity extends Activity {
                 }
             });
         fancy.setCancelable(false);
-        fancy.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    refreshWindowSwitch();
-                    refreshAccessibilitySwitch();
-                }
-            });
 
         SpannableString s = new SpannableString(getString(R.string.app_name));
         s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
@@ -111,10 +104,7 @@ public class MainActivity extends Activity {
         mWindowSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                    if (Build.VERSION.SDK_INT >= 24 && !DatabaseUtil.hasBattery() && !((PowerManager) getSystemService("power")).isIgnoringBatteryOptimizations(getPackageName())) {
-                        setupBattery();
-                        DatabaseUtil.setHasBattery(true);
-                    } else if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(MainActivity.this)) {
+                    if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(MainActivity.this)) {
                         fancy.setTitle("Overlay Permission");
                         fancy.setMessage("Please enable overlay permission to show window over other apps");
                         fancy.setPositiveButton("Settings", new View.OnClickListener() {
@@ -127,6 +117,7 @@ public class MainActivity extends Activity {
                                 }
                             });
                         fancy.show();
+                        mWindowSwitch.setChecked(false);
                     } else if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
                         fancy.setTitle("Accessibility Permission");
                         fancy.setMessage("As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info");
@@ -140,6 +131,7 @@ public class MainActivity extends Activity {
                                 }
                             });
                         fancy.show();
+                        mWindowSwitch.setChecked(false);
                     } else if (!usageStats(MainActivity.this)) {
                         fancy.setTitle("Usage Access");
                         fancy.setMessage("In order to monitor current task, please grant Usage Access permission for Current Activity app");
@@ -153,6 +145,7 @@ public class MainActivity extends Activity {
                                 }
                             });
                         fancy.show();
+                        mWindowSwitch.setChecked(false);
                     } else {
                         DatabaseUtil.setAppInitiated(true);
                         DatabaseUtil.setIsShowWindow(isChecked);
