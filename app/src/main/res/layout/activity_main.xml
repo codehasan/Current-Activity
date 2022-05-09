@@ -23,7 +23,7 @@
             android:textColor="@color/textPrimary"
             android:text="@string/show_window"/>
 
-        <SwitchMaterial
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -51,7 +51,7 @@
             android:textColor="@color/textPrimary"
             android:text="@string/use_toggle_notification"/>
 
-        <SwitchMaterial
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -79,7 +79,7 @@
             android:textColor="@color/textPrimary"
             android:text="Use Accessibility Service"/>
 
-        <SwitchMaterial
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_accessibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
