@@ -39,5 +39,5 @@ jobs:
         with:
           name: app-release.apk
           path: app/build/outputs/apk/release/
-      - name: Build the app
-        run: ./gradlew build
+      #- name: Build the app
+        #run: ./gradlew build
