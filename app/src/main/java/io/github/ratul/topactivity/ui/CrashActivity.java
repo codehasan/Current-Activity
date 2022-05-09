@@ -32,7 +32,7 @@ import android.graphics.Typeface;
 import android.view.View;
 import android.widget.Toast;
 import android.text.SpannableString;
-import android.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.text.Spannable;
 import io.github.ratul.topactivity.dialog.DialogTheme;
 import io.github.ratul.topactivity.dialog.FancyDialog;
