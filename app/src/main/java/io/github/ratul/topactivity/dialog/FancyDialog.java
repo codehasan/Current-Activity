@@ -154,6 +154,16 @@ public class FancyDialog {
 	public void setMessageColor(int color) {
 		message.setTextColor(color);
 	}
+    
+    public void setPositiveButtonDrawable(GradientDrawable backgroundColor, int textColor, int pressedColor) {
+        rippleRoundStroke(positiveButton, backgroundColor, pressedColor);
+        positiveButton.setTextColor(textColor);
+    }
+
+    public void setNegativeButtonDrawable(GradientDrawable backgroundColor, int textColor, int pressedColor) {
+        rippleRoundStroke(negativeButton, backgroundColor, pressedColor);
+        negativeButton.setTextColor(textColor);
+	}
 	
 	public void setPositiveButtonColor(int backgroundColor, int textColor, int pressedColor) {
         rippleRoundStroke(positiveButton, backgroundColor, pressedColor, DialogTheme.round, 0, DialogTheme.strokeColor);
@@ -216,6 +226,11 @@ public class FancyDialog {
 		
         window.setAttributes(wlp);
 		dialog.show();
+	}
+    
+    private void rippleRoundStroke(View view, GradientDrawable gg, int pressed) {
+        RippleDrawable RE = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{pressed}), gg, null);
+        view.setBackground(RE);
 	}
 	
 	private void rippleRoundStroke(View view, int focus, int pressed, double round, double stroke, int strokeclr) {

@@ -268,7 +268,7 @@ public class MainActivity extends Activity {
         String title = item.getTitle().toString();
         if (title.equals("About App")) {
             fancy.setTitle("About App");
-            fancy.setMessage("* Current Activity\nAn useful tool for Android Developers & Reversers, which shows the package name and class name of current activity which you are in.\n\n* Features:\n1. Show current activity info\n2. Copy texts from popup window (Supports android 10 and higher devices as well)\n3. Move the popup window in your screen freely");
+            fancy.setMessage("An useful open source tool for Android Developers, which shows the package name and class name of current activity\n\nHere are the main features of this app!\n● It provides a freely moveable popup window to view current activity info\n● It supports text copying from popup window\n● It supports quick settings and app shortcut for easy access to the popup window. Meaning you can get the popup window in your screen from anywhere");
             fancy.show();
         } else if (title.equals("Crash Log")) {
             String errorLog = readFile(new File(App.getCrashLogDir(), "crash.txt"));
@@ -293,7 +293,7 @@ public class MainActivity extends Activity {
             fancy.show();
         } else if (title.equals("Bug Report")) {
             fancy.setTitle("Bug Report");
-            fancy.setMessage("If you found a bug while using this app, please take a screenshot of it if possible. If it's a crash then you can find the crash log in this directory: " + App.getCrashLogDir() + "\nAfter you get these things open an issue in github repo of this app with your bug report");
+            fancy.setMessage("If you found a bug while using this app, please take a screenshot of it if possible. If it's a crash then you can find the crash log in this directory: " + new File(App.getCrashLogDir(), "crash.txt").getAbsolutePath() + "\n\nAfter you get all necessary things related to the bug, open an issue in github repo of this app with your bug report details");
             fancy.setPositiveButton("Create", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
