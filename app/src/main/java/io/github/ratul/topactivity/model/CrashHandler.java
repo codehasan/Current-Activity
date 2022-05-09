@@ -120,7 +120,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         try {
             writeFile(crashFile, errorLog);
         } catch (IOException ignored) {
-            ignored.printStackTrace()
+            ignored.printStackTrace();
         }
         
         gotoCrashActiviy: {

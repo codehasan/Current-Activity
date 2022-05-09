@@ -46,6 +46,11 @@ public class QuickSettingsService extends TileService {
         TileService.requestListeningState(context, new ComponentName(context, QuickSettingsService.class));
         context.sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
     }
+    
+    private void updateTile() {
+        getQsTile().setState(DatabaseUtil.isShowWindow() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        getQsTile().updateTile();
+    }
 
     @Override
     public void onCreate() {
@@ -103,11 +108,6 @@ public class QuickSettingsService extends TileService {
             }
             sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
         }
-    }
-
-    private void updateTile() {
-        getQsTile().setState(DatabaseUtil.isShowWindow() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
-        getQsTile().updateTile();
     }
 
     class UpdateTileReceiver extends BroadcastReceiver {

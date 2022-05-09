@@ -68,7 +68,7 @@ public class WindowUtil {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_PHONE,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT);
-        
+
         sWindowParams.gravity = Gravity.CENTER;
         sWindowParams.width = (DatabaseUtil.getDisplayWidth() / 2) + 300;
         sWindowParams.windowAnimations = android.R.style.Animation_Toast;
@@ -80,7 +80,7 @@ public class WindowUtil {
         className = sView.findViewById(R.id.text1);
         ImageView closeBtn = sView.findViewById(R.id.closeBtn);
         title = sView.findViewById(R.id.title);
-        
+
         closeBtn.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v) {
                     dismiss(context);
@@ -112,32 +112,29 @@ public class WindowUtil {
                     int yCord = (int) event.getRawY();
                     int xCordDestination;
                     int yCordDestination;
+                    int action = event.getAction();
 
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN : 
-                            xInitCord = xCord;
-                            yInitCord = yCord;
-                            xInitMargin = layoutParams.x;
-                            yInitMargin = layoutParams.y;
-                            break;
-                        case MotionEvent.ACTION_MOVE : 
-                            int xDiffMove = xCord - xInitCord;
-                            int yDiffMove = yCord - yInitCord;
-                            xCordDestination = xInitMargin + xDiffMove;
-                            yCordDestination = yInitMargin + yDiffMove;
-
-                            layoutParams.x = xCordDestination;
-                            layoutParams.y = yCordDestination;
-                            sWindowManager.updateViewLayout(view, layoutParams);
-                            break;
-                        default :
-                            return true;
+                    if (action == MotionEvent.ACTION_DOWN) {
+                        xInitCord = xCord;
+                        yInitCord = yCord;
+                        xInitMargin = layoutParams.x;
+                        yInitMargin = layoutParams.y;
                     }
+                    else if (action == MotionEvent.ACTION_MOVE) {
+                        int xDiffMove = xCord - xInitCord;
+                        int yDiffMove = yCord - yInitCord;
+                        xCordDestination = xInitMargin + xDiffMove;
+                        yCordDestination = yInitMargin + yDiffMove;
+
+                        layoutParams.x = xCordDestination;
+                        layoutParams.y = yCordDestination;
+                        sWindowManager.updateViewLayout(view, layoutParams);
+                    } 
                     return true;
                 }
             });
     }
-    
+
     private static void copyString(Context context, String str) {
         if (Build.VERSION.SDK_INT < 29) {
             ClipData clip = ClipData.newPlainText("Current Activity", str);
@@ -148,14 +145,14 @@ public class WindowUtil {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
     }
-    
+
     public static String getAppName(Context context, String pkg) {
         String appName = "";
-        
+
         try {
             PackageManager pm = context.getPackageManager();
             appName = pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             // Ignored
         }
         return appName + "-Activity Info";
@@ -167,11 +164,11 @@ public class WindowUtil {
         }
         text = pkg;
         text1 = clas;
-        
+
         title.setText(getAppName(context, pkg));
         packageName.setText(text);
         className.setText(text1);
-        
+
         if (!viewAdded) {
             viewAdded = true;
             if (DatabaseUtil.isShowWindow())
@@ -192,7 +189,7 @@ public class WindowUtil {
         try {
             sWindowManager.removeView(sView);
         } catch (Exception e) {
-            e.printStactTrace();
+            e.printStackTrace();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             QuickSettingsService.updateTile(context);

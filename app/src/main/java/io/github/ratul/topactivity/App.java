@@ -26,6 +26,7 @@ import io.github.ratul.topactivity.ui.MainActivity;
 import android.content.Intent;
 import io.github.ratul.topactivity.ui.CrashActivity;
 import android.widget.Toast;
+import android.os.Environment;
 
 public class App extends Application {
     private static App sApp;
@@ -34,13 +35,21 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        new CrashHandler(this, defaultHandler).init(this.getFilesDir());
+        new CrashHandler(this, defaultHandler).init(Environment.getExternalStorageDirectory());
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         sApp = this;
+    }
+    
+    public static String getCrashLogDir() {
+        return getCrashLogFolder().getAbsolutePath();
+    }
+    
+    public static File getCrashLogFolder() {
+        return Environment.getExternalStorageDirectory();
     }
 
     public static App getApp() {

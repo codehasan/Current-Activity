@@ -64,19 +64,15 @@ public class MonitoringService extends Service {
         while (queryEvents.hasNextEvent()) {
             UsageEvents.Event event = new UsageEvents.Event();
             queryEvents.getNextEvent(event);
-            switch (event.getEventType()) {
-                case UsageEvents.Event.MOVE_TO_FOREGROUND:
-                    text = event.getPackageName();
-                    text1 = event.getClassName();
-                    break;
-                case UsageEvents.Event.MOVE_TO_BACKGROUND:
-                    if (event.getPackageName().equals(text)) {
-                        text = null;
-                        text1 = null;
-                    }
-                    break;
-                deafult:
-                    break;
+            int type = event.getEventType();
+            if (type == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                text = event.getPackageName();
+                text1 = event.getClassName();
+            } else if (type == UsageEvents.Event.MOVE_TO_BACKGROUND) {
+                if (event.getPackageName().equals(text)) {
+                    text = null;
+                    text1 = null;
+                }
             }
         }
     }
@@ -110,7 +106,7 @@ public class MonitoringService extends Service {
                 mHandler.postDelayed(this, 500);
             }
         };
-        
+
         mHandler.postDelayed(runner, 500);
         return super.onStartCommand(intent, flags, startId);
     }
