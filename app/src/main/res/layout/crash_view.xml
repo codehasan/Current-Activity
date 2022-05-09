@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
-            <NormalTextView
+            <io.github.ratul.topactivity.view.NormalTextView
                 android:id="@+id/crashed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
