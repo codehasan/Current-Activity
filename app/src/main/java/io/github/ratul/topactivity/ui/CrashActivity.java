@@ -74,7 +74,7 @@ public class CrashActivity extends AppCompatActivity {
 		new MaterialAlertDialogBuilder(this).setTitle("Exit").setMessage("App will restart, are you sure to exit")
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
-					public void onClick(DialogIntertace di, int btn) {
+					public void onClick(DialogInterface di, int btn) {
 						di.dismiss();
 						restart();
 					}
