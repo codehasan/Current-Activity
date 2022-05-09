@@ -27,9 +27,10 @@ It uses accessibility service api and package usage stats to monitor app activit
 <h1 align="left">
   <b>&nbsp;Screenshots</b>
 </h1>
-
-You can find screenshots of this app <a href="./.resources/images/screenshot.png">here</a>.
-
+<div align="center">
+<a href="./.resources/images/screenshot_2.png"><img width="140" height="249" src="./.resources/images/screenshot_2.png"></a>
+<a href="./.resources/images/screenshot_3.png"><img width="140" height="249" src="./.resources/images/screenshot_3.png"></a>
+</div>
 <h1 align="left">
   <b>&nbsp;Credits</b>
 </h1>
