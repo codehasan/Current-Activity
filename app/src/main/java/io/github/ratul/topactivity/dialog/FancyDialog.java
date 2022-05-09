@@ -71,7 +71,7 @@ public class FancyDialog {
 		thiz = context;
 		dialog = new MaterialAlertDialogBuilder(new ContextThemeWrapper(thiz, R.style.FancyDialogThemeV1)).create();
 
-		DialogTheme.setupColors(thiz, theme);
+		DialogTheme.setupColors(context, theme);
 
 		initializeInterface();
 	}
