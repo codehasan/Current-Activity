@@ -36,7 +36,6 @@ It uses accessibility service api and package usage stats to monitor app activit
 </h1>
 
 * [Wen](https://github.com/109021017) for [project base](https://github.com/109021017/android-TopActivity).
-* [Frieder Bluemle](https://github.com/friederbluemle) for project optimization.
 * [Muhtaseem Al Mahmud](https://github.com/KingMahmud) for project optimization.
 
 <h1 align="left">
