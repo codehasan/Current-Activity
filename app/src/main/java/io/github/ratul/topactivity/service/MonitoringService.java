@@ -74,6 +74,9 @@ public class MonitoringService extends Service {
                         text = null;
                         text1 = null;
                     }
+                    break;
+                deafult:
+                    break;
             }
         }
     }

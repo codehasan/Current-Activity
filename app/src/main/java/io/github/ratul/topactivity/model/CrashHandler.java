@@ -49,7 +49,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
             versionCode = Build.VERSION.SDK_INT >= 28 ? packageInfo.getLongVersionCode()
                 : packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException ignored) {
-
+            ignored.printStackTrace();
         }
     }
 
@@ -64,7 +64,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
         
         try {
             Thread.sleep(1000L);
-        } catch (InterruptedException var6) {}
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
@@ -117,7 +119,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
         try {
             writeFile(crashFile, errorLog);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+            ignored.printStackTrace()
+        }
         
         gotoCrashActiviy: {
             Intent intent = new Intent(mApp, CrashActivity.class);
@@ -142,7 +146,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
         fos.write(content.getBytes());
         try {
             fos.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

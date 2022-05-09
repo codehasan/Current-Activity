@@ -192,6 +192,7 @@ public class WindowUtil {
         try {
             sWindowManager.removeView(sView);
         } catch (Exception e) {
+            e.printStactTrace();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             QuickSettingsService.updateTile(context);

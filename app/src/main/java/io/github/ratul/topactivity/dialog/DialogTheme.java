@@ -37,21 +37,29 @@ public class DialogTheme {
 	public static void setupColors(Context context, int theme) {
         switch (theme) {
             case FancyDialog.DARK_THEME :
-                DialogTheme.setupDarkColors(); break;
+                DialogTheme.setupDarkColors();
+                break;
             case FancyDialog.LIGHT_THEME :
-                DialogTheme.setupLightColors(); break;
+                DialogTheme.setupLightColors();
+                break;
             case FancyDialog.DRACULA_THEME :
-                DialogTheme.setupDraculaColors(); break;
+                DialogTheme.setupDraculaColors();
+                break;
             case FancyDialog.SUCCESS_THEME :
-                DialogTheme.setupSuccessColors(); break;
+                DialogTheme.setupSuccessColors();
+                break;
             case FancyDialog.INFO_THEME :
-                DialogTheme.setupInfoColors(); break;
+                DialogTheme.setupInfoColors();
+                break;
             case FancyDialog.WARNING_THEME :
-                DialogTheme.setupWarningColors(); break;
+                DialogTheme.setupWarningColors();
+                break;
             case FancyDialog.ERROR_THMEE :
-                DialogTheme.setupErrorColors(); break;
+                DialogTheme.setupErrorColors();
+                break;
             case FancyDialog.HOLO_THEME :
-                DialogTheme.setupHoloColors(); break;
+                DialogTheme.setupHoloColors();
+                break;
             default :
                 if (isDark(context))
                     setupDraculaColors();
