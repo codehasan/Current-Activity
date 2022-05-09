@@ -1,7 +1,9 @@
-name: Android CI(debug)
+name: Latest Build(debug)
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+     - master
 
 jobs:
   build:
