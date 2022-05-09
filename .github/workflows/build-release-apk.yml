@@ -1,7 +1,13 @@
 name: Android CI(release)
 
 on:
-  workflow_dispatch:
+  # Trigger on every pull request and on push
+  # to the `main` branch.
+  # workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -33,3 +39,5 @@ jobs:
         with:
           name: app-release.apk
           path: app/build/outputs/apk/release/
+      - name: Build the app
+        run: ./gradlew build
