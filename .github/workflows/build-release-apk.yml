@@ -1,4 +1,4 @@
-name: Android CI(release)
+name: Latest Build
 
 on:
   # workflow_dispatch:
