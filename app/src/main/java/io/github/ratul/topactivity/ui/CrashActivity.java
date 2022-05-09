@@ -107,15 +107,12 @@ public class CrashActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.copy: 
-                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                cm.setPrimaryClip(ClipData.newPlainText(getPackageName(), crashInfo));
-                Toast.makeText(this, "Copied", 0).show();
-                break;
-            case android.R.id.redo: 
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.copy) {
+            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText(getPackageName(), crashInfo));
+            Toast.makeText(this, "Copied", 0).show();
+        } else if (item.getItemId() == android.R.id.redo) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
