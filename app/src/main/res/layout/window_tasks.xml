@@ -1,94 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:orientation="vertical">
-	<LinearLayout
-		android:id="@+id/bg"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		android:background="#B6000000">
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<BoldTextView
-                android:id="@+id/title"
-				android:padding="8dp"
-				android:text="Activity Info"
-				android:gravity="center_vertical"
-				android:layout_weight="1"
-                android:textSize="14sp"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:textColor="#FFFFFF"/>
-			<ImageView
-                android:id="@+id/closeBtn"
-				android:layout_gravity="center"
-                android:scaleType="fitXY"
-                android:layout_marginRight="8dp"
-				android:layout_width="30dp"
-				android:layout_height="30dp"
-				android:src="@drawable/ic_close"/>
-		</LinearLayout>
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:background="#60808080"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<NormalTextView
-				android:padding="8dp"
-				android:text="Package"
-				android:gravity="center"
-                android:textSize="13sp"
-				android:layout_marginTop="1dp"
-				android:layout_marginRight="1dp"
-				android:background="#60111111"
-				android:layout_width="80dp"
-				android:layout_height="match_parent"
-				android:textColor="#FFFFFF"/>
-			<NormalTextView
-				android:id="@+id/text"
-				android:clickable="true"
-				android:padding="8dp"
-                android:textSize="12sp"
-                android:singleLine="false"  
-				android:layout_marginTop="1dp"
-				android:background="#60111111"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:textColor="#FFFFFF"/>
-		</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#b6000000"
+        android:orientation="vertical" >
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:background="#60808080"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <NormalTextView
+            android:orientation="horizontal" >
+
+            <BoldTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:padding="8dp"
-                android:gravity="center"
-                android:textSize="13sp"
-                android:layout_marginTop="1dp"
-                android:layout_marginRight="1dp"
-                android:background="#60111111"
-                android:text="Class"
+                android:text="Activity Info"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/closeBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical|center|center_horizontal"
+                android:layout_marginRight="8dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_close" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#60808080"
+            android:orientation="horizontal" >
+
+            <NormalTextView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:textColor="#FFFFFF"/>
-            <NormalTextView
-                android:id="@+id/text1"
-                android:clickable="true"
-                android:textSize="12sp"
+                android:layout_marginRight="1dp"
                 android:layout_marginTop="1dp"
-                android:padding="8dp"
-                android:singleLine="false"
                 android:background="#60111111"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="App name"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+
+            <NormalTextView
+                android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textColor="#FFFFFF"/>
-		</LinearLayout>
-	</LinearLayout>
-</LinearLayout>
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:clickable="true"
+                android:padding="8dp"
+                android:singleLine="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#60808080"
+            android:orientation="horizontal" >
+
+            <NormalTextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Package name"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+
+            <NormalTextView
+                android:id="@+id/text1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:clickable="true"
+                android:padding="8dp"
+                android:singleLine="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#60808080"
+            android:orientation="horizontal" >
+
+            <NormalTextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Class name"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+
+            <NormalTextView
+                android:id="@+id/text2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:clickable="true"
+                android:padding="8dp"
+                android:singleLine="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

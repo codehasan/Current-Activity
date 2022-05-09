@@ -14,32 +14,31 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package android.view;
+package io.github.ratul.topactivity.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.material.textview.MaterialTextView;
 
-public class RegularTextView extends TextView {
+public class NormalTextView extends MaterialTextView {
     public void setRegularFont(Context context) {
         Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/google_sans_regular.ttf"); 
-        super.setTypeface(face, 1);
+        super.setTypeface(face);
     }
 
-    public RegularTextView(Context context) {
+    public NormalTextView(Context context) {
         super(context);
         setRegularFont(context);
     }
 
-    public RegularTextView(Context context, AttributeSet attrs) {
+    public NormalTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setRegularFont(context);
     }
 
-    public RegularTextView(Context context, AttributeSet attrs, int defStyle) {
+    public NormalTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setRegularFont(context); 
     }

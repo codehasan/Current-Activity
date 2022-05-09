@@ -34,60 +34,60 @@ import android.content.Context;
  * Refactored by Ratul on 04/05/2022.
  */
 public class AccessibilityMonitoringService extends AccessibilityService {
-    private static AccessibilityMonitoringService sInstance;
+	private static AccessibilityMonitoringService sInstance;
 
-    public static AccessibilityMonitoringService getInstance() {
-        return sInstance;
-    }
+	public static AccessibilityMonitoringService getInstance() {
+		return sInstance;
+	}
 
-    public boolean isPackageInstalled(String packageName) {
-        final PackageManager packageManager = getPackageManager();
-        Intent intent = packageManager.getLaunchIntentForPackage(packageName);
-        if (intent == null) {
-            return false;
-        }
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-    
-    public boolean isSystemClass(String className) {
-       try {
-           ClassLoader.getSystemClassLoader().loadClass(className);
-           return true;
-       } catch (ClassNotFoundException e) {
-           return false;
-       }
-    }
+	public boolean isPackageInstalled(String packageName) {
+		final PackageManager packageManager = getPackageManager();
+		Intent intent = packageManager.getLaunchIntentForPackage(packageName);
+		if (intent == null) {
+			return false;
+		}
+		List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
+	}
 
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow() && DatabaseUtil.hasAccess()) {
-            String act1 = event.getClassName().toString();
-            String act2 = event.getPackageName().toString();
+	public boolean isSystemClass(String className) {
+		try {
+			ClassLoader.getSystemClassLoader().loadClass(className);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
 
-            if (isSystemClass(act1))
-                return;
-            WindowUtil.show(this, act2, act1);
-        }
-    }
+	@Override
+	public void onAccessibilityEvent(AccessibilityEvent event) {
+		if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow() && DatabaseUtil.hasAccess()) {
+			String act1 = event.getClassName().toString();
+			String act2 = event.getPackageName().toString();
 
-    @Override
-    public void onInterrupt() {
-        sInstance = null;
-    }
+			if (isSystemClass(act1))
+				return;
+			WindowUtil.show(this, act2, act1);
+		}
+	}
 
-    @Override
-    protected void onServiceConnected() {
-        sInstance = this;
-        super.onServiceConnected();
-    }
+	@Override
+	public void onInterrupt() {
+		sInstance = null;
+	}
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        sInstance = null;
-        WindowUtil.dismiss(this);
-        NotificationMonitor.cancelNotification(this);
-        sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
-        return super.onUnbind(intent);
-    }
+	@Override
+	protected void onServiceConnected() {
+		sInstance = this;
+		super.onServiceConnected();
+	}
+
+	@Override
+	public boolean onUnbind(Intent intent) {
+		sInstance = null;
+		WindowUtil.dismiss(this);
+		NotificationMonitor.cancelNotification(this);
+		sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
+		return super.onUnbind(intent);
+	}
 }

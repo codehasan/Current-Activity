@@ -2,3 +2,7 @@
 /.idea
 /*/build
 /build
+/settings.json
+/app/app_config.json
+/app/libraries.json
+/app/repositories.json

@@ -23,13 +23,13 @@
             android:textColor="@color/textPrimary"
             android:text="@string/show_window"/>
 
-        <Switch
+        <SwitchMaterial
             android:id="@+id/sw_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/dividerColor"/>
@@ -51,13 +51,13 @@
             android:textColor="@color/textPrimary"
             android:text="@string/use_toggle_notification"/>
 
-        <Switch
+        <SwitchMaterial
             android:id="@+id/sw_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <MaterialTextView
         android:id="@+id/divider_useNotificationPref"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -79,13 +79,13 @@
             android:textColor="@color/textPrimary"
             android:text="Use Accessibility Service"/>
 
-        <Switch
+        <SwitchMaterial
             android:id="@+id/sw_accessibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <MaterialTextView
         android:id="@+id/divider_useAccess"
         android:layout_width="match_parent"
         android:layout_height="1dp"
