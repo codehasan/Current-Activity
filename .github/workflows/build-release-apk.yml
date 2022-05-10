@@ -2,8 +2,6 @@ name: Latest build(release)
 
 on: 
   workflow_dispatch:
-    branches:
-      - master
 
 jobs:
   build:
