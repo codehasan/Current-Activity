@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dividerColor">#FFA8A8A8</color>
+    <color name="layerColor">#FFBDC1C6</color>
+    <color name="colorControlNormal">#FF3C4042</color>
+</resources>

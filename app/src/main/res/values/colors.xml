@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="textPrimary">#FFFAFAFA</color>
+    <color name="layerColor">#FF5E7C87</color>
+    <color name="colorPrimary">#FF202124</color>
+    <color name="colorPrimaryDark">#FF202124</color>
+    <color name="colorAccent">#FFBDC1C6</color>
+    <color name="statusBarColor">#FF202124</color>
+    <color name="colorBackground">#FF3C4042</color>
+    <color name="windowBackground">#FF3C4042</color>
+    <color name="dividerColor">#888888</color>
+    <color name="colorControlNormal">#FF505153</color>
+</resources>
