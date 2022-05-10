@@ -26,8 +26,11 @@ import android.graphics.Typeface;
  */
 public class DialogBeautifier {
     private String regular_font = "fonts/google_sans_regular.ttf";
+    
     private String bold_font = "fonts/google_sans_bold.ttf";
+    
     private AlertDialog dialog;
+    
     private Context dialogContext;
     
     public DialogBeautifier(AlertDialog alert) {
