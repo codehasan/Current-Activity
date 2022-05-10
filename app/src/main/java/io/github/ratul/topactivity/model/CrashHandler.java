@@ -31,7 +31,6 @@ import android.widget.Toast;
 /**
  * Created by Ratul on 04/05/2022.
  */
-
 public class CrashHandler implements UncaughtExceptionHandler {
     private UncaughtExceptionHandler DEFAULT;
     private Application mApp;
@@ -69,7 +68,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
         
         android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
+        System.exit(0);
         } else {
             DEFAULT.uncaughtException(main, mThrowable);
         }

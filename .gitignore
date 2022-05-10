@@ -1,4 +1,5 @@
 /.gradle
+/.resources
 /.idea
 /*/build
 /build
