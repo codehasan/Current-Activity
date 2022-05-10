@@ -14,37 +14,36 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package android.view;
+package io.github.ratul.topactivity.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.material.textview.MaterialTextView;
 
-public class NormalTextView extends TextView {
-    public void setRegularFont(Context context) {
-        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/google_sans_regular.ttf"); 
-        super.setTypeface(face);
-    }
+public class RegularTextView extends MaterialTextView {
+	public void setRegularFont(Context context) {
+		Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/google_sans_regular.ttf");
+		super.setTypeface(face, 1);
+	}
 
-    public NormalTextView(Context context) {
-        super(context);
-        setRegularFont(context);
-    }
+	public RegularTextView(Context context) {
+		super(context);
+		setRegularFont(context);
+	}
 
-    public NormalTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setRegularFont(context);
-    }
+	public RegularTextView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		setRegularFont(context);
+	}
 
-    public NormalTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        setRegularFont(context); 
-    }
+	public RegularTextView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		setRegularFont(context);
+	}
 
-    protected void onDraw (Canvas canvas) {
-        super.onDraw(canvas);
-    }
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+	}
 }

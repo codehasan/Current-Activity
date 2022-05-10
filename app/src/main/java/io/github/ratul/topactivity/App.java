@@ -29,35 +29,35 @@ import android.widget.Toast;
 import android.os.Environment;
 
 public class App extends Application {
-    private static App sApp;
-    private Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
-    
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        new CrashHandler(this, defaultHandler).init(this.getFilesDir());
-    }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sApp = this;
-    }
-    
-    public static String getCrashLogDir() {
-        return getCrashLogFolder().getAbsolutePath();
-    }
-    
-    public static File getCrashLogFolder() {
-        return sApp.getFilesDir();
-    }
+	private static App sApp;
 
-    public static App getApp() {
-        return sApp;
-    }
-    
-    public static void showToast(String str, int length) {
-        Toast.makeText(getApp(), str, length).show();
-    }
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+		sApp = this;
+		CrashHandler.getInstance(getApp()).init();
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+	}
+
+	public static String getCrashLogDir() {
+		return getCrashLogFolder().getAbsolutePath();
+	}
+
+	public static File getCrashLogFolder() {
+		return sApp.getExternalFilesDir(null);
+	}
+
+	public static App getApp() {
+		return sApp;
+	}
+
+	public static void showToast(String str, int length) {
+		Toast.makeText(getApp(), str, length).show();
+	}
 
 }

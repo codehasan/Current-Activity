@@ -16,6 +16,7 @@
  */
 package io.github.ratul.topactivity.model;
 
+import io.github.ratul.topactivity.App;
 import io.github.ratul.topactivity.ui.*;
 import android.app.*;
 import java.text.*;
@@ -31,44 +32,46 @@ import android.widget.Toast;
 /**
  * Created by Ratul on 04/05/2022.
  */
+
 public class CrashHandler implements UncaughtExceptionHandler {
-    private UncaughtExceptionHandler DEFAULT;
-    private Application mApp;
+
+    private static UncaughtExceptionHandler DEFAULT = Thread.getDefaultUncaughtExceptionHandler();
+
+    public static CrashHandler getInstance(App app) {
+        return new CrashHandler(app);
+    }
+
+    private App mApp;
     private File crashDirectory;
     private String fullStackTrace, versionName;
     private long versionCode;
 
-    public CrashHandler(Application app, UncaughtExceptionHandler defaultExceptionHandler) {
+    public CrashHandler(App app) {
         mApp = app;
-        DEFAULT = defaultExceptionHandler;
-
-        try { 
+        crashDirectory = app.getExternalFilesDir(null);
+        try {
             PackageInfo packageInfo = mApp.getPackageManager().getPackageInfo(mApp.getPackageName(), 0);
             versionName = packageInfo.versionName;
-            versionCode = Build.VERSION.SDK_INT >= 28 ? packageInfo.getLongVersionCode()
-                : packageInfo.versionCode;
+            versionCode = Build.VERSION.SDK_INT >= 28 ? packageInfo.getLongVersionCode() : packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException ignored) {
             ignored.printStackTrace();
         }
     }
 
-    public void init(File crashDir) {
-        crashDirectory = crashDir;
+    public void init() {
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     @Override
     public void uncaughtException(Thread main, Throwable mThrowable) {
         if (tryUncaughtException(main, mThrowable) || DEFAULT == null) {
-        
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
         } else {
             DEFAULT.uncaughtException(main, mThrowable);
         }
@@ -96,7 +99,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String time = format.format(new Date(timestamp));
 
-        StringWriter sw = new StringWriter(); 
+        StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
         fullStackTrace = sw.toString();
@@ -121,17 +124,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
         } catch (IOException ignored) {
             ignored.printStackTrace();
         }
-        
+
         gotoCrashActiviy: {
             Intent intent = new Intent(mApp, CrashActivity.class);
             intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
-            );
+                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra(CrashActivity.EXTRA_CRASH_INFO, errorLog);
             mApp.startActivity(intent);
         }
-        
+
         return errorLog != null;
     }
 
@@ -150,5 +151,3 @@ public class CrashHandler implements UncaughtExceptionHandler {
         }
     }
 }
-
-

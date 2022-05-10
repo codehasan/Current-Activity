@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import androidx.appcompat.app.AppCompatActivity;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.utils.WindowUtil;
 import io.github.ratul.topactivity.model.NotificationMonitor;
@@ -33,31 +34,31 @@ import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
  * Refactored by Ratul on 04/05/2022.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class ShortcutHandlerActivity extends Activity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DatabaseUtil.setDisplayWidth(MainActivity.getScreenWidth(this));
+public class ShortcutHandlerActivity extends AppCompatActivity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		DatabaseUtil.setDisplayWidth(MainActivity.getScreenWidth(this));
 
-        if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
-            startActivity(intent);
-            finish();
-        } else if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
-            startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
+		if (!MainActivity.usageStats(this) || !Settings.canDrawOverlays(this)) {
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.putExtra(MainActivity.EXTRA_FROM_QS_TILE, true);
+			startActivity(intent);
+			finish();
+		} else if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
+			startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
 
-        boolean isShow = !DatabaseUtil.isShowWindow();
-        DatabaseUtil.setIsShowWindow(isShow);
-        if (!isShow) {
-            WindowUtil.dismiss(this);
-            NotificationMonitor.showNotification(this, true);
-        } else {
-            WindowUtil.init(this);
-            NotificationMonitor.showNotification(this, false);
-            startService(new Intent(this, MonitoringService.class));
-        }
-        sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
-        finish();
-    }
+		boolean isShow = !DatabaseUtil.isShowWindow();
+		DatabaseUtil.setIsShowWindow(isShow);
+		if (!isShow) {
+			WindowUtil.dismiss(this);
+			NotificationMonitor.showNotification(this, true);
+		} else {
+			WindowUtil.init(this);
+			NotificationMonitor.showNotification(this, false);
+			startService(new Intent(this, MonitoringService.class));
+		}
+		sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
+		finish();
+	}
 }

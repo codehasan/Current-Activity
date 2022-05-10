@@ -24,13 +24,14 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.content.ClipboardManager;
 import android.content.ClipData;
+import androidx.appcompat.app.AppCompatActivity;
 import io.github.ratul.topactivity.App;
 
 /**
  * Created by Ratul on 04/05/2022.
  */
- @TargetApi(29)
-public class BackgroundActivity extends Activity {
+ @TargetApi(Build.VERSION_CODES.O)
+public class BackgroundActivity extends AppCompatActivity {
     public static String STRING_COPY = "io.github.ratul.topactivity.COPY_STRING";
     public static String COPY_MSG = "io.github.ratul.topactivity.COPY_STRING_MSG";
     

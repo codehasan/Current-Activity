@@ -18,8 +18,6 @@ package io.github.ratul.topactivity.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
 import io.github.ratul.topactivity.App;
 
 /**
@@ -27,64 +25,64 @@ import io.github.ratul.topactivity.App;
  * Refactored by Ratul on 04/05/2022.
  */
 public class DatabaseUtil {
-    private static SharedPreferences sp = App.getApp().getSharedPreferences("io.github.ratul.topactivity", 0);
+	private static SharedPreferences sp = App.getApp().getSharedPreferences("io.github.ratul.topactivity", 0);
 
-    public static int getDisplayWidth() {
-        return sp.getInt("width", 720);
-    }
+	public static int getDisplayWidth() {
+		return sp.getInt("width", 720);
+	}
 
-    public static boolean setDisplayWidth(int width) {
-        return sp.edit().putInt("width", width).commit();
-    }
-    
-    public static boolean isShowWindow() {
-        return sp.getBoolean("is_show_window", false);
-    }
+	public static void setDisplayWidth(int width) {
+		sp.edit().putInt("width", width).apply();
+	}
 
-    public static boolean hasBattery() {
-        return sp.getBoolean("hasBattery", false);
-    }
+	public static boolean isShowWindow() {
+		return sp.getBoolean("is_show_window", false);
+	}
 
-    public static boolean setHasBattery(boolean bool) {
-        return sp.edit().putBoolean("hasBattery", bool).commit();
-    }
+	public static boolean hasBattery() {
+		return sp.getBoolean("hasBattery", false);
+	}
 
-    public static void setIsShowWindow(boolean isShow) {
-        sp.edit().putBoolean("is_show_window", isShow).commit();
-    }
+	public static void setHasBattery(boolean bool) {
+		sp.edit().putBoolean("hasBattery", bool).apply();
+	}
 
-    public static boolean appInitiated() {
-        return sp.getBoolean("app_init", false);
-    }
+	public static void setIsShowWindow(boolean isShow) {
+		sp.edit().putBoolean("is_show_window", isShow).apply();
+	}
 
-    public static void setAppInitiated(boolean added) {
-        sp.edit().putBoolean("app_init", added).commit();
-    }
+	public static boolean appInitiated() {
+		return sp.getBoolean("app_init", false);
+	}
 
-    public static boolean hasAccess() {
-        return sp.getBoolean("has_access", true);
-    }
+	public static void setAppInitiated(boolean added) {
+		sp.edit().putBoolean("app_init", added).apply();
+	}
 
-    public static void setHasAccess(boolean added) {
-        sp.edit().putBoolean("has_access", added).commit();
-    }
+	public static boolean hasAccess() {
+		return sp.getBoolean("has_access", true);
+	}
 
-    public static boolean hasQSTileAdded() {
-        return sp.getBoolean("has_qs_tile_added", false);
-    }
+	public static void setHasAccess(boolean added) {
+		sp.edit().putBoolean("has_access", added).apply();
+	}
 
-    public static void setQSTileAdded(boolean added) {
-        sp.edit().putBoolean("has_qs_tile_added", added).commit();
-    }
+	public static boolean hasQSTileAdded() {
+		return sp.getBoolean("has_qs_tile_added", false);
+	}
 
-    public static boolean isNotificationToggleEnabled() {
-        if (!hasQSTileAdded()) {
-            return true;
-        }
-        return sp.getBoolean("is_noti_toggle_enabled", true);
-    }
+	public static void setQSTileAdded(boolean added) {
+		sp.edit().putBoolean("has_qs_tile_added", added).apply();
+	}
 
-    public static void setNotificationToggleEnabled(boolean isEnabled) {
-        sp.edit().putBoolean("is_noti_toggle_enabled", isEnabled).commit();
-    }
+	public static boolean isNotificationToggleEnabled() {
+		if (!hasQSTileAdded()) {
+			return true;
+		}
+		return sp.getBoolean("is_noti_toggle_enabled", true);
+	}
+
+	public static void setNotificationToggleEnabled(boolean isEnabled) {
+		sp.edit().putBoolean("is_noti_toggle_enabled", isEnabled).apply();
+	}
 }

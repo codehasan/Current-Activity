@@ -14,7 +14,7 @@
         android:gravity="center_vertical"
         android:padding="8dp">
 
-        <NormalTextView
+        <io.github.ratul.topactivity.view.NormalTextView
             android:id="@+id/showWindoww"
             android:textSize="16sp"
             android:layout_width="0dp"
@@ -23,13 +23,13 @@
             android:textColor="@color/textPrimary"
             android:text="@string/show_window"/>
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_window"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/dividerColor"/>
@@ -42,7 +42,7 @@
         android:minHeight="48dp"
         android:padding="8dp">
 
-        <NormalTextView
+        <io.github.ratul.topactivity.view.NormalTextView
             android:id="@+id/disableNotif"
             android:layout_width="0dp"
             android:textSize="16sp"
@@ -51,13 +51,13 @@
             android:textColor="@color/textPrimary"
             android:text="@string/use_toggle_notification"/>
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/divider_useNotificationPref"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -70,7 +70,7 @@
         android:minHeight="48dp"
         android:padding="8dp">
 
-        <NormalTextView
+        <io.github.ratul.topactivity.view.NormalTextView
             android:id="@+id/disableAccess"
             android:layout_width="0dp"
             android:textSize="16sp"
@@ -79,13 +79,13 @@
             android:textColor="@color/textPrimary"
             android:text="Use Accessibility Service"/>
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_accessibility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/divider_useAccess"
         android:layout_width="match_parent"
         android:layout_height="1dp"

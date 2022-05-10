@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "io.github.ratul.topactivity"
         minSdkVersion 21
@@ -27,5 +27,9 @@ android {
 }
 
 dependencies {
-	implementation 'com.android.support:support-v4:26.0.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.core:core:1.7.0'
 }
