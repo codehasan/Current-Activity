@@ -83,9 +83,8 @@ public class NotificationMonitor extends BroadcastReceiver {
 				.setVisibility(NotificationCompat.VISIBILITY_SECRET)
 				.setPriority(NotificationCompat.PRIORITY_MAX)
 				.setOngoing(!isPaused)
-				.setContentIntent(pIntent)
-				.build();
-
+				.setContentIntent(pIntent);
+				
 		builder.addAction(R.drawable.ic_launcher_foreground, context.getString(R.string.noti_action_stop),
 				getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
 
