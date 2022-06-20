@@ -24,7 +24,9 @@ import android.text.TextPaint;
 import android.graphics.Paint;
 
 public class TypefaceSpan extends MetricAffectingSpan {
+    
     private static LruCache<String, Typeface> sTypefaceCache = new LruCache<String, Typeface>(12);
+    
     private Typeface mTypeface;
 
     public TypefaceSpan(Context context, String typefaceName) {
