@@ -14,17 +14,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
-
-            <io.github.ratul.topactivity.view.BoldTextView
+			
+			<io.github.ratul.topactivity.view.NormalTextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                android:background="#60111111"
+                android:clickable="true"
+                android:padding="8dp"
+                android:singleLine="false"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+			
+			<io.github.ratul.topactivity.view.BoldTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:padding="8dp"
-                android:text="Activity Info"
+                android:text="-Info"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/closeBtn"
@@ -35,38 +47,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_close" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#60808080"
-            android:orientation="horizontal" >
-
-            <io.github.ratul.topactivity.view.NormalTextView
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="1dp"
-                android:background="#60111111"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="App name"
-                android:textColor="#FFFFFF"
-                android:textSize="13sp" />
-
-            <io.github.ratul.topactivity.view.NormalTextView
-                android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="1dp"
-                android:background="#60111111"
-                android:clickable="true"
-                android:padding="8dp"
-                android:singleLine="false"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp" />
-        </LinearLayout>
-
+		
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

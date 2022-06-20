@@ -62,8 +62,8 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
 		if (WindowUtil.viewAdded && DatabaseUtil.isShowWindow() && DatabaseUtil.hasAccess()) {
-			String act1 = event.getClassName().toString();
-			String act2 = event.getPackageName().toString();
+			String act1 = String.valueOf(event.getClassName());
+			String act2 = String.valueOf(event.getPackageName());
 
 			if (isSystemClass(act1))
 				return;

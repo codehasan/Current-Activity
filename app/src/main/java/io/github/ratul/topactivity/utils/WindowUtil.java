@@ -151,8 +151,6 @@ public class WindowUtil {
 			PackageManager pm = context.getPackageManager();
 			return pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
 		} catch (Exception e) {
-			// Ignored
-			e.printStackTrace();
 			return "";
 		}
 	}
