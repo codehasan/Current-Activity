@@ -42,6 +42,11 @@ public class NormalTextView extends MaterialTextView {
         super(context, attrs, defStyle);
         setRegularFont(context); 
     }
+	
+	public NormalTextView(Context context, AttributeSet attrs, int defStyle, int res) {
+		super(context, attrs, defStyle, res);
+		setRegularFont(context);
+	}
 
     protected void onDraw (Canvas canvas) {
         super.onDraw(canvas);

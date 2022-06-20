@@ -15,28 +15,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 			
-			<io.github.ratul.topactivity.view.NormalTextView
+			<io.github.ratul.topactivity.view.BoldTextView
                 android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:background="#60111111"
                 android:clickable="true"
                 android:padding="8dp"
-                android:singleLine="false"
+                android:singleLine="true"
+				android:ellipsize="end"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp" />
 			
-			<io.github.ratul.topactivity.view.BoldTextView
+			<io.github.ratul.topactivity.view.RegularTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:padding="8dp"
-                android:text="-Info"
+                android:text="-Activity Info"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp" />
+			
+			<TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/closeBtn"

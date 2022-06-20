@@ -42,6 +42,11 @@ public class BoldTextView extends MaterialTextView {
 		super(context, attrs, defStyle);
 		setBoldFont(context);
 	}
+	
+	public BoldTextView(Context context, AttributeSet attrs, int defStyle, int res) {
+		super(context, attrs, defStyle, res);
+		setBoldFont(context);
+	}
 
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);

@@ -41,6 +41,7 @@ import io.github.ratul.topactivity.service.MonitoringService;
 import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import io.github.ratul.topactivity.App;
 
 /**
  * Created by Ratul on 04/05/2022.
@@ -87,21 +88,24 @@ public class WindowUtil {
 			}
 		});
 
-		appName.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+		appName.setOnLongClickListener(new View.OnLongClickListener() {
+			public boolean onLongClick(View v) {
 				copyString(context, text, "App name copied");
+				return true;
 			}
 		});
 
-		packageName.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+		packageName.setOnLongClickListener(new View.OnLongClickListener() {
+			public boolean onLongClick(View v) {
 				copyString(context, text, "Package name copied");
+				return true;
 			}
 		});
 
-		className.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+		className.setOnLongClickListener(new View.OnLongClickListener() {
+			public boolean onLongClick(View v) {
 				copyString(context, text1, "Class name copied");
+				return true;
 			}
 		});
 
@@ -120,7 +124,8 @@ public class WindowUtil {
 					yInitCord = yCord;
 					xInitMargin = layoutParams.x;
 					yInitMargin = layoutParams.y;
-				} else if (action == MotionEvent.ACTION_MOVE) {
+				}
+				else if (action == MotionEvent.ACTION_MOVE) {
 					int xDiffMove = xCord - xInitCord;
 					int yDiffMove = yCord - yInitCord;
 					xCordDestination = xInitMargin + xDiffMove;
@@ -144,6 +149,7 @@ public class WindowUtil {
 					new Intent(context, BackgroundActivity.class).putExtra(BackgroundActivity.STRING_COPY, str)
 							.putExtra(BackgroundActivity.COPY_MSG, msg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		}
+		App.showToast(msg, 0);
 	}
 
 	public static String getAppName(Context context, String pkg) {
@@ -151,7 +157,7 @@ public class WindowUtil {
 			PackageManager pm = context.getPackageManager();
 			return pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
 		} catch (Exception e) {
-			return "";
+			return "Unknown";
 		}
 	}
 
