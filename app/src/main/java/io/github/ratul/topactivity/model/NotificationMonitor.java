@@ -65,6 +65,7 @@ public class NotificationMonitor extends BroadcastReceiver {
 			mChannel.enableLights(false);
 			mChannel.enableVibration(false);
 			mChannel.setShowBadge(false);
+			mChannel.setImportance(NotificationManager.IMPORTANCE_MAX);
 			notifManager.createNotificationChannel(mChannel);
 		}
 
@@ -78,8 +79,12 @@ public class NotificationMonitor extends BroadcastReceiver {
 				.setContentTitle(context.getString(R.string.is_running, context.getString(R.string.app_name)))
 				.setSmallIcon(R.drawable.ic_shortcut).setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setContentText(context.getString(R.string.touch_to_open))
-				.setColor(context.getColor(R.color.layerColor)).setVisibility(NotificationCompat.VISIBILITY_SECRET)
-				.setOngoing(!isPaused);
+				.setColor(context.getColor(R.color.layerColor))
+				.setVisibility(NotificationCompat.VISIBILITY_SECRET)
+				.setPriority(NotificationCompat.PRIORITY_MAX)
+				.setOngoing(!isPaused)
+				.setContentIntent(pIntent)
+				.build();
 
 		builder.addAction(R.drawable.ic_launcher_foreground, context.getString(R.string.noti_action_stop),
 				getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
@@ -88,15 +93,13 @@ public class NotificationMonitor extends BroadcastReceiver {
 	}
 
 	public static PendingIntent getPendingIntent(Context context, int command) {
-		Intent intent = new Intent(context, NotificationMonitor.class);
-		intent.setAction("io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
+		Intent intent = new Intent("io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
 		intent.putExtra(EXTRA_NOTIFICATION_ACTION, command);
 		return PendingIntent.getBroadcast(context, 0, intent, 0);
 	}
 
 	public static void cancelNotification(Context context) {
-		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(NOTIFICATION_ID);
+		notifManager.cancel(NOTIFICATION_ID);
 	}
 
 	@Override
