@@ -3,7 +3,7 @@ name: Latest Build(debug)
 on:
   push:
     branches:
-      - androidx
+      - main
 jobs:
   build:
     name: Build debug apk

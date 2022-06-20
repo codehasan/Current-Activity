@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 29
     defaultConfig {
         applicationId "io.github.ratul.topactivity"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 17
-        versionName "1.5.7"
+        targetSdkVersion 29
+        versionCode 18
+        versionName "1.5.8"
     }
 
     buildTypes {
