@@ -55,11 +55,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
             versionCode = Build.VERSION.SDK_INT >= 28 ? packageInfo.getLongVersionCode() : packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException ignored) {
             ignored.printStackTrace();
+			versionName = "unknown";
         }
-    }
-
-    public void init() {
-        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     @Override
@@ -68,10 +65,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
             }
             android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
         } else {
             DEFAULT.uncaughtException(main, mThrowable);
         }
@@ -102,6 +98,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
+		Throwable cause = throwable.getCause();
+        if (cause != null)
+            cause.printStackTrace(pw);
         fullStackTrace = sw.toString();
         pw.close();
 
@@ -142,10 +141,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
             parentFile.mkdirs();
         }
         file.createNewFile();
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(content.getBytes());
         try {
-            fos.close();
+            FileWriter writer = new FileWriter(file);
+			writer.write(content);
+			writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

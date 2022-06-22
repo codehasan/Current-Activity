@@ -29,14 +29,13 @@ import android.widget.Toast;
 import android.os.Environment;
 
 public class App extends Application {
-
 	private static App sApp;
 
 	@Override
 	protected void attachBaseContext(Context base) {
 		super.attachBaseContext(base);
 		sApp = this;
-		CrashHandler.getInstance(getApp()).init();
+		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(this));
 	}
 
 	@Override

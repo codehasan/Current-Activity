@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.github.ratul.topactivity"
+    android:versionCode="18"
+    android:versionName="1.5.8" >
+
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="28" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <queries>
+        <intent>
+            <action android:name="android.accessibilityservice.AccessibilityService" />
+        </intent>
+    </queries>
+
+    <application
+        android:name="io.github.ratul.topactivity.App"
+        android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:resizeableActivity="true"
+        android:roundIcon="@drawable/ic_launcher_round"
+        android:supportsPictureInPicture="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="io.github.ratul.topactivity.ui.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:maxRecents="1"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/app_shortcuts" />
+        </activity>
+        <activity
+            android:name="io.github.ratul.topactivity.ui.CrashActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:maxRecents="1"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="io.github.ratul.topactivity.ui.ShortcutHandlerActivity"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/TransparentTheme" />
+        <activity
+            android:name="io.github.ratul.topactivity.ui.BackgroundActivity"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/TransparentTheme" />
+
+        <service
+            android:name="io.github.ratul.topactivity.service.MonitoringService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="io.github.ratul.topactivity.service.AccessibilityMonitoringService"
+            android:description="@string/accessibility_permission"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+        <service
+            android:name="io.github.ratul.topactivity.service.QuickSettingsService"
+            android:enabled="@bool/quick_settings_availability"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" >
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
+
+        <receiver
+            android:name="io.github.ratul.topactivity.model.NotificationMonitor"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="io.github.ratul.topactivity.androidx-startup"
+            android:exported="false" >
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+        </provider>
+    </application>
+
+</manifest>
