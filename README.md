@@ -1,8 +1,8 @@
 <div align="center">
   <img width="148" height="148" src="./.resources/images/ic_launcher.png" alt="Logo" border="0">
 </div>
-<h1 align="left">
-  <b>&nbsp;Current Activity</b>
+<h1 align="center">
+  <b>Current Activity</b>
 </h1>
 An useful tool for Android Developers &amp; Reversers, which shows the package name and class name of current activity which you are in
 <br/><br/>
