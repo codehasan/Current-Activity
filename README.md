@@ -4,8 +4,10 @@
 <h1 align="center">
   <b>Current Activity</b>
 </h1>
+<p align="center">
 An useful tool for Android Developers &amp; Reversers, which shows the package name and class name of current activity which you are in
-<br/><br/>
+</p>
+  <br/><br/>
 
 [![App](https://img.shields.io/badge/Current%20Activity-1.5.8-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMiAxLjUpIj48cG9seWxpbmUgcG9pbnRzPSI1LjI0NSAxMy4yODEgOC4yMzggOS4zOTEgMTEuNjUyIDEyLjA3MyAxNC41ODEgOC4yOTMiLz48Y2lyY2xlIGN4PSIxNy45OTUiIGN5PSIyLjciIHI9IjEuOTIyIi8+PHBhdGggZD0iTTEyLjkyNDQ4NTIsMS42MjAxMzczMSBMNS42NTY3NTA2LDEuNjIwMTM3MzEgQzIuNjQ1MzA4OTQsMS42MjAxMzczMSAwLjc3ODAzMjA0MSwzLjc1Mjg2MDQzIDAuNzc4MDMyMDQxLDYuNzY0MzAyMDkgTDAuNzc4MDMyMDQxLDE0Ljg0NjY4MiBDMC43NzgwMzIwNDEsMTcuODU4MTIzNyAyLjYwODY5NTY3LDE5Ljk4MTY5MzUgNS42NTY3NTA2LDE5Ljk4MTY5MzUgTDE0LjI2MDg2OTYsMTkuOTgxNjkzNSBDMTcuMjcyMzExMywxOS45ODE2OTM1IDE5LjEzOTU4ODIsMTcuODU4MTIzNyAxOS4xMzk1ODgyLDE0Ljg0NjY4MiBMMTkuMTM5NTg4Miw3LjgwNzc4MDM2Ii8+PC9nPjwvc3ZnPg==)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
 [![SDK](https://img.shields.io/badge/Android-5.0%20and%20up-brightgreen?logo=android&logoColor=white)](https://github.com/RatulHasan8/Current-Activity/releases/tag/app-n-source)
