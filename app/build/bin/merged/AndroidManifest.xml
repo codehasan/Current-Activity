@@ -90,7 +90,7 @@
                 android:resource="@xml/accessibility" />
         </service>
         <service
-            android:name="io.github.ratul.topactivity.service.QuickSettingsService"
+            android:name="io.github.ratul.topactivity.service.QuickSettingsTileService"
             android:enabled="@bool/quick_settings_availability"
             android:exported="true"
             android:icon="@drawable/ic_launcher_foreground"

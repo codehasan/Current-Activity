@@ -36,7 +36,7 @@ import io.github.ratul.topactivity.model.NotificationMonitor;
 import com.google.android.material.textview.MaterialTextView;
 import io.github.ratul.topactivity.ui.MainActivity;
 import io.github.ratul.topactivity.ui.BackgroundActivity;
-import io.github.ratul.topactivity.service.QuickSettingsService;
+import io.github.ratul.topactivity.service.QuickSettingsTileService;
 import io.github.ratul.topactivity.service.MonitoringService;
 import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
 import android.content.pm.PackageInfo;
@@ -183,7 +183,7 @@ public class WindowUtil {
 					NotificationMonitor.builder.build());
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			QuickSettingsService.updateTile(context);
+			QuickSettingsTileService.updateTile(context);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class WindowUtil {
 			e.printStackTrace();
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			QuickSettingsService.updateTile(context);
+			QuickSettingsTileService.updateTile(context);
 		}
 	}
 }

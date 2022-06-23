@@ -70,10 +70,9 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 			WindowUtil.show(this, act2, act1);
 		}
 	}
-
+	
 	@Override
 	public void onInterrupt() {
-		sInstance = null;
 	}
 
 	@Override
@@ -87,7 +86,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 		sInstance = null;
 		WindowUtil.dismiss(this);
 		NotificationMonitor.cancelNotification(this);
-		sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
+		sendBroadcast(new Intent(QuickSettingsTileService.ACTION_UPDATE_TITLE));
 		return super.onUnbind(intent);
 	}
 }
