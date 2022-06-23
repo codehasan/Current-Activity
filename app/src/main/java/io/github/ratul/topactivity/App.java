@@ -17,7 +17,6 @@
 package io.github.ratul.topactivity;
 
 import android.app.Application;
-import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.model.CrashHandler;
 import android.content.Context;
 import java.io.File;

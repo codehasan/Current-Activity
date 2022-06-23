@@ -30,23 +30,44 @@ import io.github.ratul.topactivity.App;
 /**
  * Created by Ratul on 04/05/2022.
  */
- @TargetApi(Build.VERSION_CODES.O)
+@TargetApi(Build.VERSION_CODES.O)
 public class BackgroundActivity extends AppCompatActivity {
     public static String STRING_COPY = "io.github.ratul.topactivity.COPY_STRING";
     public static String COPY_MSG = "io.github.ratul.topactivity.COPY_STRING_MSG";
+	public static boolean isAlive;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		if (!getIntent().hasExtra(STRING_COPY))
+			finish();
         String str = getIntent().getStringExtra(STRING_COPY);
-        String msg = getIntent().getStringExtra(STRING_COPY);
+        String msg = getIntent().getStringExtra(COPY_MSG);
+		msg = (msg == null || msg.trim().isEmpty()) ? "Copied" : msg;
         
         if (str != null) {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             ClipData clip = new ClipData(ClipData.newPlainText("", str));
             clipboard.setPrimaryClip(clip);
-            App.showToast(msg, 0);
         }
-        finish();
+		finish();
     }
+
+	@Override
+	protected void onStop() {
+		isAlive = false;
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		isAlive = false;
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStart() {
+		isAlive = true;
+		super.onStart();
+	}
 }

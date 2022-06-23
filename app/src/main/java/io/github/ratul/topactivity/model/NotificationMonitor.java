@@ -19,34 +19,33 @@ package io.github.ratul.topactivity.model;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.NotificationChannel;
+import android.app.TaskStackBuilder;
+import android.app.Notification;
+import android.graphics.Color;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
 import java.util.List;
-import javax.crypto.NullCipher;
+import java.lang.reflect.AnnotatedElement;
+
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.ui.MainActivity;
 import io.github.ratul.topactivity.utils.WindowUtil;
-import io.github.ratul.topactivity.service.QuickSettingsService;
-import java.lang.reflect.AnnotatedElement;
-import android.app.NotificationChannel;
-import android.graphics.Color;
-import android.app.TaskStackBuilder;
-import android.widget.Toast;
+import io.github.ratul.topactivity.service.QuickSettingsTileService;
 
 /**
  * Created by Ratul on 04/05/2022.
  */
 public class NotificationMonitor extends BroadcastReceiver {
 	public static final int NOTIFICATION_ID = 696969691;
-	private static String CHANNEL_ID;
 	private static final int ACTION_STOP = 2;
 	private static final String EXTRA_NOTIFICATION_ACTION = "command";
-	public static NotificationCompat.Builder builder;
+	public static Notification.Builder builder;
 	public static NotificationManager notifManager;
 
 	public static void showNotification(Context context, boolean isPaused) {
@@ -55,38 +54,40 @@ public class NotificationMonitor extends BroadcastReceiver {
 		}
 		notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			CHANNEL_ID = context.getPackageName() + "_channel_007";
-			CharSequence name = "Activity Info";
-
-			int importance = NotificationManager.IMPORTANCE_HIGH;
-			NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-			mChannel.setDescription("Shows current activity info");
-			mChannel.enableLights(false);
-			mChannel.enableVibration(false);
-			mChannel.setShowBadge(false);
-			mChannel.setImportance(NotificationManager.IMPORTANCE_MAX);
-			notifManager.createNotificationChannel(mChannel);
-		}
-
 		Intent intent = new Intent(context, MainActivity.class);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);
 		PendingIntent pIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-				.setContentTitle(context.getString(R.string.is_running, context.getString(R.string.app_name)))
-				.setSmallIcon(R.drawable.ic_shortcut).setPriority(NotificationCompat.PRIORITY_HIGH)
-				.setContentText(context.getString(R.string.touch_to_open))
-				.setColor(context.getColor(R.color.layerColor))
-				.setVisibility(NotificationCompat.VISIBILITY_SECRET)
-				.setPriority(NotificationCompat.PRIORITY_MAX)
-				.setOngoing(!isPaused)
-				.setContentIntent(pIntent);
-				
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			String CHANNEL_ID = context.getPackageName() + "_channel_007";
+			CharSequence name = "Activity Info";
+
+			NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_MAX);
+			mChannel.setDescription("Shows current activity info");
+			mChannel.enableLights(false);
+			mChannel.enableVibration(false);
+			mChannel.setShowBadge(false);
+			notifManager.createNotificationChannel(mChannel);
+
+			builder = new Notification.Builder(context, CHANNEL_ID);
+		}
+		else {
+			builder = new Notification.Builder(context);
+		}
+
+		builder.setContentTitle(context.getString(R.string.is_running, context.getString(R.string.app_name)))
+			.setSmallIcon(R.drawable.ic_shortcut)
+			.setContentText(context.getString(R.string.touch_to_open))
+			.setColor(context.getColor(R.color.layerColor))
+			.setVisibility(Notification.VISIBILITY_SECRET)
+			.setOngoing(!isPaused)
+			.setAutoCancel(true)
+			.setContentIntent(pIntent);
+
 		builder.addAction(R.drawable.ic_launcher_foreground, context.getString(R.string.noti_action_stop),
-				getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
+						  getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
 
 		notifManager.notify(NOTIFICATION_ID, builder.build());
 	}
@@ -110,6 +111,6 @@ public class NotificationMonitor extends BroadcastReceiver {
 			cancelNotification(context);
 			context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
 		}
-		context.sendBroadcast(new Intent(QuickSettingsService.ACTION_UPDATE_TITLE));
+		context.sendBroadcast(new Intent(QuickSettingsTileService.ACTION_UPDATE_TITLE));
 	}
 }
