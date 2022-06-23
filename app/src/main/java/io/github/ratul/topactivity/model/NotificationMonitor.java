@@ -99,7 +99,8 @@ public class NotificationMonitor extends BroadcastReceiver {
 	}
 
 	public static void cancelNotification(Context context) {
-		notifManager.cancel(NOTIFICATION_ID);
+		if (notifManager != null)
+			notifManager.cancel(NOTIFICATION_ID);
 	}
 
 	@Override
