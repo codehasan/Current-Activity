@@ -1,6 +1,7 @@
 /.gradle
 /.idea
 /*/build
+/output
 /build
 /settings.json
 /app/app_config.json
