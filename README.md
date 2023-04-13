@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="30%" height="30%" src="./.resources/images/ic_launcher.png" alt="Logo" border="0">
+  <img width="50%" height="50%" src="./.resources/images/ic_launcher.png" alt="Logo" border="0">
 </div>
 <h1 align="center">
   <b>Current Activity</b>
