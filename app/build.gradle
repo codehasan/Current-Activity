@@ -8,8 +8,8 @@ android {
         applicationId "io.github.ratul.topactivity"
         minSdkVersion 24
         targetSdkVersion 34
-        versionCode 18
-        versionName "1.5.8"
+        versionCode 19
+        versionName "1.5.9"
     }
 
     buildTypes {
