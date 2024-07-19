@@ -16,17 +16,17 @@
  */
 package io.github.ratul.topactivity.service;
 
-import android.annotation.*;
-import android.app.*;
-import android.app.ActivityManager.*;
-import android.content.*;
-import android.content.pm.*;
-import android.os.*;
-import android.util.*;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.app.usage.UsageEvents;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.SystemClock;
 
-import java.util.*;
-import android.app.usage.*;
-import android.widget.Toast;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.utils.WindowUtil;
 
@@ -94,9 +94,16 @@ public class MonitoringService extends Service {
 					MonitoringService.INSTANCE.stopSelf();
 				}
 
+				String preText = MonitoringService.INSTANCE.text;
+				String preText1 = MonitoringService.INSTANCE.text1;
 				getActivityInfo();
 				if (MonitoringService.INSTANCE.text == null)
 					return;
+				if (preText != null && preText.equals(MonitoringService.INSTANCE.text)
+						&& preText1 != null && preText1.equals(MonitoringService.INSTANCE.text1)) {
+					// not change, return
+					return;
+				}
 
 				MonitoringService.INSTANCE.firstRun = false;
 				if (DatabaseUtil.isShowWindow()) {
@@ -113,14 +120,13 @@ public class MonitoringService extends Service {
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public void onTaskRemoved(Intent rootIntent) {
 		Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
 		restartServiceIntent.setPackage(getPackageName());
 
 		PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1,
-				restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+				restartServiceIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 		AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 		alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500,
 				restartServicePendingIntent);

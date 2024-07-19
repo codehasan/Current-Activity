@@ -16,37 +16,60 @@
  */
 package io.github.ratul.topactivity.ui;
 
-import android.app.*;
-import android.content.*;
+import android.Manifest;
+import android.app.Activity;
+import android.app.AppOpsManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.Insets;
 import android.net.Uri;
-import android.os.*;
-import android.provider.*;
-import android.view.*;
-import android.widget.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
+import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.app.*;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import android.content.pm.*;
-import android.graphics.drawable.*;
-import android.graphics.*;
-import android.text.*;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import java.util.List;
-import io.github.ratul.topactivity.*;
-import io.github.ratul.topactivity.utils.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+
+import io.github.ratul.topactivity.App;
+import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.model.NotificationMonitor;
-import io.github.ratul.topactivity.service.*;
 import io.github.ratul.topactivity.model.TypefaceSpan;
-import java.io.*;
-import android.util.DisplayMetrics;
+import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
+import io.github.ratul.topactivity.service.MonitoringService;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.utils.WindowUtil;
 
 /**
  * Created by Wen on 16/02/2017.
  * Refactored by Ratul on 04/05/2022.
  */
 public class MainActivity extends AppCompatActivity {
+	public static final int REQUEST_CODE_NOTIFICATION = 100;
 	public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
 	public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
 	private SwitchMaterial mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
@@ -86,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		mReceiver = new UpdateSwitchReceiver();
-		registerReceiver(mReceiver, new IntentFilter(ACTION_STATE_CHANGED));
+		ContextCompat.registerReceiver(this, mReceiver, new IntentFilter(ACTION_STATE_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED);
 
 		mNotificationSwitch.setOnCheckedChangeListener(new SwitchMaterial.OnCheckedChangeListener() {
 			@Override
@@ -105,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 		mWindowSwitch.setOnCheckedChangeListener(new SwitchMaterial.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-				if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(MainActivity.this)) {
+				if (!Settings.canDrawOverlays(MainActivity.this)) {
 					fancy.setTitle("Overlay Permission")
 							.setMessage("Please enable overlay permission to show window over other apps")
 							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
@@ -178,6 +201,33 @@ public class MainActivity extends AppCompatActivity {
 		super.onNewIntent(intent);
 		if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
 			mWindowSwitch.setChecked(true);
+		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !mNotificationSwitch.isChecked()) {
+			if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+				requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION);
+			}
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == REQUEST_CODE_NOTIFICATION) {
+			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+						&& shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+					requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION);
+				} else {
+					showToast("POST_NOTIFICATIONS Permission Denied", Toast.LENGTH_SHORT);
+				}
+			} else {
+				showToast("POST_NOTIFICATIONS Permission Granted", Toast.LENGTH_SHORT);
+			}
 		}
 	}
 
