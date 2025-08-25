@@ -1,10 +1,8 @@
 name: Latest Build(debug)
 
 on:
-  push:
-    branches:
-      - main
-      - dev
+  workflow_dispatch:
+
 jobs:
   build:
     name: Build debug apk
