@@ -16,27 +16,21 @@
  */
 package io.github.ratul.topactivity.model;
 
-import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.NotificationChannel;
 import android.app.TaskStackBuilder;
-import android.app.Notification;
-import android.graphics.Color;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.widget.Toast;
 
-import java.util.List;
-import java.lang.reflect.AnnotatedElement;
-
-import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.ui.MainActivity;
-import io.github.ratul.topactivity.utils.WindowUtil;
 import io.github.ratul.topactivity.service.QuickSettingsTileService;
+import io.github.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
+import io.github.ratul.topactivity.utils.WindowUtil;
 
 /**
  * Created by Ratul on 04/05/2022.
@@ -58,13 +52,19 @@ public class NotificationMonitor extends BroadcastReceiver {
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);
-		PendingIntent pIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		int flag;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			flag = PendingIntent.FLAG_IMMUTABLE;
+		} else {
+			flag = PendingIntent.FLAG_UPDATE_CURRENT;
+		}
+		PendingIntent pIntent = stackBuilder.getPendingIntent(0, flag);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			String CHANNEL_ID = context.getPackageName() + "_channel_007";
 			CharSequence name = "Activity Info";
 
-			NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_MAX);
+			NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 			mChannel.setDescription("Shows current activity info");
 			mChannel.enableLights(false);
 			mChannel.enableVibration(false);
@@ -72,8 +72,7 @@ public class NotificationMonitor extends BroadcastReceiver {
 			notifManager.createNotificationChannel(mChannel);
 
 			builder = new Notification.Builder(context, CHANNEL_ID);
-		}
-		else {
+		} else {
 			builder = new Notification.Builder(context);
 		}
 
@@ -86,8 +85,8 @@ public class NotificationMonitor extends BroadcastReceiver {
 			.setAutoCancel(true)
 			.setContentIntent(pIntent);
 
-		builder.addAction(R.drawable.ic_launcher_foreground, context.getString(R.string.noti_action_stop),
-						  getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
+//		builder.addAction(R.drawable.ic_launcher_foreground, context.getString(R.string.noti_action_stop),
+//						  getPendingIntent(context, ACTION_STOP)).setContentIntent(pIntent);
 
 		notifManager.notify(NOTIFICATION_ID, builder.build());
 	}
@@ -95,7 +94,7 @@ public class NotificationMonitor extends BroadcastReceiver {
 	public static PendingIntent getPendingIntent(Context context, int command) {
 		Intent intent = new Intent("io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER");
 		intent.putExtra(EXTRA_NOTIFICATION_ACTION, command);
-		return PendingIntent.getBroadcast(context, 0, intent, 0);
+		return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 	}
 
 	public static void cancelNotification(Context context) {

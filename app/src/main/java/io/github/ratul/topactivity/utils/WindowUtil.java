@@ -177,8 +177,8 @@ public class WindowUtil {
 		}
 
 		if (NotificationMonitor.builder != null) {
-			NotificationMonitor.builder.setContentTitle(text);
-			NotificationMonitor.builder.setContentText(text1);
+			NotificationMonitor.builder.setContentTitle(pkg);
+			NotificationMonitor.builder.setContentText(clas);
 			NotificationMonitor.notifManager.notify(NotificationMonitor.NOTIFICATION_ID,
 					NotificationMonitor.builder.build());
 		}
