@@ -6,3 +6,4 @@
 /app/app_config.json
 /app/libraries.json
 /app/repositories.json
+*.properties
