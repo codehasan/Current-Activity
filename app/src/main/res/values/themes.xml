@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="BaseTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="fontFamily">@font/product_sans_regular</item>
@@ -35,8 +36,18 @@
         <item name="buttonBarButtonStyle">@style/ButtonStyle.Dialog</item>
     </style>
 
+    <style name="Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:fontFamily">@font/product_sans_medium</item>
+        <item name="fontFamily">@font/product_sans_medium</item>
+    </style>
+
     <style name="WindowTitle" parent="Widget.AppCompat.TextView">
         <item name="android:fontFamily">@font/product_sans_medium</item>
         <item name="fontFamily">@font/product_sans_medium</item>
+    </style>
+
+    <style name="WindowContent" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="fontFamily">@font/product_sans_regular</item>
     </style>
 </resources>
