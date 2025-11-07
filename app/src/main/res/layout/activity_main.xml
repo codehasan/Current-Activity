@@ -110,6 +110,7 @@
 
         <Button
             android:id="@+id/download_accessibility"
+            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Download"
@@ -153,6 +154,7 @@
 
         <Button
             android:id="@+id/configure_width"
+            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Configure" />
