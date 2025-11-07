@@ -32,6 +32,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.github.ratul.topactivity.App;
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
@@ -42,6 +45,7 @@ import io.github.ratul.topactivity.ui.MainActivity;
  * Created by Ratul on 04/05/2022.
  */
 public class WindowUtil {
+    private static final Map<String, String> appLabelCache = new ConcurrentHashMap<>();
     private static WindowManager.LayoutParams layoutParams;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
@@ -164,11 +168,23 @@ public class WindowUtil {
     }
 
     private static String getAppName(@NonNull String pkg) {
+        // Check cache first
+        String label = appLabelCache.get(pkg);
+        if (label != null) {
+            return label;
+        }
+
+        // If not in cache, get the label
         try {
-            return packageManager.getApplicationLabel(
+            label = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(pkg, 0)).toString();
-        } catch (PackageManager.NameNotFoundException ignored) {
-            return "Unknown";
+            // Store result in cache
+            appLabelCache.put(pkg, label);
+            return label;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Return default and cache the default to avoid repeated lookups
+            appLabelCache.put(pkg, "Current Activity");
+            return "Current Activity";
         }
     }
 }
