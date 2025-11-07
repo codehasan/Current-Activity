@@ -16,186 +16,159 @@
  */
 package io.github.ratul.topactivity.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
-import android.content.ClipboardManager;
-import android.content.ClipData;
-import android.widget.Toast;
-import android.widget.LinearLayout;
-import android.graphics.Typeface;
-import android.content.Intent;
-import com.google.android.material.imageview.ShapeableImageView;
-import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.model.NotificationMonitor;
-import com.google.android.material.textview.MaterialTextView;
-import io.github.ratul.topactivity.ui.MainActivity;
-import io.github.ratul.topactivity.ui.BackgroundActivity;
-import io.github.ratul.topactivity.service.QuickSettingsTileService;
-import io.github.ratul.topactivity.service.MonitoringService;
-import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import io.github.ratul.topactivity.App;
+import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.receivers.NotificationReceiver;
+import io.github.ratul.topactivity.services.QuickSettingsTileService;
+import io.github.ratul.topactivity.ui.MainActivity;
 
 /**
  * Created by Ratul on 04/05/2022.
  */
 public class WindowUtil {
-	private static WindowManager.LayoutParams sWindowParams;
-	public static WindowManager sWindowManager;
-	private static View sView;
-	private static int xInitCord = 0;
-	private static int yInitCord = 0;
-	private static int xInitMargin = 0;
-	private static int yInitMargin = 0;
-	private static String text, text1;
-	private static MaterialTextView appName, packageName, className;
-	private static ClipboardManager clipboard;
-	public static boolean viewAdded = false;
+    private static WindowManager.LayoutParams layoutParams;
+    private static WindowManager windowManager;
+    private static PackageManager packageManager;
+    private static View baseView;
+    private static int xInitCord = 0;
+    private static int yInitCord = 0;
+    private static int xInitMargin = 0;
+    private static int yInitMargin = 0;
+    private static TextView appName, packageName, className;
 
-	public static void init(final Context context) {
-		sWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    public static void show(
+            @NonNull Context context, @NonNull String pkg, @NonNull String cls) {
+        if (windowManager == null || baseView == null) {
+            init(context.getApplicationContext());
+        }
 
-		sWindowParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT,
-				Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-						: WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+        if (!isViewVisible()) {
+            int userWidth = DatabaseUtil.getUserWidth();
+            if (userWidth != -1) {
+                layoutParams.width = userWidth;
+            } else {
+                double displaySize = Math.min(1100, DatabaseUtil.getDisplayWidth());
+                layoutParams.width = (int) (displaySize * 0.65);
+            }
+            windowManager.addView(baseView, layoutParams);
+            QuickSettingsTileService.updateTile(context);
+        }
 
-		sWindowParams.gravity = Gravity.CENTER;
-		sWindowParams.width = (DatabaseUtil.getDisplayWidth() / 2) + 300;
-		sWindowParams.windowAnimations = android.R.style.Animation_Toast;
+        boolean isPackageChanged = !packageName.getText().toString().equals(pkg);
+        boolean isClassChanged = !className.getText().toString().equals(cls);
 
-		sView = LayoutInflater.from(context).inflate(R.layout.window_tasks, null);
-		clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-		appName = sView.findViewById(R.id.text);
-		packageName = sView.findViewById(R.id.text1);
-		className = sView.findViewById(R.id.text2);
-		ShapeableImageView closeBtn = sView.findViewById(R.id.closeBtn);
+        if (isPackageChanged) {
+            appName.setText(getAppName(pkg));
+            packageName.setText(pkg);
+        }
 
-		closeBtn.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				dismiss(context);
-				DatabaseUtil.setIsShowWindow(false);
-				NotificationMonitor.cancelNotification(context);
-				context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
-			}
-		});
+        if (isClassChanged) {
+            className.setText(cls);
+        }
 
-		appName.setOnLongClickListener(new View.OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				copyString(context, text, "App name copied");
-				return true;
-			}
-		});
+        if (isPackageChanged || isClassChanged) {
+            NotificationReceiver.showNotification(context, pkg, cls);
+        }
+    }
 
-		packageName.setOnLongClickListener(new View.OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				copyString(context, text, "Package name copied");
-				return true;
-			}
-		});
+    public static void dismiss(@NonNull Context context) {
+        if (windowManager != null) {
+            windowManager.removeView(baseView);
+        }
+        QuickSettingsTileService.updateTile(context);
+    }
 
-		className.setOnLongClickListener(new View.OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				copyString(context, text1, "Class name copied");
-				return true;
-			}
-		});
+    public static boolean isViewVisible() {
+        return baseView != null && baseView.isAttachedToWindow();
+    }
 
-		sView.setOnTouchListener(new View.OnTouchListener() {
-			public boolean onTouch(View view, MotionEvent event) {
-				WindowManager.LayoutParams layoutParams = sWindowParams;
+    @SuppressLint("ClickableViewAccessibility")
+    private static void init(@NonNull Context context) {
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        packageManager = context.getPackageManager();
 
-				int xCord = (int) event.getRawX();
-				int yCord = (int) event.getRawY();
-				int xCordDestination;
-				int yCordDestination;
-				int action = event.getAction();
+        layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                        : WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
 
-				if (action == MotionEvent.ACTION_DOWN) {
-					xInitCord = xCord;
-					yInitCord = yCord;
-					xInitMargin = layoutParams.x;
-					yInitMargin = layoutParams.y;
-				}
-				else if (action == MotionEvent.ACTION_MOVE) {
-					int xDiffMove = xCord - xInitCord;
-					int yDiffMove = yCord - yInitCord;
-					xCordDestination = xInitMargin + xDiffMove;
-					yCordDestination = yInitMargin + yDiffMove;
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.windowAnimations = android.R.style.Animation_Toast;
 
-					layoutParams.x = xCordDestination;
-					layoutParams.y = yCordDestination;
-					sWindowManager.updateViewLayout(view, layoutParams);
-				}
-				return true;
-			}
-		});
-	}
+        baseView = LayoutInflater.from(context).inflate(R.layout.content_activity_info, null);
+        appName = baseView.findViewById(R.id.app_name);
+        packageName = baseView.findViewById(R.id.package_name);
+        className = baseView.findViewById(R.id.class_name);
+        ImageView closeBtn = baseView.findViewById(R.id.closeBtn);
 
-	private static void copyString(Context context, String str, String msg) {
-		if (Build.VERSION.SDK_INT < 29) {
-			ClipData clip = ClipData.newPlainText("Current Activity", str);
-			clipboard.setPrimaryClip(clip);
-		} else {
-			context.startActivity(
-					new Intent(context, BackgroundActivity.class).putExtra(BackgroundActivity.STRING_COPY, str)
-							.putExtra(BackgroundActivity.COPY_MSG, msg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-		}
-		App.showToast(msg, 0);
-	}
+        View.OnLongClickListener copyListener = v -> {
+            TextView textView = (TextView) v;
+            String label = "";
 
-	public static String getAppName(Context context, String pkg) {
-		try {
-			PackageManager pm = context.getPackageManager();
-			return pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
-		} catch (Exception e) {
-			return "Unknown";
-		}
-	}
+            if (v.getId() == R.id.app_name) label = "App name";
+            else if (v.getId() == R.id.package_name) label = "Package";
+            else if (v.getId() == R.id.class_name) label = "Class";
 
-	public static void show(Context context, String pkg, String clas) {
-		if (sWindowManager == null) {
-			init(context);
-		}
-		appName.setText(getAppName(context, pkg));
-		packageName.setText(pkg);
-		className.setText(clas);
+            App.copyString(context, textView.getText().toString(), label + " copied");
+            return true;
+        };
 
-		if (!viewAdded) {
-			viewAdded = true;
-			if (DatabaseUtil.isShowWindow()) {
-				sWindowManager.addView(sView, sWindowParams);
-			}
-		}
+        closeBtn.setOnClickListener(v -> {
+            DatabaseUtil.setShowingWindow(false);
+            NotificationReceiver.cancelNotification();
+            dismiss(context);
+            context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
+        });
 
-		if (NotificationMonitor.builder != null) {
-			NotificationMonitor.builder.setContentTitle(pkg);
-			NotificationMonitor.builder.setContentText(clas);
-			NotificationMonitor.notifManager.notify(NotificationMonitor.NOTIFICATION_ID,
-					NotificationMonitor.builder.build());
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			QuickSettingsTileService.updateTile(context);
-		}
-	}
+        packageName.setOnLongClickListener(copyListener);
+        className.setOnLongClickListener(copyListener);
 
-	public static void dismiss(Context context) {
-		viewAdded = false;
-		try {
-			sWindowManager.removeView(sView);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			QuickSettingsTileService.updateTile(context);
-		}
-	}
+        baseView.setOnTouchListener((view, event) -> {
+            int xCord = (int) event.getRawX();
+            int yCord = (int) event.getRawY();
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    xInitCord = xCord;
+                    yInitCord = yCord;
+                    xInitMargin = layoutParams.x;
+                    yInitMargin = layoutParams.y;
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    int xDiffMove = xCord - xInitCord;
+                    int yDiffMove = yCord - yInitCord;
+                    layoutParams.x = xInitMargin + xDiffMove;
+                    layoutParams.y = yInitMargin + yDiffMove;
+                    windowManager.updateViewLayout(view, layoutParams);
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private static String getAppName(@NonNull String pkg) {
+        try {
+            return packageManager.getApplicationLabel(
+                    packageManager.getApplicationInfo(pkg, 0)).toString();
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return "Unknown";
+        }
+    }
 }

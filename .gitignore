@@ -1,6 +1,7 @@
 /.gradle
 /.idea
 /*/build
+/*/obfuscation
 /build
 /settings.json
 /app/app_config.json

@@ -16,46 +16,70 @@
  */
 package io.github.ratul.topactivity;
 
+import static io.github.ratul.topactivity.receivers.NotificationReceiver.createNotificationChannel;
+
 import android.app.Application;
-import io.github.ratul.topactivity.model.CrashHandler;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
-import java.io.File;
-import android.app.Activity;
-import io.github.ratul.topactivity.ui.MainActivity;
 import android.content.Intent;
-import io.github.ratul.topactivity.ui.CrashActivity;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.widget.Toast;
-import android.os.Environment;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
+
+import io.github.ratul.topactivity.ui.CopyToClipboardActivity;
 
 public class App extends Application {
-	private static App sApp;
+    private static App instance;
+    private SharedPreferences sharedPreferences;
+    private NotificationManagerCompat notificationManager;
 
-	@Override
-	protected void attachBaseContext(Context base) {
-		super.attachBaseContext(base);
-		sApp = this;
-		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(this));
-	}
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+        sharedPreferences = getSharedPreferences(getPackageName(), 0);
+        notificationManager = NotificationManagerCompat.from(this);
+        createNotificationChannel(notificationManager);
+    }
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-	}
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
 
-	public static String getCrashLogDir() {
-		return getCrashLogFolder().getAbsolutePath();
-	}
+    public NotificationManagerCompat getNotificationManager() {
+        return notificationManager;
+    }
 
-	public static File getCrashLogFolder() {
-		return sApp.getExternalFilesDir(null);
-	}
+    public static App getInstance() {
+        return instance;
+    }
 
-	public static App getApp() {
-		return sApp;
-	}
+    public static void copyString(Context context, String str, String msg) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(context.getString(R.string.app_name), str);
+            clipboard.setPrimaryClip(clip);
+        } else {
+            Intent copyActivity = new Intent(context, CopyToClipboardActivity.class)
+                    .putExtra(Intent.EXTRA_TEXT, str)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(copyActivity);
+        }
+        showToast(context, msg);
+    }
 
-	public static void showToast(String str, int length) {
-		Toast.makeText(getApp(), str, length).show();
-	}
-
+    public static void showToast(@NonNull Context context, @NonNull String message) {
+        try {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        } catch (Throwable ignored) {
+            try {
+                Toast.makeText(instance, message, Toast.LENGTH_SHORT).show();
+            } catch (Throwable ignored2) {
+            }
+        }
+    }
 }

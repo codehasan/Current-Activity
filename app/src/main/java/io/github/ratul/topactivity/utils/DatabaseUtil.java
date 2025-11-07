@@ -16,8 +16,6 @@
  */
 package io.github.ratul.topactivity.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import io.github.ratul.topactivity.App;
 
 /**
@@ -25,64 +23,55 @@ import io.github.ratul.topactivity.App;
  * Refactored by Ratul on 04/05/2022.
  */
 public class DatabaseUtil {
-	private static SharedPreferences sp = App.getApp().getSharedPreferences("io.github.ratul.topactivity", 0);
+    public static int getDisplayWidth() {
+        return App.getInstance().getSharedPreferences()
+                .getInt("width", 720);
+    }
 
-	public static int getDisplayWidth() {
-		return sp.getInt("width", 720);
-	}
+    public static void setDisplayWidth(int width) {
+        App.getInstance().getSharedPreferences().edit()
+                .putInt("width", width)
+                .apply();
+    }
 
-	public static void setDisplayWidth(int width) {
-		sp.edit().putInt("width", width).apply();
-	}
+    public static int getUserWidth() {
+        return App.getInstance().getSharedPreferences()
+                .getInt("user_width", -1);
+    }
 
-	public static boolean isShowWindow() {
-		return sp.getBoolean("is_show_window", false);
-	}
+    public static void setUserWidth(int width) {
+        App.getInstance().getSharedPreferences().edit()
+                .putInt("user_width", width)
+                .apply();
+    }
 
-	public static boolean hasBattery() {
-		return sp.getBoolean("hasBattery", false);
-	}
+    public static boolean isShowingWindow() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("is_show_window", false);
+    }
 
-	public static void setHasBattery(boolean bool) {
-		sp.edit().putBoolean("hasBattery", bool).apply();
-	}
+    public static void setShowingWindow(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("is_show_window", bool).apply();
+    }
 
-	public static void setIsShowWindow(boolean isShow) {
-		sp.edit().putBoolean("is_show_window", isShow).apply();
-	}
+    public static boolean useAccessibility() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("has_access", false);
+    }
 
-	public static boolean appInitiated() {
-		return sp.getBoolean("app_init", false);
-	}
+    public static void setUseAccessibility(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("has_access", bool).apply();
+    }
 
-	public static void setAppInitiated(boolean added) {
-		sp.edit().putBoolean("app_init", added).apply();
-	}
+    public static boolean isShowNotification() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("show_notification", false);
+    }
 
-	public static boolean hasAccess() {
-		return sp.getBoolean("has_access", true);
-	}
-
-	public static void setHasAccess(boolean added) {
-		sp.edit().putBoolean("has_access", added).apply();
-	}
-
-	public static boolean hasQSTileAdded() {
-		return sp.getBoolean("has_qs_tile_added", false);
-	}
-
-	public static void setQSTileAdded(boolean added) {
-		sp.edit().putBoolean("has_qs_tile_added", added).apply();
-	}
-
-	public static boolean isNotificationToggleEnabled() {
-		if (!hasQSTileAdded()) {
-			return true;
-		}
-		return sp.getBoolean("is_noti_toggle_enabled", true);
-	}
-
-	public static void setNotificationToggleEnabled(boolean isEnabled) {
-		sp.edit().putBoolean("is_noti_toggle_enabled", isEnabled).apply();
-	}
+    public static void setShowNotification(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("show_notification", bool).apply();
+    }
 }

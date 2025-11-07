@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="25dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/helper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Set an empty value to use default 'CALCULATED' width or "
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/width"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:digits="0123456789"
+        android:hint="CALCULATED"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:maxLength="4"
+        android:maxLines="1" />
+</LinearLayout>

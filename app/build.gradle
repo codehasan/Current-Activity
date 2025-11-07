@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "io.github.ratul.topactivity"
     compileSdkVersion 36
 
     defaultConfig {
@@ -8,33 +9,43 @@ android {
         minSdkVersion 24
         targetSdkVersion 36
         versionCode 20
-        versionName "2.0.0"
+        versionName "1.5.9"
     }
 
     buildTypes {
         release {
-            debuggable false
             minifyEnabled true
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            debuggable true
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
     buildFeatures {
         buildConfig true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    flavorDimensions 'version'
+    productFlavors {
+        global {
+            dimension 'version'
+        }
+        playStore {
+            dimension 'version'
+        }
+    }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.preference:preference:1.2.1'
-    implementation 'androidx.core:core:1.17.0'
+}
+
+configurations.all {
+    resolutionStrategy {
+        force('org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0')
+    }
 }

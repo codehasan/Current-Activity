@@ -1,114 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Retrieve running apps -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- This app can appear on top of other apps -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-	
-	<queries>
-        <intent>
-            <action
-                android:name="android.accessibilityservice.AccessibilityService" />
-        </intent>
-    </queries>
-	
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="PackageVisibilityPolicy,QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".App"
-        android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme"
         android:allowBackup="true"
-        android:supportsPictureInPicture="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:resizeableActivity="true"
-        android:roundIcon="@drawable/ic_launcher_round">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsPictureInPicture="true"
+        android:theme="@style/BaseTheme">
+
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name"
             android:exported="true"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
-            android:hardwareAccelerated="true"
-			android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            android:maxRecents="1">
+            android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/app_shortcuts"/>
         </activity>
-        
-        <activity
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            android:name=".ui.CrashActivity"
-            android:maxRecents="1"
-            android:label="@string/app_name"
-            android:exported="true" />
 
         <activity
-            android:name=".ui.ShortcutHandlerActivity"
+            android:name=".ui.CopyToClipboardActivity"
             android:excludeFromRecents="true"
-            android:enabled="true"
-            android:exported="true"
-            android:theme="@style/TransparentTheme"/>
-        
-        <activity
-            android:name=".ui.BackgroundActivity"
-            android:excludeFromRecents="true"
-            android:enabled="true"
-            android:exported="true"
-            android:theme="@style/TransparentTheme"/>
+            android:launchMode="singleInstance"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@style/TransparentTheme" />
+
+        <service android:name=".services.PackageMonitoringService" />
 
         <service
-            android:name=".service.MonitoringService"
-            android:enabled="true"
-            android:exported="true"/>
-        
-        <service
-            android:name=".service.AccessibilityMonitoringService"
-            android:label="@string/app_name"
-            android:description="@string/accessibility_permission"
-            android:enabled="true"
+            android:name=".services.QuickSettingsTileService"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility"/>
-        </service>
-        <service
-            android:name=".service.QuickSettingsTileService"
-            android:enabled="@bool/quick_settings_availability"
-            android:icon="@drawable/ic_launcher_foreground"
+            android:icon="@drawable/ic_logo"
             android:label="@string/app_name"
-            android:exported="true"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
-                android:value="true"/>
+                android:value="true" />
         </service>
 
         <receiver
-                android:name=".model.NotificationMonitor"
-                android:exported="false"
-                android:enabled="true">
-            <intent-filter>
-                <action android:name="io.github.ratul.topactivity.ACTION_NOTIFICATION_RECEIVER"/>
-            </intent-filter>
-        </receiver>
+            android:name=".receivers.NotificationReceiver"
+            android:exported="true"
+            android:permission="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
     </application>
 </manifest>

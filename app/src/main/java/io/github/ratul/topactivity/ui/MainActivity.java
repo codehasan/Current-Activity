@@ -16,51 +16,48 @@
  */
 package io.github.ratul.topactivity.ui;
 
-import android.Manifest;
-import android.app.Activity;
+import static android.Manifest.permission.PACKAGE_USAGE_STATS;
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
+
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+import android.content.ServiceConnection;
 import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Process;
 import android.provider.Settings;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowMetrics;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.switchmaterial.SwitchMaterial;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-
 import io.github.ratul.topactivity.App;
+import io.github.ratul.topactivity.BuildConfig;
 import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.model.NotificationMonitor;
-import io.github.ratul.topactivity.model.TypefaceSpan;
-import io.github.ratul.topactivity.service.AccessibilityMonitoringService;
-import io.github.ratul.topactivity.service.MonitoringService;
+import io.github.ratul.topactivity.receivers.NotificationReceiver;
+import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
+import io.github.ratul.topactivity.services.PackageMonitoringService;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.utils.WindowUtil;
 
@@ -69,328 +66,350 @@ import io.github.ratul.topactivity.utils.WindowUtil;
  * Refactored by Ratul on 04/05/2022.
  */
 public class MainActivity extends AppCompatActivity {
-	public static final int REQUEST_CODE_NOTIFICATION = 100;
-	public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
-	public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
-	private SwitchMaterial mWindowSwitch, mNotificationSwitch, mAccessibilitySwitch;
-	private BroadcastReceiver mReceiver;
-	private MaterialAlertDialogBuilder fancy;
-	public static MainActivity INSTANCE;
+    public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
+    public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
+    private ActivityResultLauncher<String> notificationPermissionLauncher;
+    private BroadcastReceiver updateReceiver;
+    private SwitchCompat showWindow, showNotification, useAccessibility;
+    private PackageMonitoringService monitoringService;
+    private boolean isServiceBound = false;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		INSTANCE = this;
-		if (AccessibilityMonitoringService.getInstance() == null && DatabaseUtil.hasAccess())
-			startService(new Intent().setClass(this, AccessibilityMonitoringService.class));
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            PackageMonitoringService.LocalBinder binder =
+                    (PackageMonitoringService.LocalBinder) service;
+            monitoringService = binder.getService();
+            isServiceBound = true;
+        }
 
-		DatabaseUtil.setDisplayWidth(getScreenWidth(this));
-		fancy = new MaterialAlertDialogBuilder(this).setNegativeButton("Close", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface di, int btn) {
-				di.dismiss();
-			}
-		}).setCancelable(false);
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isServiceBound = false;
+            monitoringService = null;
+        }
+    };
 
-		SpannableString s = new SpannableString(getString(R.string.app_name));
-		s.setSpan(new TypefaceSpan(this, "fonts/google_sans_bold.ttf"), 0, s.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setTitle(s);
+    class UpdateSwitchReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshWindowSwitch();
+            refreshNotificationSwitch();
+            refreshAccessibilitySwitch();
+        }
+    }
 
-		mWindowSwitch = findViewById(R.id.sw_window);
-		mNotificationSwitch = findViewById(R.id.sw_notification);
-		mAccessibilitySwitch = findViewById(R.id.sw_accessibility);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        startAccessibilityService();
+        DatabaseUtil.setDisplayWidth(getScreenWidth());
 
-		if (Build.VERSION.SDK_INT < 24) {
-			mNotificationSwitch.setVisibility(View.INVISIBLE);
-			findViewById(R.id.divider_useNotificationPref).setVisibility(View.INVISIBLE);
-		}
+        boolean isWindowActuallyShowing = WindowUtil.isViewVisible();
+        if (DatabaseUtil.isShowingWindow() != isWindowActuallyShowing) {
+            DatabaseUtil.setShowingWindow(isWindowActuallyShowing);
+        }
 
-		mReceiver = new UpdateSwitchReceiver();
-		ContextCompat.registerReceiver(this, mReceiver, new IntentFilter(ACTION_STATE_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED);
+        showWindow = findViewById(R.id.show_window);
+        showNotification = findViewById(R.id.show_notification);
+        useAccessibility = findViewById(R.id.use_accessibility);
+        Button downloadAccessibility = findViewById(R.id.download_accessibility);
+        Button configureWidth = findViewById(R.id.configure_width);
 
-		mNotificationSwitch.setOnCheckedChangeListener(new SwitchMaterial.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-				DatabaseUtil.setNotificationToggleEnabled(!isChecked);
-			}
-		});
-		mAccessibilitySwitch.setOnCheckedChangeListener(new SwitchMaterial.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-				DatabaseUtil.setHasAccess(isChecked);
-				if (isChecked && AccessibilityMonitoringService.getInstance() == null)
-					startService(new Intent().setClass(MainActivity.this, AccessibilityMonitoringService.class));
-			}
-		});
-		mWindowSwitch.setOnCheckedChangeListener(new SwitchMaterial.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-				if (!Settings.canDrawOverlays(MainActivity.this)) {
-					fancy.setTitle("Overlay Permission")
-							.setMessage("Please enable overlay permission to show window over other apps")
-							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface di, int btn) {
-									Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-									intent.setData(Uri.parse("package:" + getPackageName()));
-									startActivity(intent);
-									di.dismiss();
-								}
-							}).show();
-					mWindowSwitch.setChecked(false);
-				} else if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
-					fancy.setTitle("Accessibility Permission").setMessage(
-							"As per your choice, please grant permission to use Accessibility Service for Current Activity app in order to get current activity info")
-							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface di, int btn) {
-									Intent intent = new Intent();
-									intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-									startActivity(intent);
-									di.dismiss();
-								}
-							}).show();
-					mWindowSwitch.setChecked(false);
-				} else if (!usageStats(MainActivity.this)) {
-					fancy.setTitle("Usage Access").setMessage(
-							"In order to monitor current task, please grant Usage Access permission for Current Activity app")
-							.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface di, int btn) {
-									Intent intent = new Intent();
-									intent.setAction("android.settings.USAGE_ACCESS_SETTINGS");
-									startActivity(intent);
-									di.dismiss();
-								}
-							}).show();
-					mWindowSwitch.setChecked(false);
-				} else {
-					DatabaseUtil.setAppInitiated(true);
-					DatabaseUtil.setIsShowWindow(isChecked);
-					if (!isChecked) {
-						WindowUtil.dismiss(MainActivity.this);
-					} else {
-						WindowUtil.show(MainActivity.this, getPackageName(), getClass().getName());
-						startService(new Intent(MainActivity.this, MonitoringService.class));
-					}
-				}
-			}
-		});
+        updateReceiver = new UpdateSwitchReceiver();
+        ContextCompat.registerReceiver(this, updateReceiver,
+                new IntentFilter(ACTION_STATE_CHANGED), ContextCompat.RECEIVER_EXPORTED);
 
-		if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false))
-			mWindowSwitch.setChecked(true);
-	}
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    DatabaseUtil.setShowNotification(isGranted);
+                    showNotification.setChecked(isGranted);
+                });
 
-	public static int getScreenWidth(Activity activity) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
-			Insets insets = windowMetrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
-			return windowMetrics.getBounds().width() - insets.left - insets.right;
-		} else {
-			DisplayMetrics displayMetrics = new DisplayMetrics();
-			activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-			return displayMetrics.widthPixels;
-		}
-	}
+        useAccessibility.setOnCheckedChangeListener((button, isChecked) -> {
+            DatabaseUtil.setUseAccessibility(isChecked);
+            startAccessibilityService();
+        });
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		if (getIntent().getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
-			mWindowSwitch.setChecked(true);
-		}
-	}
+        showNotification.setOnCheckedChangeListener((button, isChecked) -> {
+            DatabaseUtil.setShowNotification(isChecked);
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !mNotificationSwitch.isChecked()) {
-			if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-				requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION);
-			}
-		}
-	}
+            if (isChecked && !isNotificationGranted()) {
+                requestNotificationPermission();
+            }
+        });
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == REQUEST_CODE_NOTIFICATION) {
-			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-						&& shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-					requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_NOTIFICATION);
-				} else {
-					showToast("POST_NOTIFICATIONS Permission Denied", Toast.LENGTH_SHORT);
-				}
-			} else {
-				showToast("POST_NOTIFICATIONS Permission Granted", Toast.LENGTH_SHORT);
-			}
-		}
-	}
+        showWindow.setOnClickListener(v -> {
+            boolean isChecked = showWindow.isChecked();
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		refreshWindowSwitch();
-		refreshNotificationSwitch();
-		refreshAccessibilitySwitch();
-		NotificationMonitor.cancelNotification(this);
-	}
+            if (!isChecked) {
+                DatabaseUtil.setShowingWindow(false);
+                NotificationReceiver.cancelNotification();
+                WindowUtil.dismiss(this);
+            }
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		if (DatabaseUtil.isShowWindow()) {
-			NotificationMonitor.showNotification(this, false);
-		}
-	}
+            if (isSystemOverlayGranted() && isCommonPermissionsGranted()) {
+                DatabaseUtil.setShowingWindow(true);
+                WindowUtil.show(this, getPackageName(), getClass().getName());
+                startAccessibilityService();
+                startPackageMonitoringService();
+            } else {
+                showWindow.setChecked(false);
+                requestSystemOverlayPermission();
+                requestCommonPermissions();
+            }
+        });
 
-	private void refreshWindowSwitch() {
-		mWindowSwitch.setChecked(DatabaseUtil.isShowWindow());
-		if (DatabaseUtil.hasAccess() && AccessibilityMonitoringService.getInstance() == null) {
-			mWindowSwitch.setChecked(false);
-		}
-	}
+        downloadAccessibility.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                    .setData(Uri.parse(
+                            "https://github.com/codehasan/Current-Activity/releases/tag/v"
+                                    + BuildConfig.VERSION_NAME));
+            startActivity(intent);
+        });
 
-	private void refreshAccessibilitySwitch() {
-		mAccessibilitySwitch.setChecked(DatabaseUtil.hasAccess());
-	}
+        configureWidth.setOnClickListener(v -> configureWidth());
 
-	private void refreshNotificationSwitch() {
-		mNotificationSwitch.setChecked(!DatabaseUtil.isNotificationToggleEnabled());
-	}
+        if (handleQsTileIntent(getIntent())) {
+            moveTaskToBack(true);
+        }
+    }
 
-	public void showToast(String str, int length) {
-		Toast.makeText(this, str, length).show();
-	}
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (handleQsTileIntent(intent)) {
+            moveTaskToBack(true);
+        }
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("GitHub Repo").setIcon(R.drawable.ic_github).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		SpannableString span = new SpannableString("About App");
-		span.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, span.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		menu.add(span);
-		span = new SpannableString("Crash Log");
-		span.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, span.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		menu.add(span);
-		span = new SpannableString("Bug Report");
-		span.setSpan(new TypefaceSpan(this, "fonts/google_sans_regular.ttf"), 0, span.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		menu.add(span);
-		return super.onCreateOptionsMenu(menu);
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startAccessibilityService();
+        refreshWindowSwitch();
+        refreshNotificationSwitch();
+        refreshAccessibilitySwitch();
+    }
 
-	public String readFile(File file) {
-		StringBuilder text = new StringBuilder();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
-			while (line != null) {
-				text.append(line);
-				text.append("\n");
-				line = br.readLine();
-			}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("GitHub Repo")
+                .setIcon(R.drawable.ic_github)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add("Check for Update");
+        return super.onCreateOptionsMenu(menu);
+    }
 
-			new FileOutputStream(file).write(text.toString().getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return text.toString();
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        CharSequence title = item.getTitle();
+        if (isNullOrEmpty(title)) return true;
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		String title = item.getTitle().toString();
-		if (title.equals("About App")) {
-			fancy.setTitle("About App").setMessage(
-					"An useful open source tool for Android Developers, which shows the package name and class name of current activity\n\nHere are the main features of this app!\n● It provides a freely moveable popup window to view current activity info\n● It supports text copying from popup window\n● It supports quick settings and app shortcut for easy access to the popup window. Meaning you can get the popup window in your screen from anywhere")
-					.show();
-		} else if (title.equals("Crash Log")) {
-			String errorLog = readFile(new File(App.getCrashLogDir(), "crash.txt"));
-			if (errorLog.isEmpty())
-				showToast("No log was found", 0);
-			else {
-				Intent intent = new Intent(this, CrashActivity.class);
-				intent.putExtra(CrashActivity.EXTRA_CRASH_INFO, errorLog);
-				intent.putExtra("Restart", false);
-				startActivity(intent);
-			}
-		} else if (title.equals("GitHub Repo")) {
-			fancy.setTitle("GitHub Repo").setMessage(
-					"It is an open source project. Would you like to visit the official github repo of this app")
-					.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface di, int btn) {
-							di.dismiss();
-							startActivity(new Intent().setAction(Intent.ACTION_VIEW)
-									.setData(Uri.parse("https://github.com/ratulhasanrahat/Current-Activity")));
-						}
-					}).show();
-		} else if (title.equals("Bug Report")) {
-			fancy.setTitle("Bug Report").setMessage(
-					"If you found a bug while using this app, please take a screenshot of it if possible. If it's a crash then you can find the crash log in this directory: "
-							+ new File(App.getCrashLogDir(), "crash.txt").getAbsolutePath()
-							+ "\n\nAfter you get all necessary things related to the bug, open an issue in github repo of this app with your bug report details")
-					.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface di, int btn) {
-							di.dismiss();
-							startActivity(new Intent().setAction(Intent.ACTION_VIEW).setData(
-									Uri.parse("https://github.com/ratulhasanrahat/Current-Activity/issues/new")));
-						}
-					}).show();
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        switch (title.toString()) {
+            case "GitHub Repo":
+                intent.setData(Uri.parse("https://github.com/codehasan/Current-Activity"));
+                startActivity(intent);
+                break;
+            case "Check for Update":
+                intent.setData(Uri.parse("https://github.com/codehasan/Current-Activity/releases"));
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unregisterReceiver(mReceiver);
-	}
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(updateReceiver);
+        super.onDestroy();
+    }
 
-	class UpdateSwitchReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			refreshWindowSwitch();
-			refreshNotificationSwitch();
-			refreshAccessibilitySwitch();
-		}
-	}
+    private int getScreenWidth() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        } else {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.widthPixels;
+        }
+    }
 
-	public static boolean usageStats(Context context) {
-		boolean granted = false;
-		AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-		int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(),
-				context.getPackageName());
+    private boolean handleQsTileIntent(Intent intent) {
+        if (intent.getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
+            showWindow.setChecked(true);
+            showWindow.callOnClick();
+            return DatabaseUtil.isShowingWindow();
+        }
+        return false;
+    }
 
-		if (mode == AppOpsManager.MODE_DEFAULT) {
-			granted = (context.checkCallingOrSelfPermission(
-					android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
-		} else {
-			granted = (mode == AppOpsManager.MODE_ALLOWED);
-		}
-		return granted;
-	}
+    private boolean isCommonPermissionsGranted() {
+        return !isAccessibilityNotStarted() && isUsageStatsGranted();
+    }
 
-	public void setupBattery() {
-		fancy.setTitle("Battery Optimizations").setMessage(
-				"Please remove battery optimization/restriction from this app in order to run in background with full functionality")
-				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface di, int btn) {
-						di.dismiss();
-						Intent intent = new Intent();
-						intent.setAction("android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS");
-						intent.setData(Uri.parse("package:" + getPackageName()));
-						startActivity(intent);
-					}
-				}).show();
+    private boolean isSystemOverlayGranted() {
+        return Settings.canDrawOverlays(this);
+    }
 
-	}
+    private boolean isNotificationGranted() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return true;
+        }
+        return checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED;
+    }
+
+    private boolean isUsageStatsGranted() {
+        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                Process.myUid(), getPackageName());
+
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            return checkCallingOrSelfPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED;
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private boolean isAccessibilityNotStarted() {
+        return BuildConfig.FLAVOR.equals("global") &&
+                DatabaseUtil.useAccessibility() &&
+                AccessibilityMonitoringService.getInstance() == null;
+    }
+
+    private void configureWidth() {
+        View dialogView = getLayoutInflater().inflate(R.layout.content_configure_width, null);
+        EditText widthInput = dialogView.findViewById(R.id.width);
+        TextView helperText = dialogView.findViewById(R.id.helper);
+
+        int screenWidth = getScreenWidth();
+        int userWidth = DatabaseUtil.getUserWidth();
+
+        if (userWidth != -1) {
+            widthInput.setText(String.valueOf(userWidth));
+        }
+        helperText.append("enter a width between 500 and " + screenWidth + ".");
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Configure Width")
+                .setView(dialogView)
+                .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("Save", null)
+                .create();
+
+        alertDialog.setOnShowListener(dialog -> {
+            Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            saveButton.setOnClickListener(v -> {
+                String input = widthInput.getText().toString();
+
+                if (input.trim().isEmpty()) {
+                    DatabaseUtil.setUserWidth(-1);
+                    dialog.dismiss();
+                    App.showToast(this, "Saved");
+                    return;
+                }
+
+                int width = Integer.parseInt(input);
+                if (width < 500) {
+                    widthInput.setError("Width should be greater than 500");
+                    return;
+                } else if (width > screenWidth) {
+                    widthInput.setError("Width should be less than screen width (" + screenWidth + ")");
+                    return;
+                }
+
+                DatabaseUtil.setUserWidth(width);
+                dialog.dismiss();
+                App.showToast(this, "Saved");
+            });
+        });
+
+        alertDialog.show();
+    }
+
+    private void startAccessibilityService() {
+        // Start Accessibility Monitoring Service if accessibility is enabled
+        if (isAccessibilityNotStarted()) {
+            Intent intent = new Intent(
+                    this, AccessibilityMonitoringService.class);
+            getApplicationContext().startService(intent);
+        }
+    }
+
+    private void startPackageMonitoringService() {
+        Intent intent = new Intent(this, PackageMonitoringService.class);
+        getApplicationContext().startService(intent);
+        getApplicationContext().bindService(
+                intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void refreshWindowSwitch() {
+        showWindow.setChecked(DatabaseUtil.isShowingWindow());
+    }
+
+    private void refreshNotificationSwitch() {
+        if (!isNotificationGranted()) {
+            DatabaseUtil.setShowNotification(false);
+            showNotification.setChecked(false);
+            return;
+        }
+        showNotification.setChecked(DatabaseUtil.isShowNotification());
+    }
+
+    private void refreshAccessibilitySwitch() {
+        useAccessibility.setChecked(DatabaseUtil.useAccessibility());
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        if (checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+            notificationPermissionLauncher.launch(POST_NOTIFICATIONS);
+        }
+    }
+
+    private void requestSystemOverlayPermission() {
+        if (!Settings.canDrawOverlays(this)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("System Overlay")
+                    .setMessage("Please allow draw over other apps permission for 'Current Activity'")
+                    .setPositiveButton("Settings", (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                                .setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
+    }
+
+    private void requestCommonPermissions() {
+        if (isAccessibilityNotStarted()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Accessibility Permission")
+                    .setMessage("Please enable Accessibility Service for 'Current Activity'")
+                    .setPositiveButton("Settings", (dialog, button) -> {
+                        startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
+
+        if (!isUsageStatsGranted()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Usage Access")
+                    .setMessage("Please allow Usage Access permission for 'Current Activity'")
+                    .setPositiveButton("Settings", (di, btn) -> {
+                        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+                        di.dismiss();
+                    })
+                    .show();
+        }
+    }
 }
