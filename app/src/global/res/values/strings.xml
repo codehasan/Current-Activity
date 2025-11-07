@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_permission">We use accessibility permission to monitor window change events. So that we can show the current activity info.</string>
+</resources>
