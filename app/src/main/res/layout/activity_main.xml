@@ -1,93 +1,160 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="io.github.ratul.topactivity.ui.MainActivity">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="8dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:padding="8dp">
 
-        <io.github.ratul.topactivity.view.NormalTextView
-            android:id="@+id/showWindoww"
-            android:textSize="16sp"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/textPrimary"
-            android:text="@string/show_window"/>
+            android:text="Show Floating Window"
+            android:textColor="?editTextColor"
+            android:textSize="16sp" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_window"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/show_window"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <com.google.android.material.textview.MaterialTextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/dividerColor"/>
+        android:background="?actionBarDivider" />
 
     <LinearLayout
-        android:id="@+id/useNotificationPref"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:gravity="center"
         android:minHeight="48dp"
         android:padding="8dp">
 
-        <io.github.ratul.topactivity.view.NormalTextView
-            android:id="@+id/disableNotif"
+        <LinearLayout
             android:layout_width="0dp"
-            android:textSize="16sp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:textColor="@color/textPrimary"
-            android:text="@string/use_toggle_notification"/>
+            android:orientation="vertical">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_notification"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Use Notification"
+                android:textColor="?editTextColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Show a notification to observe activity info"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/show_notification"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/divider_useNotificationPref"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/dividerColor"/>
+        android:background="?actionBarDivider" />
+
     <LinearLayout
-        android:id="@+id/useAccessibility"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:gravity="center"
         android:minHeight="48dp"
         android:padding="8dp">
 
-        <io.github.ratul.topactivity.view.NormalTextView
-            android:id="@+id/disableAccess"
+        <LinearLayout
             android:layout_width="0dp"
-            android:textSize="16sp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:textColor="@color/textPrimary"
-            android:text="Use Accessibility Service"/>
+            android:orientation="vertical">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/sw_accessibility"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Use Accessibility Service"
+                android:textColor="?editTextColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Improve package monitoring significantly"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/use_accessibility"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="@integer/use_accessibility" />
+
+        <Button
+            android:id="@+id/download_accessibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:visibility="@integer/show_global_link" />
     </LinearLayout>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/divider_useAccess"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/dividerColor"/>
+        android:background="?actionBarDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Set Window Size"
+                android:textColor="?editTextColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change the width of popup window"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/configure_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configure" />
+    </LinearLayout>
 </LinearLayout>
