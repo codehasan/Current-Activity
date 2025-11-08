@@ -39,6 +39,12 @@ public class App extends Application {
     private NotificationManagerCompat notificationManager;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        instance = this;
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
