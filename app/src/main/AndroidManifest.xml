@@ -53,9 +53,6 @@
                 android:value="true" />
         </service>
 
-        <receiver
-            android:name=".receivers.NotificationReceiver"
-            android:exported="true"
-            android:permission="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+        <receiver android:name=".receivers.NotificationReceiver" />
     </application>
 </manifest>
