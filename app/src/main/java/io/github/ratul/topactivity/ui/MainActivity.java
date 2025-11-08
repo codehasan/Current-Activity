@@ -19,7 +19,9 @@ package io.github.ratul.topactivity.ui;
 import static android.Manifest.permission.PACKAGE_USAGE_STATS;
 import static android.Manifest.permission.POST_NOTIFICATIONS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
+import static com.android.volley.Request.Method.GET;
+import static java.lang.Integer.parseInt;
+import static io.github.ratul.topactivity.App.showToast;
 
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
@@ -52,7 +54,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 
-import io.github.ratul.topactivity.App;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 import io.github.ratul.topactivity.BuildConfig;
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
@@ -69,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     private ActivityResultLauncher<String> notificationPermissionLauncher;
-    private BroadcastReceiver updateReceiver;
     private SwitchCompat showWindow, showNotification, useAccessibility;
+    private BroadcastReceiver updateReceiver;
     private PackageMonitoringService monitoringService;
     private boolean isServiceBound = false;
 
@@ -103,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkForUpdate(true);
         startAccessibilityService();
         DatabaseUtil.setDisplayWidth(getScreenWidth());
 
@@ -163,11 +171,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         downloadAccessibility.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse(
-                            "https://github.com/codehasan/Current-Activity/releases/tag/v"
-                                    + BuildConfig.VERSION_NAME));
-            startActivity(intent);
+            openLink("https://github.com/codehasan/Current-Activity/releases/tag/v"
+                    + BuildConfig.VERSION_NAME);
         });
 
         configureWidth.setOnClickListener(v -> configureWidth());
@@ -196,28 +201,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("GitHub Repo")
-                .setIcon(R.drawable.ic_github)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add("Check for Update");
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        CharSequence title = item.getTitle();
-        if (isNullOrEmpty(title)) return true;
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        switch (title.toString()) {
-            case "GitHub Repo":
-                intent.setData(Uri.parse("https://github.com/codehasan/Current-Activity"));
-                startActivity(intent);
-                break;
-            case "Check for Update":
-                intent.setData(Uri.parse("https://github.com/codehasan/Current-Activity/releases"));
-                startActivity(intent);
-                break;
+        if (item.getItemId() == R.id.github) {
+            openLink("https://github.com/codehasan/Current-Activity");
+        } else if (item.getItemId() == R.id.check_update) {
+            showToast(this, "Checking for update");
+            checkForUpdate(false);
         }
         return true;
     }
@@ -282,6 +276,50 @@ public class MainActivity extends AppCompatActivity {
                 AccessibilityMonitoringService.getInstance() == null;
     }
 
+    private void checkForUpdate(boolean silent) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonObject = new JSONObject();
+        String url = "https://api.github.com/repos/codehasan/Current-Activity/releases/latest";
+        JsonObjectRequest releasesRequest = new JsonObjectRequest(GET, url, jsonObject,
+                response -> {
+                    try {
+                        processUpdateResponse(response);
+                    } catch (Throwable ignored) {
+                        handleErrorResponse(silent);
+                    }
+                },
+                error -> handleErrorResponse(silent));
+        releasesRequest.setShouldRetryConnectionErrors(true);
+        releasesRequest.setShouldCache(false);
+
+        requestQueue.add(releasesRequest);
+    }
+
+    private void handleErrorResponse(boolean silent) {
+        if (!silent) {
+            showToast(this, "Failed to check for update");
+            openLink("https://github.com/codehasan/Current-Activity/releases");
+        }
+    }
+
+    private void processUpdateResponse(JSONObject response) throws Throwable {
+        String tag = response.getString("tag_name");
+        String serverVersion = tag.replaceAll("[^0-9]", "");
+        String currentVersion = BuildConfig.VERSION_NAME.replaceAll("[^0-9]", "");
+
+        if (parseInt(serverVersion) != parseInt(currentVersion)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Update Available")
+                    .setMessage("A new version (" + tag + ") is available. Do you want to download it?")
+                    .setPositiveButton("Download", (dialog, which) -> {
+                        openLink("https://github.com/codehasan/Current-Activity/releases/tag/" + tag);
+                        dialog.dismiss();
+                    })
+                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .show();
+        }
+    }
+
     private void configureWidth() {
         View dialogView = getLayoutInflater().inflate(R.layout.content_configure_width, null);
         EditText widthInput = dialogView.findViewById(R.id.width);
@@ -310,11 +348,11 @@ public class MainActivity extends AppCompatActivity {
                 if (input.trim().isEmpty()) {
                     DatabaseUtil.setUserWidth(-1);
                     dialog.dismiss();
-                    App.showToast(this, "Saved");
+                    showToast(this, "Saved");
                     return;
                 }
 
-                int width = Integer.parseInt(input);
+                int width = parseInt(input);
                 if (width < 500) {
                     widthInput.setError("Width should be greater than 500");
                     return;
@@ -325,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
 
                 DatabaseUtil.setUserWidth(width);
                 dialog.dismiss();
-                App.showToast(this, "Saved");
+                showToast(this, "Saved");
             });
         });
 
@@ -411,5 +449,9 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+
+    private void openLink(String link) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
     }
 }
