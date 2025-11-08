@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Current Activity</string>
+    <string name="github">GitHub</string>
+    <string name="check_for_update">Check for Update</string>
 </resources>
