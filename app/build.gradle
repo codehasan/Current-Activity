@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "io.github.ratul.topactivity"
-        minSdkVersion 24
-        targetSdkVersion 36
+        minSdk 24
+        targetSdk 36
         versionCode 23
         versionName "2.0.0"
     }
