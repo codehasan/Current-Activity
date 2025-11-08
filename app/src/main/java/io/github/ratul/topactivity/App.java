@@ -34,6 +34,7 @@ import io.github.ratul.topactivity.ui.CopyToClipboardActivity;
 
 public class App extends Application {
     private static App instance;
+    private ClipboardManager clipboardManager;
     private SharedPreferences sharedPreferences;
     private NotificationManagerCompat notificationManager;
 
@@ -41,6 +42,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         sharedPreferences = getSharedPreferences(getPackageName(), 0);
         notificationManager = NotificationManagerCompat.from(this);
         createNotificationChannel(notificationManager);
@@ -54,15 +56,18 @@ public class App extends Application {
         return notificationManager;
     }
 
+    public ClipboardManager getClipboardManager() {
+        return clipboardManager;
+    }
+
     public static App getInstance() {
         return instance;
     }
 
     public static void copyString(Context context, String str, String msg) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(context.getString(R.string.app_name), str);
-            clipboard.setPrimaryClip(clip);
+            ClipData clip = ClipData.newPlainText("Current Activity", str);
+            getInstance().getClipboardManager().setPrimaryClip(clip);
         } else {
             Intent copyActivity = new Intent(context, CopyToClipboardActivity.class)
                     .putExtra(Intent.EXTRA_TEXT, str)

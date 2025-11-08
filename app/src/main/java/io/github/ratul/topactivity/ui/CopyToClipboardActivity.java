@@ -25,6 +25,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import io.github.ratul.topactivity.App;
 import io.github.ratul.topactivity.R;
 
 /**
@@ -35,17 +36,24 @@ public class CopyToClipboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        copyToClipboard(getIntent());
+        finish();
+    }
 
-        if (getIntent().hasExtra(Intent.EXTRA_TEXT)) {
-            String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        copyToClipboard(intent);
+    }
 
+    private void copyToClipboard(Intent intent) {
+        if (intent.hasExtra(Intent.EXTRA_TEXT)) {
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
             if (!isNullOrEmpty(text)) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip = new ClipData(ClipData.newPlainText(
-                        getString(R.string.app_name), text));
-                clipboard.setPrimaryClip(clip);
+                ClipData clipData = ClipData.newPlainText("Current Activity", text);
+                App.getInstance().getClipboardManager()
+                        .setPrimaryClip(clipData);
             }
         }
-        finish();
     }
 }
