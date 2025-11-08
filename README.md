@@ -19,23 +19,17 @@
   
 </div>
 
----
-
 ## ⚠️ Important Note
 
 > **Note:** Google prohibits the usage of **QUERY_ALL_PACKAGES** permission and **AccessibilityService** without a strong explanation. For that reason, the Play Store version of **Current Activity** won't have either of these features. While the app will still function, performance will vary. 
 > 
 > **💡 Recommendation:** It is strongly recommended to use the latest **Global** version from [**Releases**](https://github.com/codehasan/Current-Activity/releases) rather than from **Play Store**.
 
----
-
 ## ✨ Key Features
 
 - **📱 Real-Time Tracking:** View the **package name** and the **class name** of the app currently visible to the user (i.e., the top app).
 - **🛠️ Development & Debugging:** Quickly verify which components are launched, aid in deep-link development, and confirm third-party app interaction.
 - **🔧 Reverse Engineering:** Identify key components and packages in external applications for analysis.
-
----
 
 ## ⚙️ How It Works
 
@@ -44,8 +38,6 @@ The monitoring is made possible with two main services: **PackageMonitoringServi
 1. **PackageMonitoringService** actively checks for app state changes in the last 10 seconds, doing this every 500ms. Each time a state change is detected and confirmed to be in foreground, the popup window is updated to inform the user.
 
 2. **AccessibilityMonitoringService** complements **PackageMonitoringService** by actively observing window state changes. If a change is detected and confirmed not to be a System class (e.g., `android.view.View`), it immediately updates the popup window.
-
----
 
 ## 📸 Screenshots
 
@@ -57,14 +49,10 @@ The monitoring is made possible with two main services: **PackageMonitoringServi
   <img src="./.resources/images/screenshot_5.jpg" width="160" height="356" alt="Screenshot 5">
 </div>
 
----
-
 ## 🙏 Credits
 
 - [**Wen**](https://github.com/109021017) for the [project base](https://github.com/109021017/android-TopActivity)
 - [**Muhtaseem Al Mahmud**](https://github.com/KingMahmud) for project optimization
-
----
 
 ## 📄 License
 
