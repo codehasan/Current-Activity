@@ -17,9 +17,10 @@ allprojects {
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.getBuildDir()
-    delete File(rootProject.projectDir, 'app/build')
-    delete File(rootProject.projectDir, 'app/obfuscation')
-    delete File(rootProject.projectDir, 'app/global')
-    delete File(rootProject.projectDir, 'app/playStore')
+    def projectDir = rootProject.projectDir
+    delete "${projectDir}/build"
+    delete "${projectDir}/app/build"
+    delete "${projectDir}/app/obfuscation"
+    delete "${projectDir}/app/global"
+    delete "${projectDir}/app/playStore"
 }
