@@ -210,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        if (isAutoStartPermissionAvailable(this)) {
+        if (isAutoStartPermissionAvailable(this) &&
+                BuildConfig.FLAVOR.equals("global")) {
             autostartLayout.setVisibility(View.VISIBLE);
             autostartDivider.setVisibility(View.VISIBLE);
             allowAutostart.setOnClickListener(v -> requestAutoStartPermission(this));
