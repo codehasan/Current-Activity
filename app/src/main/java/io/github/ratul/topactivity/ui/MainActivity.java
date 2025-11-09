@@ -465,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
     private void requestCommonPermissions() {
         if (isAccessibilityNotStarted()) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Accessibility Permission")
+                    .setTitle("Accessibility")
                     .setMessage("Please enable Accessibility Service for 'Current Activity'")
                     .setPositiveButton("Settings", (dialog, button) -> {
                         startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
