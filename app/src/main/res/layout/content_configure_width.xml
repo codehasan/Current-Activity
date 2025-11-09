@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,18 +10,25 @@
         android:id="@+id/helper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:text="Set an empty value to use default 'CALCULATED' width or "
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="14sp" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/width"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:digits="0123456789"
-        android:hint="CALCULATED"
-        android:importantForAutofill="no"
-        android:inputType="numberDecimal"
-        android:maxLength="4"
-        android:maxLines="1" />
+        android:layout_marginTop="10dp"
+        android:hint="Width"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
