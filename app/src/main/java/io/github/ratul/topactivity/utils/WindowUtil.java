@@ -92,8 +92,11 @@ public class WindowUtil {
     }
 
     public static void dismiss(@NonNull Context context) {
-        if (windowManager != null) {
-            windowManager.removeView(baseView);
+        if (windowManager != null && isViewVisible()) {
+            try {
+                windowManager.removeView(baseView);
+            } catch (Throwable ignored) {
+            }
         }
         QuickSettingsTileService.updateTile(context);
     }
