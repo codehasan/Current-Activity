@@ -21,7 +21,6 @@ import static android.Manifest.permission.POST_NOTIFICATIONS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.android.volley.Request.Method.GET;
 import static java.lang.Integer.parseInt;
-import static io.github.ratul.topactivity.App.showToast;
 import static io.github.ratul.topactivity.utils.AutostartUtil.isAutoStartPermissionAvailable;
 import static io.github.ratul.topactivity.utils.AutostartUtil.requestAutoStartPermission;
 
@@ -39,13 +38,10 @@ import android.os.IBinder;
 import android.os.Process;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowMetrics;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,7 +50,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -62,6 +58,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.divider.MaterialDivider;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONObject;
 
@@ -70,7 +72,6 @@ import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
 import io.github.ratul.topactivity.services.PackageMonitoringService;
-import io.github.ratul.topactivity.utils.AutostartUtil;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.utils.WindowUtil;
 
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     private ActivityResultLauncher<String> notificationPermissionLauncher;
-    private SwitchCompat showWindow, showNotification, useAccessibility;
+    private CoordinatorLayout baseView;
+    private MaterialSwitch showWindow, showNotification, useAccessibility;
     private BroadcastReceiver updateReceiver;
     private PackageMonitoringService monitoringService;
     private boolean isServiceBound = false;
@@ -117,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        baseView = findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(baseView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -132,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             DatabaseUtil.setShowingWindow(isWindowActuallyShowing);
         }
 
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         showWindow = findViewById(R.id.show_window);
         showNotification = findViewById(R.id.show_notification);
         useAccessibility = findViewById(R.id.use_accessibility);
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         Button configureWidth = findViewById(R.id.configure_width);
 
         LinearLayout autostartLayout = findViewById(R.id.autostart_layout);
-        TextView autostartDivider = findViewById(R.id.autostart_divider);
+        MaterialDivider autostartDivider = findViewById(R.id.autostart_divider);
         Button allowAutostart = findViewById(R.id.allow_autostart);
 
         updateReceiver = new UpdateSwitchReceiver();
@@ -194,6 +198,18 @@ public class MainActivity extends AppCompatActivity {
 
         configureWidth.setOnClickListener(v -> configureWidth());
 
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.github) {
+                openLink("https://github.com/codehasan/Current-Activity");
+                return true;
+            } else if (item.getItemId() == R.id.check_update) {
+                showToast("Checking for update");
+                checkForUpdate(false);
+                return true;
+            }
+            return false;
+        });
+
         if (isAutoStartPermissionAvailable(this)) {
             autostartLayout.setVisibility(View.VISIBLE);
             autostartDivider.setVisibility(View.VISIBLE);
@@ -223,23 +239,6 @@ public class MainActivity extends AppCompatActivity {
         refreshWindowSwitch();
         refreshNotificationSwitch();
         refreshAccessibilitySwitch();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.github) {
-            openLink("https://github.com/codehasan/Current-Activity");
-        } else if (item.getItemId() == R.id.check_update) {
-            showToast(this, "Checking for update");
-            checkForUpdate(false);
-        }
-        return true;
     }
 
     @Override
@@ -317,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 response -> {
                     try {
-                        processUpdateResponse(response);
+                        processUpdateResponse(response, silent);
                     } catch (Throwable ignored) {
                         handleErrorResponse(silent);
                     }
@@ -330,18 +329,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleErrorResponse(boolean silent) {
         if (!silent) {
-            showToast(this, "Failed to check for update");
+            showToast("Failed to check for update");
             openLink("https://github.com/codehasan/Current-Activity/releases");
         }
     }
 
-    private void processUpdateResponse(JSONObject response) throws Throwable {
+    private void processUpdateResponse(JSONObject response, boolean silent) throws Throwable {
         String tag = response.getString("tag_name");
         String serverVersion = tag.replaceAll("[^0-9]", "");
         String currentVersion = BuildConfig.VERSION_NAME.replaceAll("[^0-9]", "");
 
         if (parseInt(serverVersion) > parseInt(currentVersion)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Update Available")
                     .setMessage("A new version (" + tag + ") is available. Do you want to download it?")
                     .setPositiveButton("Download", (dialog, which) -> {
@@ -350,23 +349,25 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
+        } else if (!silent) {
+            showToast("Already on the latest version");
         }
     }
 
     private void configureWidth() {
         View dialogView = getLayoutInflater().inflate(R.layout.content_configure_width, null);
-        EditText widthInput = dialogView.findViewById(R.id.width);
+        TextInputLayout widthInput = dialogView.findViewById(R.id.width);
         TextView helperText = dialogView.findViewById(R.id.helper);
 
         int screenWidth = getScreenWidth();
         int userWidth = DatabaseUtil.getUserWidth();
 
         if (userWidth != -1) {
-            widthInput.setText(String.valueOf(userWidth));
+            widthInput.getEditText().setText(String.valueOf(userWidth));
         }
         helperText.append("enter a width between 500 and " + screenWidth + ".");
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("Configure Width")
                 .setView(dialogView)
                 .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
@@ -376,12 +377,12 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setOnShowListener(dialog -> {
             Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
             saveButton.setOnClickListener(v -> {
-                String input = widthInput.getText().toString();
+                String input = widthInput.getEditText().getText().toString();
 
                 if (input.trim().isEmpty()) {
                     DatabaseUtil.setUserWidth(-1);
                     dialog.dismiss();
-                    showToast(this, "Saved");
+                    showToast("Saved");
                     return;
                 }
 
@@ -396,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
 
                 DatabaseUtil.setUserWidth(width);
                 dialog.dismiss();
-                showToast(this, "Saved");
+                showToast("Saved");
             });
         });
 
@@ -447,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestSystemOverlayPermission() {
         if (!Settings.canDrawOverlays(this)) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("System Overlay")
                     .setMessage("Please allow draw over other apps permission for 'Current Activity'")
                     .setPositiveButton("Settings", (dialog, which) -> {
@@ -456,35 +457,42 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         dialog.dismiss();
                     })
+                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
         }
     }
 
     private void requestCommonPermissions() {
         if (isAccessibilityNotStarted()) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Accessibility Permission")
                     .setMessage("Please enable Accessibility Service for 'Current Activity'")
                     .setPositiveButton("Settings", (dialog, button) -> {
                         startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
                         dialog.dismiss();
                     })
+                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
         }
 
         if (!isUsageStatsGranted()) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Usage Access")
                     .setMessage("Please allow Usage Access permission for 'Current Activity'")
                     .setPositiveButton("Settings", (di, btn) -> {
                         startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                         di.dismiss();
                     })
+                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
         }
     }
 
     private void openLink(String link) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+    }
+
+    private void showToast(String message) {
+        Snackbar.make(baseView, message, Snackbar.LENGTH_SHORT).show();
     }
 }
