@@ -1,22 +1,22 @@
 <div align="center">
   <img width="210" height="auto" src="./.resources/images/ic_launcher.png" alt="Current Activity Logo" border="0">
-  
+
   # Current Activity
-  
+
   **🔍 App Activity Inspector: Real-Time Foreground Status Monitor**
-  
+
   An essential tool for **Android Developers** and **Reverse Engineers**  
   Instantly displays the *package name* and *class name* of the application currently in the foreground.  
   Quickly inspect any active app on your device for development or debugging.
-  
+
   [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
   [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://www.android.com/)
   [![GitHub release](https://img.shields.io/github/v/release/codehasan/Current-Activity?include_prereleases)](https://github.com/codehasan/Current-Activity/releases)
-  
+
   <a href='https://play.google.com/store/apps/details?id=io.github.ratul.topactivity'>
     <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
   </a>
-  
+
 </div>
 
 ## ⚠️ Important Note
@@ -57,9 +57,9 @@ The monitoring is made possible with two main services: **PackageMonitoringServi
 ## 📄 License
 
 <div align="center">
-  
+
   [![License](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)](LICENSE)
-  
+
   Current Activity is licensed under [**GNU General Public License v3.0**](https://www.gnu.org/licenses/gpl-3.0.html) or later.
-  
+
 </div>
