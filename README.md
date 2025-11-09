@@ -49,9 +49,74 @@ The monitoring is made possible with two main services: **PackageMonitoringServi
   <img src="./.resources/images/screenshot_5.jpg" width="160" height="356" alt="Screenshot 5">
 </div>
 
+## 🤝 Contributing
+
+Contributions are what makes the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give this project a star! Thanks again!
+
+1. Fork the project
+2. Create your feature branch. (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes. (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch. (`git push origin feature/AmazingFeature`)
+5. Open a pull request.
+
+## 💡 FAQs
+
+### Unable to enable AccessibilityService for Current Activity?
+<details>
+<summary>Click to expand for the answer</summary>
+<br />
+
+1. Make sure you are using the global version, and not the version from Play Store.
+* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
+2. In Chinese roms, sideloaded third party apps are initially restricted from using AccessibilityService.
+* **Solution:** Watch this video in [YouTube](https://youtube.com/shorts/3mw_3TIF0y4)
+
+**Still having issues?** Please [open an issue here](https://github.com/codehasan/Current-Activity/issues) and include a screen recording or screenshot of the problem.
+</details>
+
+---
+
+### Unable to install Current Activity?
+<details>
+<summary>Click to expand for the answer</summary>
+<br />
+
+1. If you can't install from Play Store, download and install from GitHub.
+* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
+2. If installation is [blocked by Play Protect](./.resources/images/blocked_by_play_protect.jpg),
+    1. Open Play Store
+    2. Click on your account icon or menu icon and find Play Protect
+    3. Open settings in Play Protect and disable all the options
+
+**Still having issues?** Please [open an issue here](https://github.com/codehasan/Current-Activity/issues) and include a screen recording or screenshot of the problem.
+</details>
+
+---
+
+### AccessibilityService auto disabled or not working?
+<details>
+<summary>Click to expand for the answer</summary>
+<br />
+
+Some Chinese phones like Xiaomi are known to disable AccessibilityServices automatically.
+  1. Open Settings
+  2. Search for "autostart"
+  3. You may see `Autostart` or `Background autostart` in results, click on it
+  4. Find **Current Activity** and enable
+
+Watch these videos for more help,
+* Newer versions of Xiaomi - [YouTube](https://youtube.com/shorts/0zE2uj5-Dcg)
+* Older versions of Xiaomi - [YouTube](https://youtube.com/shorts/DeBkBQnUH9A)
+
+**Still having issues?** Please [open an issue here](https://github.com/codehasan/Current-Activity/issues) and include a screen recording or screenshot of the problem.
+</details>
+
 ## 🙏 Credits
 
-- [**Wen**](https://github.com/109021017) for the [project base](https://github.com/109021017/android-TopActivity)
+- [**Wen**](https://github.com/109021017) for [core resources](https://github.com/109021017/android-TopActivity)
 - [**Muhtaseem Al Mahmud**](https://github.com/KingMahmud) for project optimization
 
 ## 📄 License
