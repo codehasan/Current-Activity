@@ -8,9 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_github"
-        android:iconTint="#FFFFFF"
         android:title="@string/github"
         android:tooltipText="@string/github"
+        app:iconTint="?attr/colorOnSurface"
         app:showAsAction="ifRoom"
         tools:targetApi="26" />
 
