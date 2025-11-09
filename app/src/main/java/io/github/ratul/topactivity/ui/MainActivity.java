@@ -54,7 +54,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -262,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
         AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 Process.myUid(), getPackageName());
-
         if (mode == AppOpsManager.MODE_DEFAULT) {
             return checkCallingOrSelfPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED;
         }
@@ -277,10 +275,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkForUpdate(boolean silent) {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JSONObject jsonObject = new JSONObject();
-        String url = "https://api.github.com/repos/codehasan/Current-Activity/releases/latest";
-        JsonObjectRequest releasesRequest = new JsonObjectRequest(GET, url, jsonObject,
+        try {
+            Volley.newRequestQueue(this)
+                    .add(getVersionCheckRequest(silent));
+        } catch (Throwable ignored) {
+            handleErrorResponse(silent);
+        }
+    }
+
+    private JsonObjectRequest getVersionCheckRequest(boolean silent) {
+        JsonObjectRequest request = new JsonObjectRequest(GET,
+                "https://api.github.com/repos/codehasan/Current-Activity/releases/latest",
+                null,
                 response -> {
                     try {
                         processUpdateResponse(response);
@@ -289,10 +295,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },
                 error -> handleErrorResponse(silent));
-        releasesRequest.setShouldRetryConnectionErrors(true);
-        releasesRequest.setShouldCache(false);
-
-        requestQueue.add(releasesRequest);
+        request.setShouldRetryConnectionErrors(true);
+        request.setShouldCache(false);
+        return request;
     }
 
     private void handleErrorResponse(boolean silent) {
@@ -307,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         String serverVersion = tag.replaceAll("[^0-9]", "");
         String currentVersion = BuildConfig.VERSION_NAME.replaceAll("[^0-9]", "");
 
-        if (parseInt(serverVersion) != parseInt(currentVersion)) {
+        if (parseInt(serverVersion) > parseInt(currentVersion)) {
             new AlertDialog.Builder(this)
                     .setTitle("Update Available")
                     .setMessage("A new version (" + tag + ") is available. Do you want to download it?")
