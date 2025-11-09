@@ -176,7 +176,6 @@ public class WindowUtil {
         if (label != null) {
             return label;
         }
-
         // If not in cache, get the label
         try {
             label = packageManager.getApplicationLabel(
@@ -186,8 +185,8 @@ public class WindowUtil {
             return label;
         } catch (PackageManager.NameNotFoundException e) {
             // Return default and cache the default to avoid repeated lookups
-            appLabelCache.put(pkg, "Current Activity");
-            return "Current Activity";
+            appLabelCache.put(pkg, "Unknown");
+            return "Unknown";
         }
     }
 }
