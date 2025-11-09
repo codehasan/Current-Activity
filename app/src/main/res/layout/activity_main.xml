@@ -2,7 +2,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +17,7 @@
             android:layout_weight="1"
             android:text="Show Floating Window"
             android:textColor="?editTextColor"
-            android:textSize="16sp" />
+            android:textSize="@dimen/title_size" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/show_window"
@@ -52,13 +51,13 @@
                 android:layout_marginBottom="4dp"
                 android:text="Use Notification"
                 android:textColor="?editTextColor"
-                android:textSize="16sp" />
+                android:textSize="@dimen/title_size" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Show a notification to observe activity info"
-                android:textSize="12sp" />
+                android:textSize="@dimen/subtitle_size" />
         </LinearLayout>
 
         <androidx.appcompat.widget.SwitchCompat
@@ -93,13 +92,13 @@
                 android:layout_marginBottom="4dp"
                 android:text="Use Accessibility Service"
                 android:textColor="?editTextColor"
-                android:textSize="16sp" />
+                android:textSize="@dimen/title_size" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Improve package monitoring significantly"
-                android:textSize="12sp" />
+                android:textSize="@dimen/subtitle_size" />
         </LinearLayout>
 
         <androidx.appcompat.widget.SwitchCompat
@@ -115,6 +114,53 @@
             android:layout_height="wrap_content"
             android:text="Download"
             android:visibility="@integer/show_global_link" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/autostart_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?actionBarDivider"
+        android:visibility="@integer/use_accessibility" />
+
+    <LinearLayout
+        android:id="@+id/autostart_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:visibility="@integer/use_accessibility">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Use Autostart"
+                android:textColor="?editTextColor"
+                android:textSize="@dimen/title_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fix accessibility service problems"
+                android:textSize="@dimen/subtitle_size" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/allow_autostart"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable" />
     </LinearLayout>
 
     <TextView
@@ -143,13 +189,13 @@
                 android:layout_marginBottom="4dp"
                 android:text="Set Window Size"
                 android:textColor="?editTextColor"
-                android:textSize="16sp" />
+                android:textSize="@dimen/title_size" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Change the width of popup window"
-                android:textSize="12sp" />
+                android:textSize="@dimen/subtitle_size" />
         </LinearLayout>
 
         <Button

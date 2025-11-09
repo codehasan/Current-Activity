@@ -22,6 +22,8 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.android.volley.Request.Method.GET;
 import static java.lang.Integer.parseInt;
 import static io.github.ratul.topactivity.App.showToast;
+import static io.github.ratul.topactivity.utils.AutostartUtil.isAutoStartPermissionAvailable;
+import static io.github.ratul.topactivity.utils.AutostartUtil.requestAutoStartPermission;
 
 import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
@@ -30,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,14 +46,19 @@ import android.view.WindowInsets;
 import android.view.WindowMetrics;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -64,6 +70,7 @@ import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
 import io.github.ratul.topactivity.services.PackageMonitoringService;
+import io.github.ratul.topactivity.utils.AutostartUtil;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
 import io.github.ratul.topactivity.utils.WindowUtil;
 
@@ -108,7 +115,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
         checkForUpdate(true);
         startAccessibilityService();
         DatabaseUtil.setDisplayWidth(getScreenWidth());
@@ -123,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
         useAccessibility = findViewById(R.id.use_accessibility);
         Button downloadAccessibility = findViewById(R.id.download_accessibility);
         Button configureWidth = findViewById(R.id.configure_width);
+
+        LinearLayout autostartLayout = findViewById(R.id.autostart_layout);
+        TextView autostartDivider = findViewById(R.id.autostart_divider);
+        Button allowAutostart = findViewById(R.id.allow_autostart);
 
         updateReceiver = new UpdateSwitchReceiver();
         ContextCompat.registerReceiver(this, updateReceiver,
@@ -176,6 +194,15 @@ public class MainActivity extends AppCompatActivity {
 
         configureWidth.setOnClickListener(v -> configureWidth());
 
+        if (isAutoStartPermissionAvailable(this)) {
+            autostartLayout.setVisibility(View.VISIBLE);
+            autostartDivider.setVisibility(View.VISIBLE);
+            allowAutostart.setOnClickListener(v -> requestAutoStartPermission(this));
+        } else {
+            autostartLayout.setVisibility(View.GONE);
+            autostartDivider.setVisibility(View.GONE);
+        }
+
         if (handleQsTileIntent(getIntent())) {
             moveTaskToBack(true);
         }
@@ -224,7 +251,8 @@ public class MainActivity extends AppCompatActivity {
     private int getScreenWidth() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
-            Insets insets = windowMetrics.getWindowInsets().getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            android.graphics.Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
             return windowMetrics.getBounds().width() - insets.left - insets.right;
         } else {
             DisplayMetrics displayMetrics = new DisplayMetrics();
