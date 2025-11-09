@@ -102,10 +102,10 @@ Don't forget to give this project a star! Thanks again!
 <br />
 
 Some Chinese phones like Xiaomi are known to disable AccessibilityServices automatically.
-  1. Open Settings
-  2. Search for "autostart"
-  3. You may see `Autostart` or `Background autostart` in results, click on it
-  4. Find **Current Activity** and enable
+  1. Check to see if there is an option called `Use Autostart` in Current Activity (Added in v2.0.0)
+  2. Click on `Enable`
+  3. Find **Current Activity** and enable
+  4. If you don't see this option, please update to the latest global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
 
 Watch these videos for more help,
 * Newer versions of Xiaomi - [YouTube](https://youtube.com/shorts/0zE2uj5-Dcg)
