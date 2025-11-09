@@ -10,7 +10,7 @@
         android:id="@+id/helper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set an empty value to use default 'CALCULATED' width or "
+        android:text="Set an empty value to use default calculated width or "
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="14sp" />
 
