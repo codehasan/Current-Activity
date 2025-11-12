@@ -195,10 +195,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        downloadAccessibility.setOnClickListener(v -> {
-            openLink(REPO_URL + "/releases/tag/v" + BuildConfig.VERSION_NAME);
-        });
-
+        downloadAccessibility.setOnClickListener(v -> openLink(REPO_URL + "/releases/latest"));
         configureWidth.setOnClickListener(v -> configureWidth());
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -335,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleErrorResponse(boolean silent) {
         if (!silent) {
             showToast(R.string.update_check_failed);
-            openLink(REPO_URL + "/releases");
+            openLink(REPO_URL + "/releases/latest");
         }
     }
 
