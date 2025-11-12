@@ -23,7 +23,7 @@
 
 > **Note:** Google prohibits the usage of **QUERY_ALL_PACKAGES** permission and **AccessibilityService** without a strong explanation. For that reason, the Play Store version of **Current Activity** won't have either of these features. While the app will still function, performance will vary. 
 > 
-> **💡 Recommendation:** It is strongly recommended to use the latest **Global** version from [**Releases**](https://github.com/codehasan/Current-Activity/releases) rather than from **Play Store**.
+> **💡 Recommendation:** It is strongly recommended to use the latest **Global** version from [**Releases**](https://github.com/codehasan/Current-Activity/releases/latest) rather than from **Play Store**.
 
 ## ✨ Key Features
 
@@ -70,7 +70,7 @@ Don't forget to give this project a star! Thanks again!
 <br />
 
 1. Make sure you are using the global version, and not the version from Play Store.
-* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
+* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases/latest)
 2. In Chinese roms, sideloaded third party apps are initially restricted from using AccessibilityService.
 * **Solution:** Watch this video in [YouTube](https://youtube.com/shorts/3mw_3TIF0y4)
 
@@ -85,7 +85,7 @@ Don't forget to give this project a star! Thanks again!
 <br />
 
 1. If you can't install from Play Store, download and install from GitHub.
-* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
+* **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases/latest)
 2. If installation is [blocked by Play Protect](./.resources/images/blocked_by_play_protect.jpg),
     1. Open Play Store
     2. Click on your account icon or menu icon and find Play Protect
@@ -105,7 +105,7 @@ Some Chinese phones like Xiaomi are known to disable AccessibilityServices autom
   1. Check to see if there is an option called `Use Autostart` in Current Activity (Added in v2.0.0)
   2. Click on `Enable`
   3. Find **Current Activity** and enable
-  4. If you don't see this option, please update to the latest global version from [Releases](https://github.com/codehasan/Current-Activity/releases)
+  4. If you don't see this option, please update to the latest global version from [Releases](https://github.com/codehasan/Current-Activity/releases/latest)
 
 Watch these videos for more help,
 * Newer versions of Xiaomi - [YouTube](https://youtube.com/shorts/0zE2uj5-Dcg)
