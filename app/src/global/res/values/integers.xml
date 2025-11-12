@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  2: INVISIBLE, 0: VISIBLE  -->
     <integer name="use_accessibility">0</integer>
     <integer name="show_global_link">2</integer>
 </resources>
