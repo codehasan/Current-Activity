@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import io.github.ratul.topactivity.R;
+
 public class AutostartUtil {
     private static final ComponentName[] AUTOSTART_COMPONENTS = {
             // Xiaomi
@@ -77,7 +79,7 @@ public class AutostartUtil {
                     .setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings$AccessLockSummaryActivity"));
             context.startActivity(intent);
         } catch (Throwable ignored) {
-            showToast(context, "Failed to open Autostart");
+            showToast(context, R.string.autostart_open_failed);
         }
     }
 }

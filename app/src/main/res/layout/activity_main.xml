@@ -42,7 +42,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Show Floating Window"
+                    android:text="@string/show_floating_window"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="@dimen/title_size" />
 
@@ -77,14 +77,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Use Notification"
+                        android:text="@string/use_notification"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/title_size" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Show a notification to observe activity info"
+                        android:text="@string/use_notification_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/subtitle_size" />
                 </LinearLayout>
@@ -120,14 +120,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Use Accessibility Service"
+                        android:text="@string/use_accessibility_service"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/title_size" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Improve package monitoring significantly"
+                        android:text="@string/use_accessibility_service_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/subtitle_size" />
                 </LinearLayout>
@@ -142,7 +142,7 @@
                     android:id="@+id/download_accessibility"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Download"
+                    android:text="@string/download"
                     android:visibility="@integer/show_global_link" />
             </LinearLayout>
 
@@ -175,14 +175,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Use Autostart"
+                        android:text="@string/use_autostart"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/title_size" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Fix accessibility service problems"
+                        android:text="@string/use_autostart_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/subtitle_size" />
                 </LinearLayout>
@@ -191,7 +191,7 @@
                     android:id="@+id/allow_autostart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enable" />
+                    android:text="@string/enable" />
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
@@ -219,14 +219,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="Set Window Size"
+                        android:text="@string/set_window_size"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/title_size" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Change the width of popup window"
+                        android:text="@string/set_window_size_desc"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="@dimen/subtitle_size" />
                 </LinearLayout>
@@ -235,7 +235,7 @@
                     android:id="@+id/configure_width"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Configure" />
+                    android:text="@string/configure" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

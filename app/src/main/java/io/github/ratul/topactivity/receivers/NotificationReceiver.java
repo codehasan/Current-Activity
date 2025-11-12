@@ -2,17 +2,16 @@ package io.github.ratul.topactivity.receivers;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static androidx.core.app.NotificationCompat.Action;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -28,15 +27,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static final int ACTION_COPY = 1;
     public static final int ACTION_STOP = 2;
     public static final String EXTRA_NOTIFICATION_ACTION = "command";
-
-    public static void createNotificationChannel(@NonNull NotificationManagerCompat notificationManager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "Activity Info", NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("Shows current activity info");
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     public static void showNotification(
             @NonNull Context context, @NonNull String title, String message) {
@@ -75,12 +65,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private static Notification buildNotification(Context context, String pkg, String cls) {
-        NotificationCompat.Action copyPkg = new NotificationCompat.Action(R.drawable.ic_package, "Package",
-                getCopyPendingIntent(context, 3429872, pkg, "Package copied"));
-        NotificationCompat.Action copyClass = new NotificationCompat.Action(R.drawable.ic_class, "Class",
-                getCopyPendingIntent(context, 3429873, cls, "Class copied"));
-        NotificationCompat.Action stop = new NotificationCompat.Action(
-                R.drawable.ic_cancel, "Stop", getStopPendingIntent(context));
+        Action copyPkg = new Action(R.drawable.ic_package, context.getString(R.string.package_label),
+                getCopyPendingIntent(context, 3429872, pkg, R.string.package_copied));
+        Action copyClass = new Action(R.drawable.ic_class, context.getString(R.string.class_label),
+                getCopyPendingIntent(context, 3429873, cls, R.string.class_copied));
+        Action stop = new Action(R.drawable.ic_cancel, context.getString(R.string.stop),
+                getStopPendingIntent(context));
 
         return new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(pkg)
@@ -95,11 +85,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private static PendingIntent getCopyPendingIntent(
-            Context context, int requestCode, String text, String message) {
+            Context context, int requestCode, String text, @StringRes int message) {
         Intent intent = new Intent(context, NotificationReceiver.class)
                 .putExtra(EXTRA_NOTIFICATION_ACTION, ACTION_COPY)
                 .putExtra(Intent.EXTRA_TEXT, text)
-                .putExtra(Intent.EXTRA_ASSIST_CONTEXT, message);
+                .putExtra(Intent.EXTRA_ASSIST_CONTEXT, context.getString(message));
         return PendingIntent.getBroadcast(context,
                 requestCode, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
     }

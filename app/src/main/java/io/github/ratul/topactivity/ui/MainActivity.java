@@ -21,6 +21,8 @@ import static android.Manifest.permission.POST_NOTIFICATIONS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.android.volley.Request.Method.GET;
 import static java.lang.Integer.parseInt;
+import static io.github.ratul.topactivity.App.API_URL;
+import static io.github.ratul.topactivity.App.REPO_URL;
 import static io.github.ratul.topactivity.utils.AutostartUtil.isAutoStartPermissionAvailable;
 import static io.github.ratul.topactivity.utils.AutostartUtil.requestAutoStartPermission;
 
@@ -48,6 +50,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings({"ConstantConditions"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,18 +196,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         downloadAccessibility.setOnClickListener(v -> {
-            openLink("https://github.com/codehasan/Current-Activity/releases/tag/v"
-                    + BuildConfig.VERSION_NAME);
+            openLink(REPO_URL + "/releases/tag/v" + BuildConfig.VERSION_NAME);
         });
 
         configureWidth.setOnClickListener(v -> configureWidth());
 
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.github) {
-                openLink("https://github.com/codehasan/Current-Activity");
+                openLink(REPO_URL);
                 return true;
             } else if (item.getItemId() == R.id.check_update) {
-                showToast("Checking for update");
+                showToast(R.string.checking_for_update);
                 checkForUpdate(false);
                 return true;
             }
@@ -279,10 +282,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isNotificationGranted() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return true;
-        }
-        return checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED;
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED;
     }
 
     private boolean isUsageStatsGranted() {
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
 
     private JsonObjectRequest getVersionCheckRequest(boolean silent) {
         JsonObjectRequest request = new JsonObjectRequest(GET,
-                "https://api.github.com/repos/codehasan/Current-Activity/releases/latest",
+                API_URL + "/releases/latest",
                 null,
                 response -> {
                     try {
@@ -330,8 +331,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleErrorResponse(boolean silent) {
         if (!silent) {
-            showToast("Failed to check for update");
-            openLink("https://github.com/codehasan/Current-Activity/releases");
+            showToast(R.string.update_check_failed);
+            openLink(REPO_URL + "/releases");
         }
     }
 
@@ -342,16 +343,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (parseInt(serverVersion) > parseInt(currentVersion)) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Update Available")
-                    .setMessage("A new version (" + tag + ") is available. Do you want to download it?")
-                    .setPositiveButton("Download", (dialog, which) -> {
-                        openLink("https://github.com/codehasan/Current-Activity/releases/tag/" + tag);
+                    .setTitle(R.string.update_available)
+                    .setMessage(getString(R.string.new_version_available, tag))
+                    .setPositiveButton(R.string.download, (dialog, which) -> {
+                        openLink(REPO_URL + "/releases/tag/" + tag);
                         dialog.dismiss();
                     })
-                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
         } else if (!silent) {
-            showToast("Already on the latest version");
+            showToast(R.string.already_using_latest);
         }
     }
 
@@ -360,19 +361,20 @@ public class MainActivity extends AppCompatActivity {
         TextInputLayout widthInput = dialogView.findViewById(R.id.width);
         TextView helperText = dialogView.findViewById(R.id.helper);
 
+        int minWidth = 500;
         int screenWidth = getScreenWidth();
         int userWidth = DatabaseUtil.getUserWidth();
 
         if (userWidth != -1) {
             widthInput.getEditText().setText(String.valueOf(userWidth));
         }
-        helperText.append("enter a width between 500 and " + screenWidth + ".");
+        helperText.setText(getString(R.string.configure_width_help, minWidth, screenWidth));
 
         AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
-                .setTitle("Configure Width")
+                .setTitle(R.string.configure_width_title)
                 .setView(dialogView)
-                .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .setPositiveButton("Save", null)
+                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.save, null)
                 .create();
 
         alertDialog.setOnShowListener(dialog -> {
@@ -383,22 +385,22 @@ public class MainActivity extends AppCompatActivity {
                 if (input.trim().isEmpty()) {
                     DatabaseUtil.setUserWidth(-1);
                     dialog.dismiss();
-                    showToast("Saved");
+                    showToast(R.string.saved);
                     return;
                 }
 
                 int width = parseInt(input);
-                if (width < 500) {
-                    widthInput.setError("Width should be greater than 500");
+                if (width < minWidth) {
+                    widthInput.setError(getString(R.string.low_width_error_msg, minWidth));
                     return;
                 } else if (width > screenWidth) {
-                    widthInput.setError("Width should be less than screen width (" + screenWidth + ")");
+                    widthInput.setError(getString(R.string.high_width_error_msg, screenWidth));
                     return;
                 }
 
                 DatabaseUtil.setUserWidth(width);
                 dialog.dismiss();
-                showToast("Saved");
+                showToast(R.string.saved);
             });
         });
 
@@ -450,15 +452,15 @@ public class MainActivity extends AppCompatActivity {
     private void requestSystemOverlayPermission() {
         if (!Settings.canDrawOverlays(this)) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("System Overlay")
-                    .setMessage("Please allow draw over other apps permission for 'Current Activity'")
-                    .setPositiveButton("Settings", (dialog, which) -> {
+                    .setTitle(R.string.system_overlay_title)
+                    .setMessage(getString(R.string.system_overlay_description, getString(R.string.app_name)))
+                    .setPositiveButton(R.string.settings, (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
                                 .setData(Uri.parse("package:" + getPackageName()));
                         startActivity(intent);
                         dialog.dismiss();
                     })
-                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
         }
     }
@@ -466,34 +468,34 @@ public class MainActivity extends AppCompatActivity {
     private void requestCommonPermissions() {
         if (isAccessibilityNotStarted()) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Accessibility")
-                    .setMessage("Please enable Accessibility Service for 'Current Activity'")
-                    .setPositiveButton("Settings", (dialog, button) -> {
+                    .setTitle(R.string.accessibility_permission_title)
+                    .setMessage(getString(R.string.accessibility_permission_description, getString(R.string.app_name)))
+                    .setPositiveButton(R.string.settings, (dialog, button) -> {
                         startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
                         dialog.dismiss();
                     })
-                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
         }
 
         if (!isUsageStatsGranted()) {
             new MaterialAlertDialogBuilder(this)
-                    .setTitle("Usage Access")
-                    .setMessage("Please allow Usage Access permission for 'Current Activity'")
-                    .setPositiveButton("Settings", (di, btn) -> {
+                    .setTitle(R.string.usage_access_title)
+                    .setMessage(getString(R.string.usage_access_description, getString(R.string.app_name)))
+                    .setPositiveButton(R.string.settings, (di, btn) -> {
                         startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                         di.dismiss();
                     })
-                    .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                     .show();
         }
     }
 
-    private void openLink(String link) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)));
+    private void openLink(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
-    private void showToast(String message) {
+    private void showToast(@StringRes int message) {
         Snackbar.make(baseView, message, Snackbar.LENGTH_SHORT).show();
     }
 }

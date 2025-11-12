@@ -5,5 +5,45 @@
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+        </intent>
+
+        <intent>
+            <action android:name="android.view.InputMethod" />
+        </intent>
+
+        <intent>
+            <action android:name="android.accessibilityservice.AccessibilityService" />
+        </intent>
+
+        <intent>
+            <action android:name="android.service.wallpaper.WallpaperService" />
+        </intent>
+
+        <intent>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent>
+
+        <intent>
+            <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+        </intent>
+
+        <intent>
+            <action android:name="android.service.quicksettings.action.QS_TILE" />
+        </intent>
+
+        <intent>
+            <action android:name="android.service.notification.NotificationListenerService" />
+        </intent>
+
+        <intent>
+            <action android:name="android.net.VpnService" />
+        </intent>
     </queries>
 </manifest>

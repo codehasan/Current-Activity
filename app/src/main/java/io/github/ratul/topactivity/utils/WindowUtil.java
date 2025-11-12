@@ -16,6 +16,8 @@
  */
 package io.github.ratul.topactivity.utils;
 
+import static io.github.ratul.topactivity.App.copyString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +37,6 @@ import androidx.annotation.NonNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.ratul.topactivity.App;
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.QuickSettingsTileService;
@@ -45,7 +46,7 @@ import io.github.ratul.topactivity.ui.MainActivity;
  * Created by Ratul on 04/05/2022.
  */
 public class WindowUtil {
-    private static final Map<String, String> appLabelCache = new ConcurrentHashMap<>();
+    private static final Map<String, String> appNameCache = new ConcurrentHashMap<>();
     private static WindowManager.LayoutParams layoutParams;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
@@ -78,7 +79,12 @@ public class WindowUtil {
         boolean isClassChanged = !className.getText().toString().equals(cls);
 
         if (isPackageChanged) {
-            appName.setText(getAppName(pkg));
+            String name = getAppName(pkg);
+            if (name != null) {
+                appName.setText(name);
+            } else {
+                appName.setText(R.string.unknown);
+            }
             packageName.setText(pkg);
         }
 
@@ -110,11 +116,14 @@ public class WindowUtil {
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         packageManager = context.getPackageManager();
 
-        layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
+        layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                        : WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
+                        WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
 
         layoutParams.gravity = Gravity.CENTER;
         layoutParams.windowAnimations = android.R.style.Animation_Toast;
@@ -127,13 +136,16 @@ public class WindowUtil {
 
         View.OnLongClickListener copyListener = v -> {
             TextView textView = (TextView) v;
-            String label = "";
+            String message;
 
-            if (v.getId() == R.id.app_name) label = "App name";
-            else if (v.getId() == R.id.package_name) label = "Package";
-            else if (v.getId() == R.id.class_name) label = "Class";
-
-            App.copyString(context, textView.getText().toString(), label + " copied");
+            if (v.getId() == R.id.package_name) {
+                message = context.getString(R.string.package_copied);
+            } else if (v.getId() == R.id.class_name) {
+                message = context.getString(R.string.class_copied);
+            } else {
+                message = context.getString(R.string.copied);
+            }
+            copyString(context, textView.getText().toString(), message);
             return true;
         };
 
@@ -170,23 +182,22 @@ public class WindowUtil {
         });
     }
 
+    @NonNull
     private static String getAppName(@NonNull String pkg) {
-        // Check cache first
-        String label = appLabelCache.get(pkg);
-        if (label != null) {
-            return label;
+        String cached = appNameCache.get(pkg);
+        if (cached != null) {
+            return cached;
         }
-        // If not in cache, get the label
+
         try {
-            label = packageManager.getApplicationLabel(
+            String name = packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(pkg, 0)).toString();
-            // Store result in cache
-            appLabelCache.put(pkg, label);
-            return label;
+            appNameCache.put(pkg, name);
+            return name;
         } catch (PackageManager.NameNotFoundException e) {
-            // Return default and cache the default to avoid repeated lookups
-            appLabelCache.put(pkg, "Unknown");
-            return "Unknown";
+            // Return null and cache it to avoid repeated lookups
+            appNameCache.put(pkg, null);
+            return null;
         }
     }
 }

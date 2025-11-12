@@ -19,7 +19,6 @@ package io.github.ratul.topactivity.ui;
 import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
 
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -50,7 +49,7 @@ public class CopyToClipboardActivity extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             String text = intent.getStringExtra(Intent.EXTRA_TEXT);
             if (!isNullOrEmpty(text)) {
-                ClipData clipData = ClipData.newPlainText("Current Activity", text);
+                ClipData clipData = ClipData.newPlainText(getString(R.string.app_name), text);
                 App.getInstance().getClipboardManager()
                         .setPrimaryClip(clipData);
             }

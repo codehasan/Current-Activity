@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Current Activity</string>
+    <!-- APP NAME SHOULDN'T BE TRANSLATED -->
+    <string name="app_name" translatable="false">Current Activity</string>
+    <string name="accessibility_service_description">We use accessibility service to monitor window state change events. All data is processed offline and no log is kept.</string>
     <string name="github">GitHub</string>
     <string name="check_for_update">Check for Update</string>
-    <string name="accessibility_permission_description">We use accessibility service to monitor window state change events. All data is processed offline and no log is kept.</string>
+    <string name="checking_for_update">Checking for update</string>
+    <string name="update_available">Update Available</string>
+    <string name="new_version_available">A new version %s is available. Do you want to download it?</string>
+    <string name="download">Download</string>
+    <string name="already_using_latest">Already on the latest version</string>
+    <string name="update_check_failed">Failed to check for update</string>
+    <string name="unknown">Unknown</string>
+    <string name="package_label">Package</string>
+    <string name="class_label">Class</string>
+    <string name="configure_width_title">Configure Width</string>
+    <string name="configure_width_hint">Width</string>
+    <string name="configure_width_help">Set an empty value to use default calculated width or enter a width between %d and %d</string>
+    <string name="low_width_error_msg">Width should be greater than %d</string>
+    <string name="high_width_error_msg">Width should be less than %d</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="show_floating_window">Show Floating Window</string>
+    <string name="use_notification">Use Notification</string>
+    <string name="use_notification_desc">Show a notification to observe activity info</string>
+    <string name="use_accessibility_service">Use Accessibility Service</string>
+    <string name="use_accessibility_service_desc">Improve package monitoring significantly</string>
+    <string name="use_autostart">Use Autostart</string>
+    <string name="use_autostart_desc">Fix accessibility service problems</string>
+    <string name="enable">Enable</string>
+    <string name="set_window_size">Set Window Size</string>
+    <string name="set_window_size_desc">Change the width of popup window</string>
+    <string name="configure">Configure</string>
+    <string name="settings">Settings</string>
+    <string name="system_overlay_title">System Overlay</string>
+    <string name="system_overlay_description">Please allow draw over other apps permission for \'%s\'</string>
+    <string name="accessibility_permission_title">Accessibility</string>
+    <string name="accessibility_permission_description">Please enable Accessibility Service for \'%s\'</string>
+    <string name="usage_access_title">Usage Access</string>
+    <string name="usage_access_description">Please allow Usage Access permission for \'%s\'</string>
+    <string name="copied">Copied</string>
+    <string name="package_copied">Package copied</string>
+    <string name="class_copied">Class copied</string>
+    <string name="stop">Stop</string>
+    <string name="notification_channel_name">Activity Info</string>
+    <string name="notification_channel_description">Shows current activity info</string>
+    <string name="autostart_open_failed">Failed to open Autostart</string>
 </resources>

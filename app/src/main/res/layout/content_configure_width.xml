@@ -10,7 +10,7 @@
         android:id="@+id/helper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set an empty value to use default calculated width or "
+        android:text="@string/configure_width_help"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="14sp" />
 
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="Width"
+        android:hint="@string/configure_width_hint"
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
