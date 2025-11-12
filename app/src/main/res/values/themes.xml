@@ -88,14 +88,4 @@
         <item name="android:fontFamily">@font/product_sans_medium</item>
         <item name="fontFamily">@font/product_sans_medium</item>
     </style>
-
-    <style name="PopupWindowTitle" parent="Widget.MaterialComponents.TextView">
-        <item name="android:fontFamily">@font/product_sans_medium</item>
-        <item name="fontFamily">@font/product_sans_medium</item>
-    </style>
-
-    <style name="PopupWindowContent" parent="Widget.MaterialComponents.TextView">
-        <item name="android:fontFamily">@font/product_sans_regular</item>
-        <item name="fontFamily">@font/product_sans_regular</item>
-    </style>
 </resources>

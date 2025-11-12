@@ -14,16 +14,16 @@
 
         <TextView
             android:id="@+id/app_name"
-            style="@style/PopupWindowTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:ellipsize="end"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:fontFamily="@font/product_sans_medium"
             android:maxLines="1"
             android:padding="8dp"
-            android:text="@string/app_name"
+            android:text="@string/unknown"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
 
@@ -49,7 +49,6 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/PopupWindowContent"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
@@ -58,19 +57,20 @@
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:fontFamily="@font/product_sans_regular"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Package"
+            android:text="@string/package_label"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
 
         <TextView
             android:id="@+id/package_name"
-            style="@style/PopupWindowContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:background="#60111111"
+            android:fontFamily="@font/product_sans_regular"
             android:padding="8dp"
             android:singleLine="false"
             android:textColor="#FFFFFF"
@@ -84,7 +84,6 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/PopupWindowContent"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
@@ -93,19 +92,20 @@
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:fontFamily="@font/product_sans_regular"
             android:gravity="center"
             android:padding="8dp"
-            android:text="Class"
+            android:text="@string/class_label"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
 
         <TextView
             android:id="@+id/class_name"
-            style="@style/PopupWindowContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:background="#60111111"
+            android:fontFamily="@font/product_sans_regular"
             android:padding="8dp"
             android:singleLine="false"
             android:textColor="#FFFFFF"
