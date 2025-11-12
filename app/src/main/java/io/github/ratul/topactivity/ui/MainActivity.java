@@ -247,6 +247,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        DatabaseUtil.setShowingWindow(false);
+        PopupManager.dismiss(this);
+        NotificationReceiver.cancelNotification();
         unregisterReceiver(updateReceiver);
         super.onDestroy();
     }
