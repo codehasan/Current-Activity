@@ -3,4 +3,5 @@
     <string name="app_name">Current Activity</string>
     <string name="github">GitHub</string>
     <string name="check_for_update">Check for Update</string>
+    <string name="accessibility_permission_description">We use accessibility service to monitor window state change events. All data is processed offline and no log is kept.</string>
 </resources>
