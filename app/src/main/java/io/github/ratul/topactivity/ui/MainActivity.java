@@ -76,7 +76,7 @@ import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
 import io.github.ratul.topactivity.services.PackageMonitoringService;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.managers.PopupManager;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         startAccessibilityService();
         DatabaseUtil.setDisplayWidth(getScreenWidth());
 
-        boolean isWindowActuallyShowing = WindowUtil.isViewVisible();
+        boolean isWindowActuallyShowing = PopupManager.isViewVisible();
         if (DatabaseUtil.isShowingWindow() != isWindowActuallyShowing) {
             DatabaseUtil.setShowingWindow(isWindowActuallyShowing);
         }
@@ -180,12 +180,12 @@ public class MainActivity extends AppCompatActivity {
             if (!isChecked) {
                 DatabaseUtil.setShowingWindow(false);
                 NotificationReceiver.cancelNotification();
-                WindowUtil.dismiss(this);
+                PopupManager.dismiss(this);
             }
 
             if (isSystemOverlayGranted() && isCommonPermissionsGranted()) {
                 DatabaseUtil.setShowingWindow(true);
-                WindowUtil.show(this, getPackageName(), getClass().getName());
+                PopupManager.show(this, getPackageName(), getClass().getName());
                 startAccessibilityService();
                 startPackageMonitoringService();
             } else {

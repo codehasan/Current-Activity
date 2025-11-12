@@ -19,7 +19,7 @@ import io.github.ratul.topactivity.App;
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.ui.MainActivity;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.managers.PopupManager;
 
 public class NotificationReceiver extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 62345;
@@ -58,7 +58,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             case ACTION_STOP:
                 DatabaseUtil.setShowingWindow(false);
                 NotificationReceiver.cancelNotification();
-                WindowUtil.dismiss(context);
+                PopupManager.dismiss(context);
                 context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
                 break;
         }

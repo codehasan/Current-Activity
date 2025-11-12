@@ -38,7 +38,7 @@ import androidx.core.util.Pair;
 
 import io.github.ratul.topactivity.BuildConfig;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.managers.PopupManager;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -80,8 +80,8 @@ public class PackageMonitoringService extends Service {
                 if (BuildConfig.DEBUG) {
                     Log.d("PackageMonitoring", "Pkg: " + currentPkgName + ", Class: " + currentClassName);
                 }
-                if (WindowUtil.isViewVisible()) {
-                    WindowUtil.show(this, currentPkgName, currentClassName);
+                if (PopupManager.isViewVisible()) {
+                    PopupManager.show(this, currentPkgName, currentClassName);
                 }
             }
             handler.postDelayed(observerTask, 500);

@@ -26,7 +26,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import io.github.ratul.topactivity.BuildConfig;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.managers.PopupManager;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -42,7 +42,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (WindowUtil.isViewVisible() && DatabaseUtil.isShowingWindow()) {
+        if (PopupManager.isViewVisible() && DatabaseUtil.isShowingWindow()) {
             CharSequence pkgName = event.getPackageName();
             CharSequence className = event.getClassName();
 
@@ -52,7 +52,7 @@ public class AccessibilityMonitoringService extends AccessibilityService {
                 if (BuildConfig.DEBUG) {
                     Log.d("AccessibilityService", "Pkg: " + pkgName + ", Class: " + className);
                 }
-                WindowUtil.show(this, pkgName.toString(), className.toString());
+                PopupManager.show(this, pkgName.toString(), className.toString());
             }
         }
     }

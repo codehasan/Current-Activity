@@ -35,7 +35,7 @@ import androidx.core.content.ContextCompat;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.ui.MainActivity;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.utils.WindowUtil;
+import io.github.ratul.topactivity.managers.PopupManager;
 
 /**
  * Created by Wen on 5/3/16.
@@ -90,10 +90,10 @@ public class QuickSettingsTileService extends TileService {
     @SuppressLint("StartActivityAndCollapseDeprecated")
     @Override
     public void onClick() {
-        if (DatabaseUtil.isShowingWindow() && WindowUtil.isViewVisible()) {
+        if (DatabaseUtil.isShowingWindow() && PopupManager.isViewVisible()) {
             DatabaseUtil.setShowingWindow(false);
             NotificationReceiver.cancelNotification();
-            WindowUtil.dismiss(this);
+            PopupManager.dismiss(this);
             sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
             updateTile();
             return;

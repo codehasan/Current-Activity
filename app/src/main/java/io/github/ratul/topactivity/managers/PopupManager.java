@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.utils;
+package io.github.ratul.topactivity.managers;
 
 import static io.github.ratul.topactivity.App.copyString;
 
@@ -41,11 +41,12 @@ import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.QuickSettingsTileService;
 import io.github.ratul.topactivity.ui.MainActivity;
+import io.github.ratul.topactivity.utils.DatabaseUtil;
 
 /**
  * Created by Ratul on 04/05/2022.
  */
-public class WindowUtil {
+public class PopupManager {
     private static final Map<String, String> appNameCache = new ConcurrentHashMap<>();
     private static WindowManager.LayoutParams layoutParams;
     private static WindowManager windowManager;
