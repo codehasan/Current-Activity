@@ -10,12 +10,12 @@
   Quickly inspect any active app on your device for development or debugging.
 
   [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-  [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://www.android.com/)
-  [![GitHub release](https://img.shields.io/github/v/release/codehasan/Current-Activity?include_prereleases)](https://github.com/codehasan/Current-Activity/releases)
+  [![Android](https://img.shields.io/badge/Platform-Android%207%2B-green.svg)](https://www.android.com/)
+  [![GitHub release](https://img.shields.io/github/v/release/codehasan/Current-Activity?include_prereleases)](https://github.com/codehasan/Current-Activity/releases/latest)
 
-  <a href='https://play.google.com/store/apps/details?id=io.github.ratul.topactivity'>
-    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='200'/>
-  </a>
+  [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' height="80">](https://play.google.com/store/apps/details?id=io.github.ratul.topactivity)
+  [<img src="./.resources/get-it-on-github.png" alt='Get it on GitHub' height="80">](https://github.com/codehasan/Current-Activity/releases/latest)
+<!--  [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt='Get it on F-Droid' height="80">](https://f-droid.org/packages/io.github.ratul.topactivity) -->
 
 </div>
 
