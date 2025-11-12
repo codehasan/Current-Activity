@@ -34,9 +34,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import io.github.ratul.topactivity.R;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.QuickSettingsTileService;
@@ -47,7 +44,6 @@ import io.github.ratul.topactivity.utils.DatabaseUtil;
  * Created by Ratul on 04/05/2022.
  */
 public class PopupManager {
-    private static final Map<String, String> appNameCache = new ConcurrentHashMap<>();
     private static WindowManager.LayoutParams layoutParams;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
@@ -183,21 +179,11 @@ public class PopupManager {
         });
     }
 
-    @NonNull
     private static String getAppName(@NonNull String pkg) {
-        String cached = appNameCache.get(pkg);
-        if (cached != null) {
-            return cached;
-        }
-
         try {
-            String name = packageManager.getApplicationLabel(
+            return packageManager.getApplicationLabel(
                     packageManager.getApplicationInfo(pkg, 0)).toString();
-            appNameCache.put(pkg, name);
-            return name;
         } catch (PackageManager.NameNotFoundException e) {
-            // Return null and cache it to avoid repeated lookups
-            appNameCache.put(pkg, null);
             return null;
         }
     }
