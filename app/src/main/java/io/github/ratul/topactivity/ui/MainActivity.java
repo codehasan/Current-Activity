@@ -72,11 +72,11 @@ import org.json.JSONObject;
 
 import io.github.ratul.topactivity.BuildConfig;
 import io.github.ratul.topactivity.R;
+import io.github.ratul.topactivity.managers.PopupManager;
 import io.github.ratul.topactivity.receivers.NotificationReceiver;
 import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
 import io.github.ratul.topactivity.services.PackageMonitoringService;
 import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.managers.PopupManager;
 
 /**
  * Created by Wen on 16/02/2017.
@@ -244,9 +244,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        DatabaseUtil.setShowingWindow(false);
-        PopupManager.dismiss(this);
-        NotificationReceiver.cancelNotification();
         unregisterReceiver(updateReceiver);
         super.onDestroy();
     }
