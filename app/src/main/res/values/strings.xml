@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- APP NAME SHOULDN'T BE TRANSLATED -->
+    <!-- APP NAMES SHOULDN'T BE TRANSLATED -->
     <string name="app_name" translatable="false">Current Activity</string>
+    <string name="github" translatable="false">GitHub</string>
     <string name="accessibility_service_description">We use accessibility service to monitor window state change events. All data is processed offline and no log is kept.</string>
-    <string name="github">GitHub</string>
     <string name="check_for_update">Check for Update</string>
     <string name="checking_for_update">Checking for update</string>
     <string name="update_available">Update Available</string>
