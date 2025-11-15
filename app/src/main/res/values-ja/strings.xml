@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">ユーザー補助サービスを使用して、ウィンドウ状態の変更イベントを監視します。すべてのデータはオフラインで処理され、ログは保持されません。</string>
+    <string name="check_for_update">アップデートを確認</string>
+    <string name="checking_for_update">アップデートを確認中</string>
+    <string name="update_available">アップデート利用可能</string>
+    <string name="new_version_available">新しいバージョン %s が利用可能です。ダウンロードしますか？</string>
+    <string name="download">ダウンロード</string>
+    <string name="already_using_latest">すでに最新バージョンです</string>
+    <string name="update_check_failed">アップデートの確認に失敗しました</string>
+    <string name="unknown">不明</string>
+    <string name="package_label">パッケージ</string>
+    <string name="class_label">クラス</string>
+    <string name="configure_width_title">幅を設定</string>
+    <string name="configure_width_hint">幅</string>
+    <string name="configure_width_help">デフォルトの計算された幅を使用するには空の値を設定するか、%d から %d の間の幅を入力してください</string>
+    <string name="low_width_error_msg">幅は %d より大きくする必要があります</string>
+    <string name="high_width_error_msg">幅は %d 未満である必要があります</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save">保存</string>
+    <string name="saved">保存済み</string>
+    <string name="show_floating_window">フローティングウィンドウを表示</string>
+    <string name="use_notification">通知を使用</string>
+    <string name="use_notification_desc">アクティビティ情報を監視するための通知を表示します</string>
+    <string name="use_accessibility_service">ユーザー補助サービスを使用</string>
+    <string name="use_accessibility_service_desc">パッケージ監視を大幅に改善します</string>
+    <string name="use_autostart">自動起動を使用</string>
+    <string name="use_autostart_desc">ユーザー補助サービスの問題を修正します</string>
+    <string name="enable">有効にする</string>
+    <string name="set_window_size">ウィンドウサイズを設定</string>
+    <string name="set_window_size_desc">ポップアップウィンドウの幅を変更します</string>
+    <string name="configure">設定</string>
+    <string name="settings">設定</string>
+    <string name="system_overlay_title">システムオーバーレイ</string>
+    <string name="system_overlay_description">「%s」が他のアプリの上に描画することを許可してください</string>
+    <string name="accessibility_permission_title">ユーザー補助</string>
+    <string name="accessibility_permission_description">「%s」のユーザー補助サービスを有効にしてください</string>
+    <string name="usage_access_title">使用状況へのアクセス</string>
+    <string name="usage_access_description">「%s」の使用状況へのアクセスを許可してください</string>
+    <string name="copied">コピー済み</string>
+    <string name="package_copied">パッケージをコピーしました</string>
+    <string name="class_copied">クラスをコピーしました</string>
+    <string name="stop">停止</string>
+    <string name="notification_channel_name">アクティビティ情報</string>
+    <string name="notification_channel_description">現在のアクティビティ情報を表示します</string>
+    <string name="autostart_open_failed">自動起動を開けませんでした</string>
+</resources>
