@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">Nous utilisons le service d\'accessibilité pour surveiller les événements de changement d\'état de la fenêtre. Toutes les données sont traitées hors ligne et aucun journal n\'est conservé.</string>
+    <string name="check_for_update">Vérifier les mises à jour</string>
+    <string name="checking_for_update">Vérification des mises à jour</string>
+    <string name="update_available">Mise à jour disponible</string>
+    <string name="new_version_available">Une nouvelle version %s est disponible. Voulez-vous la télécharger ?</string>
+    <string name="download">Télécharger</string>
+    <string name="already_using_latest">Vous utilisez déjà la dernière version</string>
+    <string name="update_check_failed">Échec de la vérification de la mise à jour</string>
+    <string name="unknown">Inconnu</string>
+    <string name="package_label">Package</string>
+    <string name="class_label">Classe</string>
+    <string name="configure_width_title">Configurer la largeur</string>
+    <string name="configure_width_hint">Largeur</string>
+    <string name="configure_width_help">Laissez la valeur vide pour utiliser la largeur calculée par défaut ou entrez une largeur entre %d et %d</string>
+    <string name="low_width_error_msg">La largeur doit être supérieure à %d</string>
+    <string name="high_width_error_msg">La largeur doit être inférieure à %d</string>
+    <string name="cancel">Annuler</string>
+    <string name="save">Enregistrer</string>
+    <string name="saved">Enregistré</string>
+    <string name="show_floating_window">Afficher la fenêtre flottante</string>
+    <string name="use_notification">Utiliser la notification</string>
+    <string name="use_notification_desc">Afficher une notification pour observer les informations d\'activité</string>
+    <string name="use_accessibility_service">Utiliser le service d\'accessibilité</string>
+    <string name="use_accessibility_service_desc">Améliore considérablement la surveillance des packages</string>
+    <string name="use_autostart">Utiliser le démarrage automatique</string>
+    <string name="use_autostart_desc">Corrige les problèmes de service d\'accessibilité</string>
+    <string name="enable">Activer</string>
+    <string name="set_window_size">Définir la taille de la fenêtre</string>
+    <string name="set_window_size_desc">Modifier la largeur de la fenêtre contextuelle</string>
+    <string name="configure">Configurer</string>
+    <string name="settings">Paramètres</string>
+    <string name="system_overlay_title">Superposition système</string>
+    <string name="system_overlay_description">Veuillez autoriser \'%s\' à s\'afficher par-dessus d\'autres applications</string>
+    <string name="accessibility_permission_title">Accessibilité</string>
+    <string name="accessibility_permission_description">Veuillez activer le service d\'accessibilité pour \'%s\'</string>
+    <string name="usage_access_title">Accès à l\'utilisation</string>
+    <string name="usage_access_description">Veuillez autoriser l\'accès à l\'utilisation pour \'%s\'</string>
+    <string name="copied">Copié</string>
+    <string name="package_copied">Package copié</string>
+    <string name="class_copied">Classe copiée</string>
+    <string name="stop">Arrêter</string>
+    <string name="notification_channel_name">Infos sur l\'activité</string>
+    <string name="notification_channel_description">Affiche les informations sur l\'activité actuelle</string>
+    <string name="autostart_open_failed">Échec de l\'ouverture du démarrage automatique</string>
+</resources>
