@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">Мы используем службу специальных возможностей для отслеживания событий изменения состояния окна. Все данные обрабатываются в автономном режиме, журналы не ведутся.</string>
+    <string name="check_for_update">Проверить обновления</string>
+    <string name="checking_for_update">Проверка обновлений</string>
+    <string name="update_available">Доступно обновление</string>
+    <string name="new_version_available">Доступна новая версия %s. Хотите загрузить ее?</string>
+    <string name="download">Загрузить</string>
+    <string name="already_using_latest">У вас уже установлена последняя версия</string>
+    <string name="update_check_failed">Не удалось проверить обновления</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="package_label">Пакет</string>
+    <string name="class_label">Класс</string>
+    <string name="configure_width_title">Настроить ширину</string>
+    <string name="configure_width_hint">Ширина</string>
+    <string name="configure_width_help">Оставьте значение пустым, чтобы использовать ширину по умолчанию, или введите ширину от %d до %d</string>
+    <string name="low_width_error_msg">Ширина должна быть больше %d</string>
+    <string name="high_width_error_msg">Ширина должна быть меньше %d</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="saved">Сохранено</string>
+    <string name="show_floating_window">Показать плавающее окно</string>
+    <string name="use_notification">Использовать уведомление</string>
+    <string name="use_notification_desc">Показывать уведомление для наблюдения за информацией о активности</string>
+    <string name="use_accessibility_service">Использовать службу спец. возможностей</string>
+    <string name="use_accessibility_service_desc">Значительно улучшает мониторинг пакетов</string>
+    <string name="use_autostart">Использовать автозапуск</string>
+    <string name="use_autostart_desc">Устраняет проблемы со службой спец. возможностей</string>
+    <string name="enable">Включить</string>
+    <string name="set_window_size">Установить размер окна</string>
+    <string name="set_window_size_desc">Изменить ширину всплывающего окна</string>
+    <string name="configure">Настроить</string>
+    <string name="settings">Настройки</string>
+    <string name="system_overlay_title">Наложение поверх других окон</string>
+    <string name="system_overlay_description">Пожалуйста, разрешите \'%s\' отображаться поверх других приложений</string>
+    <string name="accessibility_permission_title">Спец. возможности</string>
+    <string name="accessibility_permission_description">Пожалуйста, включите службу спец. возможностей для \'%s\'</string>
+    <string name="usage_access_title">Доступ к данным об использовании</string>
+    <string name="usage_access_description">Пожалуйста, разрешите доступ к данным об использовании для \'%s\'</string>
+    <string name="copied">Скопировано</string>
+    <string name="package_copied">Пакет скопирован</string>
+    <string name="class_copied">Класс скопирован</string>
+    <string name="stop">Стоп</string>
+    <string name="notification_channel_name">Информация об активности</string>
+    <string name="notification_channel_description">Показывает информацию о текущей активности</string>
+    <string name="autostart_open_failed">Не удалось открыть настройки автозапуска</string>
+</resources>
