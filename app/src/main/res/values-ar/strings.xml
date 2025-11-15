@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">نحن نستخدم خدمة الوصول لمراقبة أحداث تغيير حالة النافذة. تتم معالجة جميع البيانات دون اتصال بالإنترنت ولا يتم الاحتفاظ بأي سجل.</string>
+    <string name="check_for_update">البحث عن تحديث</string>
+    <string name="checking_for_update">جارٍ البحث عن تحديث</string>
+    <string name="update_available">تحديث متوفر</string>
+    <string name="new_version_available">إصدار جديد %s متوفر. هل تريد تنزيله؟</string>
+    <string name="download">تنزيل</string>
+    <string name="already_using_latest">أنت تستخدم بالفعل أحدث إصدار</string>
+    <string name="update_check_failed">فشل البحث عن تحديث</string>
+    <string name="unknown">غير معروف</string>
+    <string name="package_label">الحزمة</string>
+    <string name="class_label">الفئة</string>
+    <string name="configure_width_title">تكوين العرض</string>
+    <string name="configure_width_hint">العرض</string>
+    <string name="configure_width_help">اترك القيمة فارغة لاستخدام العرض الافتراضي المحسوب أو أدخل عرضًا بين %d و %d</string>
+    <string name="low_width_error_msg">يجب أن يكون العرض أكبر من %d</string>
+    <string name="high_width_error_msg">يجب أن يكون العرض أصغر من %d</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="saved">تم الحفظ</string>
+    <string name="show_floating_window">إظهار نافذة عائمة</string>
+    <string name="use_notification">استخدام الإشعار</string>
+    <string name="use_notification_desc">إظهار إشعار لمراقبة معلومات النشاط</string>
+    <string name="use_accessibility_service">استخدام خدمة الوصول</string>
+    <string name="use_accessibility_service_desc">تحسين مراقبة الحزم بشكل كبير</string>
+    <string name="use_autostart">استخدام التشغيل التلقائي</string>
+    <string name="use_autostart_desc">إصلاح مشاكل خدمة الوصول</string>
+    <string name="enable">تمكين</string>
+    <string name="set_window_size">تعيين حجم النافذة</string>
+    <string name="set_window_size_desc">تغيير عرض النافذة المنبثقة</string>
+    <string name="configure">تكوين</string>
+    <string name="settings">الإعدادات</string>
+    <string name="system_overlay_title">التراكب فوق التطبيقات الأخرى</string>
+    <string name="system_overlay_description">يُرجى السماح لـ \'%s\' بالظهور فوق التطبيقات الأخرى</string>
+    <string name="accessibility_permission_title">إمكانية الوصول</string>
+    <string name="accessibility_permission_description">يُرجى تمكين خدمة الوصول لـ \'%s\'</string>
+    <string name="usage_access_title">الوصول إلى الاستخدام</string>
+    <string name="usage_access_description">يُرجى السماح بالوصول إلى بيانات الاستخدام لـ \'%s\'</string>
+    <string name="copied">تم النسخ</string>
+    <string name="package_copied">تم نسخ الحزمة</string>
+    <string name="class_copied">تم نسخ الفئة</string>
+    <string name="stop">إيقاف</string>
+    <string name="notification_channel_name">معلومات النشاط</string>
+    <string name="notification_channel_description">يعرض معلومات النشاط الحالي</string>
+    <string name="autostart_open_failed">فشل فتح التشغيل التلقائي</string>
+</resources>
