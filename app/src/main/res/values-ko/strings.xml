@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">접근성 서비스를 사용하여 창 상태 변경 이벤트를 모니터링합니다. 모든 데이터는 오프라인으로 처리되며 로그는 보관되지 않습니다.</string>
+    <string name="check_for_update">업데이트 확인</string>
+    <string name="checking_for_update">업데이트 확인 중</string>
+    <string name="update_available">업데이트 가능</string>
+    <string name="new_version_available">새 버전 %s이(가) 있습니다. 다운로드하시겠습니까?</string>
+    <string name="download">다운로드</string>
+    <string name="already_using_latest">이미 최신 버전을 사용 중입니다</string>
+    <string name="update_check_failed">업데이트 확인 실패</string>
+    <string name="unknown">알 수 없음</string>
+    <string name="package_label">패키지</string>
+    <string name="class_label">클래스</string>
+    <string name="configure_width_title">너비 구성</string>
+    <string name="configure_width_hint">너비</string>
+    <string name="configure_width_help">기본 계산된 너비를 사용하려면 빈 값을 설정하거나 %d에서 %d 사이의 너비를 입력하십시오</string>
+    <string name="low_width_error_msg">너비는 %d보다 커야 합니다</string>
+    <string name="high_width_error_msg">너비는 %d보다 작아야 합니다</string>
+    <string name="cancel">취소</string>
+    <string name="save">저장</string>
+    <string name="saved">저장됨</string>
+    <string name="show_floating_window">플로팅 창 표시</string>
+    <string name="use_notification">알림 사용</string>
+    <string name="use_notification_desc">활동 정보를 관찰하기 위한 알림 표시</string>
+    <string name="use_accessibility_service">접근성 서비스 사용</string>
+    <string name="use_accessibility_service_desc">패키지 모니터링을 크게 개선합니다</string>
+    <string name="use_autostart">자동 시작 사용</string>
+    <string name="use_autostart_desc">접근성 서비스 문제 해결</string>
+    <string name="enable">활성화</string>
+    <string name="set_window_size">창 크기 설정</string>
+    <string name="set_window_size_desc">팝업 창의 너비 변경</string>
+    <string name="configure">구성</string>
+    <string name="settings">설정</string>
+    <string name="system_overlay_title">시스템 오버레이</string>
+    <string name="system_overlay_description">\'%s\'이(가) 다른 앱 위에 표시되도록 허용해 주세요</string>
+    <string name="accessibility_permission_title">접근성</string>
+    <string name="accessibility_permission_description">\'%s\'의 접근성 서비스를 활성화해 주세요</string>
+    <string name="usage_access_title">사용 정보 접근</string>
+    <string name="usage_access_description">\'%s\'의 사용 정보 접근을 허용해 주세요</string>
+    <string name="copied">복사됨</string>
+    <string name="package_copied">패키지 복사됨</string>
+    <string name="class_copied">클래스 복사됨</string>
+    <string name="stop">중지</string>
+    <string name="notification_channel_name">활동 정보</string>
+    <string name="notification_channel_description">현재 활동 정보를 표시합니다</string>
+    <string name="autostart_open_failed">자동 시작을 열지 못했습니다</string>
+</resources>
