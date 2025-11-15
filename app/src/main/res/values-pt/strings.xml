@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">Usamos o serviço de acessibilidade para monitorar eventos de mudança de estado da janela. Todos os dados são processados offline e nenhum registro é mantido.</string>
+    <string name="check_for_update">Verificar atualizações</string>
+    <string name="checking_for_update">Verificando atualizações</string>
+    <string name="update_available">Atualização disponível</string>
+    <string name="new_version_available">Uma nova versão %s está disponível. Deseja baixá-la?</string>
+    <string name="download">Baixar</string>
+    <string name="already_using_latest">Já está na versão mais recente</string>
+    <string name="update_check_failed">Falha ao verificar atualizações</string>
+    <string name="unknown">Desconhecido</string>
+    <string name="package_label">Pacote</string>
+    <string name="class_label">Classe</string>
+    <string name="configure_width_title">Configurar largura</string>
+    <string name="configure_width_hint">Largura</string>
+    <string name="configure_width_help">Defina um valor vazio para usar a largura calculada padrão ou insira uma largura entre %d e %d</string>
+    <string name="low_width_error_msg">A largura deve ser maior que %d</string>
+    <string name="high_width_error_msg">A largura deve ser menor que %d</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="saved">Salvo</string>
+    <string name="show_floating_window">Mostrar janela flutuante</string>
+    <string name="use_notification">Usar notificação</string>
+    <string name="use_notification_desc">Mostrar uma notificação para observar informações da atividade</string>
+    <string name="use_accessibility_service">Usar serviço de acessibilidade</string>
+    <string name="use_accessibility_service_desc">Melhora significativamente o monitoramento de pacotes</string>
+    <string name="use_autostart">Usar início automático</string>
+    <string name="use_autostart_desc">Corrige problemas do serviço de acessibilidade</string>
+    <string name="enable">Ativar</string>
+    <string name="set_window_size">Definir tamanho da janela</string>
+    <string name="set_window_size_desc">Alterar a largura da janela pop-up</string>
+    <string name="configure">Configurar</string>
+    <string name="settings">Configurações</string>
+    <string name="system_overlay_title">Sobreposição do sistema</string>
+    <string name="system_overlay_description">Por favor, permita que \'%s\' seja exibido sobre outros aplicativos</string>
+    <string name="accessibility_permission_title">Acessibilidade</string>
+    <string name="accessibility_permission_description">Por favor, ative o serviço de acessibilidade para \'%s\'</string>
+    <string name="usage_access_title">Acesso ao uso</string>
+    <string name="usage_access_description">Por favor, permita o acesso ao uso para \'%s\'</string>
+    <string name="copied">Copiado</string>
+    <string name="package_copied">Pacote copiado</string>
+    <string name="class_copied">Classe copiada</string>
+    <string name="stop">Parar</string>
+    <string name="notification_channel_name">Informações da atividade</string>
+    <string name="notification_channel_description">Mostra informações da atividade atual</string>
+    <string name="autostart_open_failed">Falha ao abrir o início automático</string>
+</resources>
