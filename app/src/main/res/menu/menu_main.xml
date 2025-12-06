@@ -34,7 +34,7 @@
                 <item
                     android:id="@+id/auto_update"
                     android:icon="@drawable/ic_auto_update"
-                    android:title="@string/auto_update"
+                    android:title="@string/auto_update_check"
                     app:iconTint="?attr/colorOnSurface" />
 
                 <item

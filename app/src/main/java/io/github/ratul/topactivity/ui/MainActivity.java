@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAutoUpdatePolicyDialog() {
         new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.auto_update)
+                .setTitle(R.string.auto_update_check)
                 .setMessage(R.string.auto_update_desc)
                 .setPositiveButton(R.string.enable, (dialog, which) -> {
                     dialog.dismiss();
