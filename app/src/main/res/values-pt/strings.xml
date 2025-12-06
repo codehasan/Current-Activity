@@ -44,4 +44,12 @@
     <string name="notification_channel_name">Informações da atividade</string>
     <string name="notification_channel_description">Mostra informações da atividade atual</string>
     <string name="autostart_open_failed">Falha ao abrir o início automático</string>
+    <string name="menu">Menu</string>
+    <string name="auto_update">Atualização automática</string>
+    <string name="auto_update_desc">Para garantir que você tenha os recursos e correções de bugs mais recentes, este aplicativo pode verificar se há novas versões no GitHub ao iniciar. \n\nNota: Isso requer conexão com a internet. Você pode desativar isso a qualquer momento no menu.</string>
+    <string name="use_system_font">Usar fonte do sistema</string>
+    <string name="restart_required">Reinicialização necessária</string>
+    <string name="restart">Reiniciar</string>
+    <string name="later">Mais tarde</string>
+    <string name="restart_app">Por favor, reinicie o aplicativo para que as novas alterações entrem em vigor.</string>
 </resources>

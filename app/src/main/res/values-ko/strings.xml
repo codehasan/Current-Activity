@@ -44,4 +44,12 @@
     <string name="notification_channel_name">활동 정보</string>
     <string name="notification_channel_description">현재 활동 정보를 표시합니다</string>
     <string name="autostart_open_failed">자동 시작을 열지 못했습니다</string>
+    <string name="menu">메뉴</string>
+    <string name="auto_update">자동 업데이트</string>
+    <string name="auto_update_desc">최신 기능과 버그 수정을 확인하기 위해, 이 앱은 시작 시 GitHub에서 새 버전을 확인할 수 있습니다. \n\n참고: 인터넷 연결이 필요합니다. 메뉴에서 언제든지 비활성화할 수 있습니다.</string>
+    <string name="use_system_font">시스템 글꼴 사용</string>
+    <string name="restart_required">재시작 필요</string>
+    <string name="restart">재시작</string>
+    <string name="later">나중에</string>
+    <string name="restart_app">변경 사항을 적용하려면 앱을 재시작해 주세요.</string>
 </resources>

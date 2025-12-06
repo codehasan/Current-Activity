@@ -47,4 +47,12 @@
     <string name="notification_channel_name">Activity Info</string>
     <string name="notification_channel_description">Shows current activity info</string>
     <string name="autostart_open_failed">Failed to open Autostart</string>
+    <string name="menu">Menu</string>
+    <string name="auto_update">Auto Update</string>
+    <string name="auto_update_desc">To ensure you have the latest features and bug fixes, this app can check GitHub for new versions on startup. \n\nNote: This connects to the internet. You can disable this at any time in the menu.</string>
+    <string name="use_system_font">Use System Font</string>
+    <string name="restart_required">Restart Required</string>
+    <string name="restart">Restart</string>
+    <string name="later">Later</string>
+    <string name="restart_app">Please restart the app for the new changes to take effect.</string>
 </resources>

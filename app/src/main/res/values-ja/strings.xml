@@ -44,4 +44,12 @@
     <string name="notification_channel_name">アクティビティ情報</string>
     <string name="notification_channel_description">現在のアクティビティ情報を表示します</string>
     <string name="autostart_open_failed">自動起動を開けませんでした</string>
+    <string name="menu">メニュー</string>
+    <string name="auto_update">自動更新</string>
+    <string name="auto_update_desc">最新の機能とバグ修正を確実に利用できるように、このアプリは起動時にGitHubで新しいバージョンを確認できます。\n\n注: これにはインターネット接続が必要です。この設定はメニューからいつでも無効にできます。</string>
+    <string name="use_system_font">システムフォントを使用</string>
+    <string name="restart_required">再起動が必要</string>
+    <string name="restart">再起動</string>
+    <string name="later">後で</string>
+    <string name="restart_app">変更を適用するにはアプリを再起動してください。</string>
 </resources>

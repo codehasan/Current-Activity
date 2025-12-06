@@ -44,4 +44,12 @@
     <string name="notification_channel_name">Информация об активности</string>
     <string name="notification_channel_description">Показывает информацию о текущей активности</string>
     <string name="autostart_open_failed">Не удалось открыть настройки автозапуска</string>
+    <string name="menu">Меню</string>
+    <string name="auto_update">Автообновление</string>
+    <string name="auto_update_desc">Чтобы гарантировать наличие последних функций и исправлений, это приложение может проверять наличие новых версий на GitHub при запуске. \n\nПримечание: Требуется подключение к интернету. Вы можете отключить это в любое время в меню.</string>
+    <string name="use_system_font">Системный шрифт</string>
+    <string name="restart_required">Требуется перезапуск</string>
+    <string name="restart">Перезапустить</string>
+    <string name="later">Позже</string>
+    <string name="restart_app">Пожалуйста, перезапустите приложение, чтобы изменения вступили в силу.</string>
 </resources>

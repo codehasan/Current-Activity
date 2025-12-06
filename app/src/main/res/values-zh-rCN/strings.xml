@@ -44,4 +44,12 @@
     <string name="notification_channel_name">活动信息</string>
     <string name="notification_channel_description">用于显示当前活动页面信息</string>
     <string name="autostart_open_failed">无法打开自启动，请在系统设置中手动配置</string>
+    <string name="menu">菜单</string>
+    <string name="auto_update">自动更新</string>
+    <string name="auto_update_desc">为确保您获得最新的功能和错误修复，此应用可在启动时检查 GitHub 上的新版本。\n\n注意：这需要连接到互联网。您可以随时在菜单中禁用此功能。</string>
+    <string name="use_system_font">使用系统字体</string>
+    <string name="restart_required">需要重启</string>
+    <string name="restart">重启</string>
+    <string name="later">稍后</string>
+    <string name="restart_app">请重启应用以使新更改生效。</string>
 </resources>
