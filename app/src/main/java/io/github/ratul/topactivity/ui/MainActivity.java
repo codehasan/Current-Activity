@@ -39,6 +39,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
 import android.provider.Settings;
+import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.view.SubMenu;
 import android.view.View;
@@ -57,6 +58,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.text.HtmlCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        downloadAccessibility.setOnClickListener(v -> openLink(REPO_URL + "/releases/latest"));
+        downloadAccessibility.setOnClickListener(v -> showGlobalVersionDownloadDialog());
         configureWidth.setOnClickListener(v -> showConfigureWidthDialog());
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -416,6 +418,21 @@ public class MainActivity extends AppCompatActivity {
                     finishAndRemoveTask();
                 })
                 .setNeutralButton(R.string.later, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void showGlobalVersionDownloadDialog() {
+        String base = getString(R.string.global_version_description);
+        Spanned message = HtmlCompat.fromHtml(base, HtmlCompat.FROM_HTML_MODE_COMPACT);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.global_version)
+                .setMessage(message)
+                .setPositiveButton(R.string.download, (dialog, which) -> {
+                    dialog.dismiss();
+                    openLink(REPO_URL + "/releases/latest");
+                })
+                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
