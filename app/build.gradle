@@ -29,6 +29,14 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
+        includeInApk = false
+        // Enables dependency metadata when building Android App Bundles (for Google Play)
+        // Allows Google to scan dependencies for policy compliance
+        includeInBundle = true
+    }
+
     flavorDimensions 'version'
     productFlavors {
         global {
