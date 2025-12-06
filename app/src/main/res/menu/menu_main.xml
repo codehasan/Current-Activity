@@ -11,11 +11,42 @@
         android:title="@string/github"
         android:tooltipText="@string/github"
         app:iconTint="?attr/colorOnSurface"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         tools:targetApi="26" />
 
     <item
-        android:id="@+id/check_update"
-        android:title="@string/check_for_update"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_menu"
+        android:title="@string/menu"
+        android:tooltipText="@string/menu"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="always"
+        tools:targetApi="26">
+
+        <menu>
+            <item
+                android:id="@+id/check_update"
+                android:icon="@drawable/ic_check_update"
+                android:orderInCategory="0"
+                android:title="@string/check_for_update"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <group android:checkableBehavior="all">
+                <item
+                    android:id="@+id/auto_update"
+                    android:icon="@drawable/ic_auto_update"
+                    android:orderInCategory="1"
+                    android:title="@string/auto_update"
+                    app:iconTint="?attr/colorOnSurface" />
+
+                <item
+                    android:id="@+id/use_system_font"
+                    android:icon="@drawable/ic_font"
+                    android:orderInCategory="2"
+                    android:title="@string/use_system_font"
+                    app:iconTint="?attr/colorOnSurface" />
+            </group>
+        </menu>
+
+    </item>
+
 </menu>
