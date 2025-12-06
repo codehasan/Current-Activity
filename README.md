@@ -14,6 +14,7 @@
   [![GitHub release](https://img.shields.io/github/v/release/codehasan/Current-Activity?include_prereleases)](https://github.com/codehasan/Current-Activity/releases/latest)
 
   [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' height="80">](https://play.google.com/store/apps/details?id=io.github.ratul.topactivity)
+  [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80" alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/io.github.ratul.topactivity)
   [<img src="./.resources/get-it-on-github.png" alt='Get it on GitHub' height="80">](https://github.com/codehasan/Current-Activity/releases/latest)
 <!--  [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt='Get it on F-Droid' height="80">](https://f-droid.org/packages/io.github.ratul.topactivity) -->
 
