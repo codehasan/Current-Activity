@@ -102,6 +102,16 @@ public class PopupManager {
             } catch (Exception ignored) {
             }
         }
+
+        // Reset all static variables
+        layoutParams = null;
+        windowManager = null;
+        packageManager = null;
+        baseView = null;
+        appName = null;
+        packageName = null;
+        className = null;
+
         QuickSettingsTileService.updateTile(context);
     }
 
