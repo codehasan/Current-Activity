@@ -52,4 +52,6 @@
     <string name="restart">Reiniciar</string>
     <string name="later">Más tarde</string>
     <string name="restart_app">Por favor, reinicia la aplicación para que los cambios surtan efecto.</string>
+    <string name="global_version">Versión Global</string>
+    <string name="global_version_description"><![CDATA[Actualiza a la Versión Global para desbloquear:<br><br> • <b>Control Ilimitado</b>: Integración completa con el Servicio de Accesibilidad.<br> • <b>Visibilidad Total</b>: Detecta todas las aplicaciones en tu dispositivo.<br> • <b>Rendimiento Imparable</b>: Comprobaciones nativas de autoinicio para evitar cierres en segundo plano.<br><br>Debes desinstalar esta versión antes de instalar la edición Global.]]></string>
 </resources>

@@ -52,4 +52,6 @@
     <string name="restart">إعادة تشغيل</string>
     <string name="later">لاحقاً</string>
     <string name="restart_app">يرجى إعادة تشغيل التطبيق لتطبيق التغييرات الجديدة.</string>
+    <string name="global_version">الإصدار العالمي</string>
+    <string name="global_version_description"><![CDATA[قم بالترقية إلى الإصدار العالمي للاستفادة من:<br><br> • <b>تحكم غير محدود</b>: دمج كامل مع خدمة إمكانية الوصول.<br> • <b>رؤية كاملة</b>: اكتشاف كل تطبيق على جهازك.<br> • <b>أداء لا يمكن إيقافه</b>: فحوصات بدء التشغيل الأصلية لمنع إيقاف الخلفية.<br><br>يجب عليك إلغاء تثبيت هذا الإصدار أولاً قبل تثبيت النسخة العالمية.]]></string>
 </resources>

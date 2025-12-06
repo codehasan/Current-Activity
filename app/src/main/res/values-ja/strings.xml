@@ -52,4 +52,6 @@
     <string name="restart">再起動</string>
     <string name="later">後で</string>
     <string name="restart_app">変更を適用するにはアプリを再起動してください。</string>
+    <string name="global_version">グローバル版</string>
+    <string name="global_version_description"><![CDATA[グローバル版にアップグレードすると、次の機能が解放されます：<br><br> • <b>無制限のコントロール</b>：アクセシビリティサービスとの完全統合。<br> • <b>完全な可視性</b>：端末上のすべてのアプリを検出。<br> • <b>止まらないパフォーマンス</b>：バックグラウンド停止を防ぐネイティブ自動起動チェック。<br><br>グローバル版をインストールする前に、このバージョンをアンインストールする必要があります。]]></string>
 </resources>

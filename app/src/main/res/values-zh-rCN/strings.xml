@@ -52,4 +52,6 @@
     <string name="restart">重启</string>
     <string name="later">稍后</string>
     <string name="restart_app">请重启应用以使新更改生效。</string>
+    <string name="global_version">全球版本</string>
+    <string name="global_version_description"><![CDATA[升级到全球版本即可解锁：<br><br> • <b>无限控制</b>：全面集成辅助功能服务。<br> • <b>全局可见性</b>：检测设备上的每一个应用。<br> • <b>无可阻挡的性能</b>：原生自启动检查，防止后台被杀。<br><br>安装全球版之前，必须先卸载此版本。]]></string>
 </resources>

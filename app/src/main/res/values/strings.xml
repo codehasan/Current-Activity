@@ -55,4 +55,6 @@
     <string name="restart">Restart</string>
     <string name="later">Later</string>
     <string name="restart_app">Please restart the app for the new changes to take effect.</string>
+    <string name="global_version">Global Version</string>
+    <string name="global_version_description"><![CDATA[Upgrade to the Global Version to unleash:<br><br> • <b>Unrestricted Control</b>: Full Accessibility Service integration.<br> • <b>Total Visibility</b>: Detect every single app on your device.<br> • <b>Unstoppable Performance</b>: Native Autostart checks to prevent background killing.<br><br>You must uninstall this version first before installing the Global edition.]]></string>
 </resources>
