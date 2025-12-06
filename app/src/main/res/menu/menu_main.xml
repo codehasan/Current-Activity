@@ -8,7 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_github"
-        android:orderInCategory="0"
         android:title="@string/github"
         android:tooltipText="@string/github"
         app:iconTint="?attr/colorOnSurface"
@@ -16,8 +15,8 @@
         tools:targetApi="26" />
 
     <item
+        android:id="@+id/menu"
         android:icon="@drawable/ic_menu"
-        android:orderInCategory="1"
         android:title="@string/menu"
         android:tooltipText="@string/menu"
         app:iconTint="?attr/colorOnSurface"
@@ -28,7 +27,6 @@
             <item
                 android:id="@+id/check_update"
                 android:icon="@drawable/ic_check_update"
-                android:orderInCategory="0"
                 android:title="@string/check_for_update"
                 app:iconTint="?attr/colorOnSurface" />
 
@@ -36,14 +34,12 @@
                 <item
                     android:id="@+id/auto_update"
                     android:icon="@drawable/ic_auto_update"
-                    android:orderInCategory="1"
                     android:title="@string/auto_update"
                     app:iconTint="?attr/colorOnSurface" />
 
                 <item
                     android:id="@+id/use_system_font"
                     android:icon="@drawable/ic_font"
-                    android:orderInCategory="2"
                     android:title="@string/use_system_font"
                     app:iconTint="?attr/colorOnSurface" />
             </group>
