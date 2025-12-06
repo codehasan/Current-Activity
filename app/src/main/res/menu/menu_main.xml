@@ -8,6 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_github"
+        android:orderInCategory="0"
         android:title="@string/github"
         android:tooltipText="@string/github"
         app:iconTint="?attr/colorOnSurface"
@@ -16,6 +17,7 @@
 
     <item
         android:icon="@drawable/ic_menu"
+        android:orderInCategory="1"
         android:title="@string/menu"
         android:tooltipText="@string/menu"
         app:iconTint="?attr/colorOnSurface"
