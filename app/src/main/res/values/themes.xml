@@ -50,10 +50,20 @@
     </style>
 
     <style name="AppTheme" parent="@style/BaseTheme">
-        <item name="android:fontFamily">@font/product_sans_regular</item>
-        <item name="fontFamily">@font/product_sans_regular</item>
+        <!-- Set Dynamic Fonts -->
+        <item name="appFontFamilyBody">@font/product_sans_regular</item>
+        <item name="appFontFamilyTitle">@font/product_sans_medium</item>
+
+        <item name="android:fontFamily">?attr/appFontFamilyBody</item>
+        <item name="fontFamily">?attr/appFontFamilyBody</item>
         <item name="materialButtonStyle">@style/Material.Button</item>
         <item name="alertDialogTheme">@style/AppCompat.Dialog</item>
+    </style>
+
+    <style name="AppTheme.SystemFont" parent="@style/AppTheme">
+        <!-- Set Dynamic Fonts -->
+        <item name="appFontFamilyBody">@null</item>
+        <item name="appFontFamilyTitle">@null</item>
     </style>
 
     <style name="TransparentTheme" parent="@android:style/Theme.NoDisplay">
@@ -64,19 +74,19 @@
     </style>
 
     <style name="Material.ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:fontFamily">@font/product_sans_medium</item>
-        <item name="fontFamily">@font/product_sans_medium</item>
+        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="fontFamily">?attr/appFontFamilyTitle</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="AppCompat.TitleStyle.Dialog" parent="RtlOverlay.DialogWindowTitle.AppCompat">
-        <item name="android:fontFamily">@font/product_sans_medium</item>
-        <item name="fontFamily">@font/product_sans_medium</item>
+        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 
     <style name="AppCompat.ButtonStyle.Dialog" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:fontFamily">@font/product_sans_medium</item>
-        <item name="fontFamily">@font/product_sans_medium</item>
+        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 
     <style name="AppCompat.Dialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
@@ -85,7 +95,7 @@
     </style>
 
     <style name="Material.Button" parent="Widget.Material3.Button">
-        <item name="android:fontFamily">@font/product_sans_medium</item>
-        <item name="fontFamily">@font/product_sans_medium</item>
+        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 </resources>
