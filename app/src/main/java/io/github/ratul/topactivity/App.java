@@ -102,10 +102,10 @@ public class App extends Application {
     public static void showToast(@NonNull Context context, @NonNull String message) {
         try {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
             try {
                 Toast.makeText(instance, message, Toast.LENGTH_SHORT).show();
-            } catch (Throwable ignored2) {
+            } catch (Exception ignored2) {
             }
         }
     }
