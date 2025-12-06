@@ -1,0 +1,1 @@
+Starting with this release, a new signing key is being used, so you will have to uninstall and re-install the app to receive further updates.
