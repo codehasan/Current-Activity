@@ -45,7 +45,7 @@
     <string name="notification_channel_description">Muestra información de la actividad actual</string>
     <string name="autostart_open_failed">Error al abrir el inicio automático</string>
     <string name="menu">Menú</string>
-    <string name="auto_update">Actualización automática</string>
+    <string name="auto_update_check">Comprobación de actualización automática</string>
     <string name="auto_update_desc">Para garantizar que tengas las últimas funciones y correcciones de errores, esta aplicación puede buscar nuevas versiones en GitHub al iniciar. \n\nNota: Esto requiere conexión a Internet. Puedes desactivar esta opción en cualquier momento en el menú.</string>
     <string name="use_system_font">Usar fuente del sistema</string>
     <string name="restart_required">Reinicio necesario</string>

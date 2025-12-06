@@ -4,7 +4,7 @@
     <string name="app_name" translatable="false">Current Activity</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="accessibility_service_description">We use accessibility service to monitor window state change events. All data is processed offline and no log is kept.</string>
-    <string name="check_for_update">Check for Update</string>
+    <string name="check_for_update">Check for update</string>
     <string name="checking_for_update">Checking for update</string>
     <string name="update_available">Update Available</string>
     <string name="new_version_available">A new version %s is available. Do you want to download it?</string>
@@ -48,9 +48,9 @@
     <string name="notification_channel_description">Shows current activity info</string>
     <string name="autostart_open_failed">Failed to open Autostart</string>
     <string name="menu">Menu</string>
-    <string name="auto_update">Auto Update</string>
+    <string name="auto_update_check">Auto update check</string>
     <string name="auto_update_desc">To ensure you have the latest features and bug fixes, this app can check GitHub for new versions on startup. \n\nNote: This connects to the internet. You can disable this at any time in the menu.</string>
-    <string name="use_system_font">Use System Font</string>
+    <string name="use_system_font">Use system font</string>
     <string name="restart_required">Restart Required</string>
     <string name="restart">Restart</string>
     <string name="later">Later</string>

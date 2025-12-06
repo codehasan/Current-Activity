@@ -45,7 +45,7 @@
     <string name="notification_channel_description">Affiche les informations sur l\'activité actuelle</string>
     <string name="autostart_open_failed">Échec de l\'ouverture du démarrage automatique</string>
     <string name="menu">Menu</string>
-    <string name="auto_update">Mise à jour auto</string>
+    <string name="auto_update_check">Vérification de mise à jour auto</string>
     <string name="auto_update_desc">Pour vous assurer de disposer des dernières fonctionnalités et corrections de bugs, cette application peut vérifier les nouvelles versions sur GitHub au démarrage. \n\nRemarque : Cela nécessite une connexion Internet. Vous pouvez désactiver cette option à tout moment dans le menu.</string>
     <string name="use_system_font">Utiliser la police système</string>
     <string name="restart_required">Redémarrage requis</string>

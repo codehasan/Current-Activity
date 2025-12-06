@@ -45,7 +45,7 @@
     <string name="notification_channel_description">يعرض معلومات النشاط الحالي</string>
     <string name="autostart_open_failed">فشل فتح التشغيل التلقائي</string>
     <string name="menu">القائمة</string>
-    <string name="auto_update">تحديث تلقائي</string>
+    <string name="auto_update_check">التحقق من التحديث التلقائي</string>
     <string name="auto_update_desc">لضمان حصولك على أحدث الميزات وإصلاحات الأخطاء، يمكن لهذا التطبيق التحقق من GitHub بحثًا عن إصدارات جديدة عند بدء التشغيل. \n\nملاحظة: يتطلب هذا اتصالاً بالإنترنت. يمكنك تعطيل هذه الميزة في أي وقت من القائمة.</string>
     <string name="use_system_font">استخدام خط النظام</string>
     <string name="restart_required">إعادة التشغيل مطلوبة</string>
