@@ -74,4 +74,14 @@ public class DatabaseUtil {
         App.getInstance().getSharedPreferences().edit()
                 .putBoolean("show_notification", bool).apply();
     }
+
+    public static boolean isAutoUpdate() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("auto_update", false);
+    }
+
+    public static void setAutoUpdate(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("auto_update", bool).apply();
+    }
 }
