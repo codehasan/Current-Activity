@@ -55,7 +55,7 @@ public class DatabaseUtil {
                 .putBoolean("is_show_window", bool).apply();
     }
 
-    public static boolean useAccessibility() {
+    public static boolean shouldUseAccessibility() {
         return App.getInstance().getSharedPreferences()
                 .getBoolean("has_access", false);
     }
@@ -75,7 +75,7 @@ public class DatabaseUtil {
                 .putBoolean("show_notification", bool).apply();
     }
 
-    public static boolean isAutoUpdate() {
+    public static boolean shouldAutoUpdate() {
         return App.getInstance().getSharedPreferences()
                 .getBoolean("auto_update", false);
     }
@@ -83,5 +83,25 @@ public class DatabaseUtil {
     public static void setAutoUpdate(boolean bool) {
         App.getInstance().getSharedPreferences().edit()
                 .putBoolean("auto_update", bool).apply();
+    }
+
+    public static boolean shouldUseSystemFont() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("system_font", false);
+    }
+
+    public static void setUseSystemFont(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("system_font", bool).apply();
+    }
+
+    public static boolean isFirstRun() {
+        return App.getInstance().getSharedPreferences()
+                .getBoolean("first_run", true);
+    }
+
+    public static void setFirstRun(boolean bool) {
+        App.getInstance().getSharedPreferences().edit()
+                .putBoolean("first_run", bool).apply();
     }
 }
