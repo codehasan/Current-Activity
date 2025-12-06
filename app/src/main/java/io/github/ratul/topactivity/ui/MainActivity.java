@@ -40,6 +40,7 @@ import android.os.IBinder;
 import android.os.Process;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowMetrics;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
     private ActivityResultLauncher<String> notificationPermissionLauncher;
     private CoordinatorLayout baseView;
+    private MaterialToolbar toolbar;
     private MaterialSwitch showWindow, showNotification, useAccessibility;
     private BroadcastReceiver updateReceiver;
     private PackageMonitoringService monitoringService;
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressWarnings({"ConstantConditions"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        applyTheme();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -130,8 +133,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        checkForUpdate(true);
-        startAccessibilityService();
+        checkForUpdateIfAllowed();
         DatabaseUtil.setDisplayWidth(getScreenWidth());
 
         boolean isWindowActuallyShowing = PopupManager.isViewVisible();
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             DatabaseUtil.setShowingWindow(isWindowActuallyShowing);
         }
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar = findViewById(R.id.topAppBar);
         showWindow = findViewById(R.id.show_window);
         showNotification = findViewById(R.id.show_notification);
         useAccessibility = findViewById(R.id.use_accessibility);
@@ -161,10 +163,8 @@ public class MainActivity extends AppCompatActivity {
                     showNotification.setChecked(isGranted);
                 });
 
-        useAccessibility.setOnCheckedChangeListener((button, isChecked) -> {
-            DatabaseUtil.setUseAccessibility(isChecked);
-            startAccessibilityService();
-        });
+        useAccessibility.setOnCheckedChangeListener(
+                (button, isChecked) -> DatabaseUtil.setUseAccessibility(isChecked));
 
         showNotification.setOnCheckedChangeListener((button, isChecked) -> {
             DatabaseUtil.setShowNotification(isChecked);
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
             if (isSystemOverlayGranted() && isCommonPermissionsGranted()) {
                 DatabaseUtil.setShowingWindow(true);
                 PopupManager.show(this, getPackageName(), getClass().getName());
-                startAccessibilityService();
                 startPackageMonitoringService();
             } else {
                 showWindow.setChecked(false);
@@ -196,28 +195,48 @@ public class MainActivity extends AppCompatActivity {
         });
 
         downloadAccessibility.setOnClickListener(v -> openLink(REPO_URL + "/releases/latest"));
-        configureWidth.setOnClickListener(v -> configureWidth());
+        configureWidth.setOnClickListener(v -> showConfigureWidthDialog());
 
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.github) {
                 openLink(REPO_URL);
                 return true;
-            } else if (item.getItemId() == R.id.check_update) {
+            }
+
+            if (item.getItemId() == R.id.check_update) {
                 showToast(R.string.checking_for_update);
                 checkForUpdate(false);
+                return true;
+            }
+
+            if (item.getItemId() == R.id.auto_update) {
+                item.setChecked(!item.isChecked());
+                DatabaseUtil.setAutoUpdate(item.isChecked());
+                return true;
+            }
+
+            if (item.getItemId() == R.id.use_system_font) {
+                item.setChecked(!item.isChecked());
+                DatabaseUtil.setUseSystemFont(item.isChecked());
+                showRestartAppDialog();
                 return true;
             }
             return false;
         });
 
-        if (isAutoStartPermissionAvailable(this) &&
-                BuildConfig.FLAVOR.equals("global")) {
-            autostartLayout.setVisibility(View.VISIBLE);
-            autostartDivider.setVisibility(View.VISIBLE);
-            allowAutostart.setOnClickListener(v -> requestAutoStartPermission(this));
-        } else {
-            autostartLayout.setVisibility(View.GONE);
-            autostartDivider.setVisibility(View.GONE);
+        if (BuildConfig.FLAVOR.equals("global")) {
+            if (isAutoStartPermissionAvailable(this)) {
+                autostartLayout.setVisibility(View.VISIBLE);
+                autostartDivider.setVisibility(View.VISIBLE);
+                allowAutostart.setOnClickListener(v -> requestAutoStartPermission(this));
+            } else {
+                autostartLayout.setVisibility(View.GONE);
+                autostartDivider.setVisibility(View.GONE);
+            }
+        }
+
+        if (DatabaseUtil.isFirstRun()) {
+            showAutoUpdatePolicyDialog();
         }
 
         if (handleQsTileIntent(getIntent())) {
@@ -236,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startAccessibilityService();
+        refreshMenu();
         refreshWindowSwitch();
         refreshNotificationSwitch();
         refreshAccessibilitySwitch();
@@ -296,15 +315,30 @@ public class MainActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private boolean isAccessibilityNotStarted() {
         return BuildConfig.FLAVOR.equals("global") &&
-                DatabaseUtil.useAccessibility() &&
+                DatabaseUtil.shouldUseAccessibility() &&
                 AccessibilityMonitoringService.getInstance() == null;
+    }
+
+    private void applyTheme() {
+        boolean useSystemFont = DatabaseUtil.shouldUseSystemFont();
+        if (useSystemFont) {
+            setTheme(R.style.AppTheme_SystemFont);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+    }
+
+    private void checkForUpdateIfAllowed() {
+        if (DatabaseUtil.shouldAutoUpdate()) {
+            checkForUpdate(true);
+        }
     }
 
     private void checkForUpdate(boolean silent) {
         try {
             Volley.newRequestQueue(this)
                     .add(getVersionCheckRequest(silent));
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
             handleErrorResponse(silent);
         }
     }
@@ -316,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     try {
                         processUpdateResponse(response, silent);
-                    } catch (Throwable ignored) {
+                    } catch (Exception ignored) {
                         handleErrorResponse(silent);
                     }
                 },
@@ -333,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void processUpdateResponse(JSONObject response, boolean silent) throws Throwable {
+    private void processUpdateResponse(JSONObject response, boolean silent) throws Exception {
         String tag = response.getString("tag_name");
         String serverVersion = tag.replaceAll("[^0-9]", "");
         String currentVersion = BuildConfig.VERSION_NAME.replaceAll("[^0-9]", "");
@@ -346,14 +380,46 @@ public class MainActivity extends AppCompatActivity {
                         openLink(REPO_URL + "/releases/tag/" + tag);
                         dialog.dismiss();
                     })
-                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.later, (dialog, which) -> dialog.dismiss())
                     .show();
         } else if (!silent) {
             showToast(R.string.already_using_latest);
         }
     }
 
-    private void configureWidth() {
+    private void showAutoUpdatePolicyDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.auto_update)
+                .setMessage(R.string.auto_update_desc)
+                .setPositiveButton(R.string.enable, (dialog, which) -> {
+                    dialog.dismiss();
+                    DatabaseUtil.setAutoUpdate(true);
+                    refreshMenu();
+                })
+                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setOnDismissListener(dialog -> DatabaseUtil.setFirstRun(false))
+                .show();
+    }
+
+    private void showRestartAppDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.restart_required)
+                .setMessage(R.string.restart_app)
+                .setPositiveButton(R.string.restart, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (showWindow.isChecked()) {
+                        DatabaseUtil.setShowingWindow(false);
+                        NotificationReceiver.cancelNotification();
+                        PopupManager.dismiss(this);
+                        showWindow.setChecked(false);
+                    }
+                    finishAndRemoveTask();
+                })
+                .setNeutralButton(R.string.later, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void showConfigureWidthDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.content_configure_width, null);
         TextInputLayout widthInput = dialogView.findViewById(R.id.width);
         TextView helperText = dialogView.findViewById(R.id.helper);
@@ -404,20 +470,21 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void startAccessibilityService() {
-        // Start Accessibility Monitoring Service if accessibility is enabled
-        if (isAccessibilityNotStarted()) {
-            Intent intent = new Intent(
-                    this, AccessibilityMonitoringService.class);
-            getApplicationContext().startService(intent);
-        }
-    }
-
     private void startPackageMonitoringService() {
         Intent intent = new Intent(this, PackageMonitoringService.class);
         getApplicationContext().startService(intent);
         getApplicationContext().bindService(
                 intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void refreshMenu() {
+        SubMenu customMenu = toolbar.getMenu().findItem(R.id.menu).getSubMenu();
+        if (customMenu != null) {
+            customMenu.findItem(R.id.auto_update)
+                    .setChecked(DatabaseUtil.shouldAutoUpdate());
+            customMenu.findItem(R.id.use_system_font)
+                    .setChecked(DatabaseUtil.shouldUseSystemFont());
+        }
     }
 
     private void refreshWindowSwitch() {
@@ -434,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshAccessibilitySwitch() {
-        useAccessibility.setChecked(DatabaseUtil.useAccessibility());
+        useAccessibility.setChecked(DatabaseUtil.shouldUseAccessibility());
     }
 
     private void requestNotificationPermission() {
