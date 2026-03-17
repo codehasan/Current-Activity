@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showConfigureWidthDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.content_configure_width, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.layout_configure_width, null);
         TextInputLayout widthInput = dialogView.findViewById(R.id.width);
         TextView helperText = dialogView.findViewById(R.id.helper);
 

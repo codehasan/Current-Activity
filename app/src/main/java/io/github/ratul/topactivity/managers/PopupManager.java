@@ -139,7 +139,7 @@ public class PopupManager {
         ContextThemeWrapper wrapper = new ContextThemeWrapper(context,
                 DatabaseUtil.shouldUseSystemFont() ? R.style.AppTheme_SystemFont : R.style.AppTheme);
         baseView = LayoutInflater.from(wrapper)
-                .inflate(R.layout.content_activity_info, null, false);
+                .inflate(R.layout.layout_activity_info, null, false);
         appName = baseView.findViewById(R.id.app_name);
         packageName = baseView.findViewById(R.id.package_name);
         className = baseView.findViewById(R.id.class_name);
