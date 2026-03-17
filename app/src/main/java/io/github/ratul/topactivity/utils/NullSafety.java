@@ -24,13 +24,13 @@ import android.util.SparseArray;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Can be used up to Java 8
- */
 public class NullSafety {
     @NonNull
     public static <T> T requireNonNullElse(@Nullable T obj, @NonNull T defaultObj) {
@@ -43,6 +43,20 @@ public class NullSafety {
      */
     public static boolean isNullOrEmpty(@Nullable CharSequence charSequence) {
         return charSequence == null || isBlank(charSequence);
+    }
+
+    /**
+     * Returns {@code true} if the given {@link JSONObject} is {@code null} or has no children.
+     */
+    public static <T> boolean isNullOrEmpty(@Nullable JSONObject obj) {
+        return obj == null || obj.length() == 0;
+    }
+
+    /**
+     * Returns {@code true} if the given {@link JSONArray} is {@code null} or has no elements.
+     */
+    public static <T> boolean isNullOrEmpty(@Nullable JSONArray array) {
+        return array == null || array.length() == 0;
     }
 
     /**
