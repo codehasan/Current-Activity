@@ -14,94 +14,47 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.utils;
+package io.github.ratul.topactivity.utils
 
-import io.github.ratul.topactivity.App;
+import io.github.ratul.topactivity.App
 
-/**
- * Created by Wen on 16/02/2017.
- * Refactored by Ratul on 04/05/2022.
- */
-public class DatabaseUtil {
-    public static int getDisplayWidth() {
-        return App.getInstance().getSharedPreferences()
-                .getInt("width", 720);
-    }
+object DatabaseUtil {
+    private val prefs get() = App.instance.sharedPreferences
 
-    public static void setDisplayWidth(int width) {
-        App.getInstance().getSharedPreferences().edit()
-                .putInt("width", width)
-                .apply();
-    }
+    var displayWidth: Int
+        get() = prefs.getInt("width", 720)
+        set(value) = prefs.edit().putInt("width", value).apply()
 
-    public static int getUserWidth() {
-        return App.getInstance().getSharedPreferences()
-                .getInt("user_width", -1);
-    }
+    var userWidth: Int
+        get() = prefs.getInt("user_width", -1)
+        set(value) = prefs.edit().putInt("user_width", value).apply()
 
-    public static void setUserWidth(int width) {
-        App.getInstance().getSharedPreferences().edit()
-                .putInt("user_width", width)
-                .apply();
-    }
+    var useAccessibility: Boolean
+        get() = prefs.getBoolean("has_access", false)
+        set(value) = prefs.edit().putBoolean("has_access", value).apply()
 
-    public static boolean isShowingWindow() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("is_show_window", false);
-    }
+    var showNotification: Boolean
+        get() = prefs.getBoolean("show_notification", false)
+        set(value) = prefs.edit().putBoolean("show_notification", value).apply()
 
-    public static void setShowingWindow(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("is_show_window", bool).apply();
-    }
+    var autoUpdate: Boolean
+        get() = prefs.getBoolean("auto_update", false)
+        set(value) = prefs.edit().putBoolean("auto_update", value).apply()
 
-    public static boolean shouldUseAccessibility() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("has_access", false);
-    }
+    var useSystemFont: Boolean
+        get() = prefs.getBoolean("system_font", false)
+        set(value) = prefs.edit().putBoolean("system_font", value).apply()
 
-    public static void setUseAccessibility(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("has_access", bool).apply();
-    }
+    var isFirstRun: Boolean
+        get() = prefs.getBoolean("first_run", true)
+        set(value) = prefs.edit().putBoolean("first_run", value).apply()
 
-    public static boolean isShowNotification() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("show_notification", false);
-    }
-
-    public static void setShowNotification(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("show_notification", bool).apply();
-    }
-
-    public static boolean shouldAutoUpdate() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("auto_update", false);
-    }
-
-    public static void setAutoUpdate(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("auto_update", bool).apply();
-    }
-
-    public static boolean shouldUseSystemFont() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("system_font", false);
-    }
-
-    public static void setUseSystemFont(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("system_font", bool).apply();
-    }
-
-    public static boolean isFirstRun() {
-        return App.getInstance().getSharedPreferences()
-                .getBoolean("first_run", true);
-    }
-
-    public static void setFirstRun(boolean bool) {
-        App.getInstance().getSharedPreferences().edit()
-                .putBoolean("first_run", bool).apply();
-    }
+    /**
+     * Persistence hint for restoring popup state after process death.
+     * NOT the source of truth for whether the popup is currently visible —
+     * use [io.github.ratul.topactivity.managers.PopupManager.isActive] for that.
+     */
+    var wasShowingWindow: Boolean
+        get() = prefs.getBoolean("is_show_window", false)
+        set(value) = prefs.edit().putBoolean("is_show_window", value).apply()
 }

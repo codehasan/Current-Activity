@@ -14,567 +14,557 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui
 
-import static android.Manifest.permission.PACKAGE_USAGE_STATS;
-import static android.Manifest.permission.POST_NOTIFICATIONS;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.android.volley.Request.Method.GET;
-import static java.lang.Integer.parseInt;
-import static io.github.ratul.topactivity.App.API_URL;
-import static io.github.ratul.topactivity.App.REPO_URL;
-import static io.github.ratul.topactivity.utils.AutostartUtil.isAutoStartPermissionAvailable;
-import static io.github.ratul.topactivity.utils.AutostartUtil.requestAutoStartPermission;
+import android.Manifest.permission.PACKAGE_USAGE_STATS
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.AppOpsManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
+import android.os.Process
+import android.provider.Settings
+import android.util.DisplayMetrics
+import android.view.View
+import android.view.WindowInsets
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.activity.EdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.text.HtmlCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.android.volley.Request.Method.GET
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDivider
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
+import io.github.ratul.topactivity.App
+import io.github.ratul.topactivity.App.Companion.API_URL
+import io.github.ratul.topactivity.App.Companion.REPO_URL
+import io.github.ratul.topactivity.BuildConfig
+import io.github.ratul.topactivity.R
+import io.github.ratul.topactivity.managers.PopupManager
+import io.github.ratul.topactivity.managers.PopupStateListener
+import io.github.ratul.topactivity.services.AccessibilityMonitoringService
+import io.github.ratul.topactivity.services.PackageMonitoringService
+import io.github.ratul.topactivity.utils.AutostartUtil
+import io.github.ratul.topactivity.utils.DatabaseUtil
+import org.json.JSONObject
 
-import android.app.AppOpsManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Process;
-import android.provider.Settings;
-import android.text.Spanned;
-import android.util.DisplayMetrics;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowMetrics;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+class MainActivity : AppCompatActivity() {
 
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.text.HtmlCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+    private lateinit var baseView: CoordinatorLayout
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var showWindow: MaterialSwitch
+    private lateinit var showNotification: MaterialSwitch
+    private lateinit var useAccessibility: MaterialSwitch
 
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.divider.MaterialDivider;
-import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
+    private var monitoringService: PackageMonitoringService? = null
+    private var isServiceBound = false
 
-import org.json.JSONObject;
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        DatabaseUtil.showNotification = isGranted
+        showNotification.isChecked = isGranted
+    }
 
-import io.github.ratul.topactivity.BuildConfig;
-import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.managers.PopupManager;
-import io.github.ratul.topactivity.receivers.NotificationReceiver;
-import io.github.ratul.topactivity.services.AccessibilityMonitoringService;
-import io.github.ratul.topactivity.services.PackageMonitoringService;
-import io.github.ratul.topactivity.utils.DatabaseUtil;
-
-/**
- * Created by Wen on 16/02/2017.
- * Refactored by Ratul on 04/05/2022.
- */
-public class MainActivity extends AppCompatActivity {
-    public static final String ACTION_STATE_CHANGED = "io.github.ratul.topactivity.ACTION_STATE_CHANGED";
-    public static final String EXTRA_FROM_QS_TILE = "from_qs_tile";
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
-    private CoordinatorLayout baseView;
-    private MaterialToolbar toolbar;
-    private MaterialSwitch showWindow, showNotification, useAccessibility;
-    private BroadcastReceiver updateReceiver;
-    private PackageMonitoringService monitoringService;
-    private boolean isServiceBound = false;
-
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            PackageMonitoringService.LocalBinder binder =
-                    (PackageMonitoringService.LocalBinder) service;
-            monitoringService = binder.getService();
-            isServiceBound = true;
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            monitoringService = (service as PackageMonitoringService.LocalBinder).service
+            isServiceBound = true
         }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isServiceBound = false;
-            monitoringService = null;
-        }
-    };
-
-    class UpdateSwitchReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            refreshWindowSwitch();
-            refreshNotificationSwitch();
-            refreshAccessibilitySwitch();
+        override fun onServiceDisconnected(name: ComponentName) {
+            isServiceBound = false
+            monitoringService = null
         }
     }
 
-    @SuppressWarnings({"ConstantConditions"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        applyTheme();
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        baseView = findViewById(R.id.main);
-        ViewCompat.setOnApplyWindowInsetsListener(baseView, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    private val popupListener = object : PopupStateListener {
+        override fun onPopupShown() = refreshWindowSwitch()
+        override fun onPopupDismissed() = refreshWindowSwitch()
+    }
 
-        checkForUpdateIfAllowed();
-        DatabaseUtil.setDisplayWidth(getScreenWidth());
+    override fun onCreate(savedInstanceState: Bundle?) {
+        applyTheme()
+        super.onCreate(savedInstanceState)
+        EdgeToEdge.enable(this)
+        setContentView(R.layout.activity_main)
 
-        boolean isWindowActuallyShowing = PopupManager.isViewVisible();
-        if (DatabaseUtil.isShowingWindow() != isWindowActuallyShowing) {
-            DatabaseUtil.setShowingWindow(isWindowActuallyShowing);
+        baseView = findViewById(R.id.main)
+        ViewCompat.setOnApplyWindowInsetsListener(baseView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
 
-        toolbar = findViewById(R.id.topAppBar);
-        showWindow = findViewById(R.id.show_window);
-        showNotification = findViewById(R.id.show_notification);
-        useAccessibility = findViewById(R.id.use_accessibility);
-        Button downloadAccessibility = findViewById(R.id.download_accessibility);
-        Button configureWidth = findViewById(R.id.configure_width);
+        registerListeners()
+        checkForUpdateIfAllowed()
+        DatabaseUtil.displayWidth = getScreenWidth()
 
-        LinearLayout autostartLayout = findViewById(R.id.autostart_layout);
-        MaterialDivider autostartDivider = findViewById(R.id.autostart_divider);
-        Button allowAutostart = findViewById(R.id.allow_autostart);
+        toolbar = findViewById(R.id.topAppBar)
+        showWindow = findViewById(R.id.show_window)
+        showNotification = findViewById(R.id.show_notification)
+        useAccessibility = findViewById(R.id.use_accessibility)
+        val downloadAccessibility = findViewById<Button>(R.id.download_accessibility)
+        val configureWidth = findViewById<Button>(R.id.configure_width)
+        val autostartLayout = findViewById<LinearLayout>(R.id.autostart_layout)
+        val autostartDivider = findViewById<MaterialDivider>(R.id.autostart_divider)
+        val allowAutostart = findViewById<Button>(R.id.allow_autostart)
 
-        updateReceiver = new UpdateSwitchReceiver();
-        ContextCompat.registerReceiver(this, updateReceiver,
-                new IntentFilter(ACTION_STATE_CHANGED), ContextCompat.RECEIVER_EXPORTED);
+        setupSwitches()
+        setupToolbarMenu()
+        downloadAccessibility.setOnClickListener { showGlobalVersionDownloadDialog() }
+        configureWidth.setOnClickListener { showConfigureWidthDialog() }
 
-        notificationPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    DatabaseUtil.setShowNotification(isGranted);
-                    showNotification.setChecked(isGranted);
-                });
+        setupAutostartSection(autostartLayout, autostartDivider, allowAutostart)
 
-        useAccessibility.setOnCheckedChangeListener(
-                (button, isChecked) -> DatabaseUtil.setUseAccessibility(isChecked));
+        if (DatabaseUtil.isFirstRun) {
+            showAutoUpdatePolicyDialog()
+        }
 
-        showNotification.setOnCheckedChangeListener((button, isChecked) -> {
-            DatabaseUtil.setShowNotification(isChecked);
+        if (handleQsTileIntent(intent)) {
+            moveTaskToBack(true)
+        }
+    }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (handleQsTileIntent(intent)) {
+            moveTaskToBack(true)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshMenu()
+        refreshWindowSwitch()
+        refreshNotificationSwitch()
+        refreshAccessibilitySwitch()
+    }
+
+    override fun onDestroy() {
+        PopupManager.removeListener(popupListener)
+        super.onDestroy()
+    }
+
+    // -- Setup helpers --
+
+    private fun registerListeners() {
+        PopupManager.addListener(popupListener)
+    }
+
+    private fun setupSwitches() {
+        useAccessibility.setOnCheckedChangeListener { _, isChecked ->
+            DatabaseUtil.useAccessibility = isChecked
+        }
+
+        showNotification.setOnCheckedChangeListener { _, isChecked ->
+            DatabaseUtil.showNotification = isChecked
             if (isChecked && !isNotificationGranted()) {
-                requestNotificationPermission();
+                requestNotificationPermission()
             }
-        });
+        }
 
-        showWindow.setOnClickListener(v -> {
-            boolean isChecked = showWindow.isChecked();
-
-            if (!isChecked) {
-                DatabaseUtil.setShowingWindow(false);
-                NotificationReceiver.cancelNotification();
-                PopupManager.dismiss(this);
+        showWindow.setOnClickListener {
+            if (!showWindow.isChecked) {
+                PopupManager.dismiss()
+                return@setOnClickListener
             }
 
             if (isSystemOverlayGranted() && isCommonPermissionsGranted()) {
-                DatabaseUtil.setShowingWindow(true);
-                PopupManager.show(this, getPackageName(), getClass().getName());
-                startPackageMonitoringService();
+                PopupManager.show(this, packageName, this::class.java.name)
+                startPackageMonitoringService()
             } else {
-                showWindow.setChecked(false);
-                requestSystemOverlayPermission();
-                requestCommonPermissions();
+                showWindow.isChecked = false
+                requestSystemOverlayPermission()
+                requestCommonPermissions()
             }
-        });
-
-        downloadAccessibility.setOnClickListener(v -> showGlobalVersionDownloadDialog());
-        configureWidth.setOnClickListener(v -> showConfigureWidthDialog());
-
-        toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.github) {
-                openLink(REPO_URL);
-                return true;
-            }
-
-            if (item.getItemId() == R.id.check_update) {
-                showToast(R.string.checking_for_update);
-                checkForUpdate(false);
-                return true;
-            }
-
-            if (item.getItemId() == R.id.auto_update) {
-                item.setChecked(!item.isChecked());
-                DatabaseUtil.setAutoUpdate(item.isChecked());
-                return true;
-            }
-
-            if (item.getItemId() == R.id.use_system_font) {
-                item.setChecked(!item.isChecked());
-                DatabaseUtil.setUseSystemFont(item.isChecked());
-                showRestartAppDialog();
-                return true;
-            }
-            return false;
-        });
-
-        if (BuildConfig.FLAVOR.equals("global")) {
-            if (isAutoStartPermissionAvailable(this)) {
-                autostartLayout.setVisibility(View.VISIBLE);
-                autostartDivider.setVisibility(View.VISIBLE);
-                allowAutostart.setOnClickListener(v -> requestAutoStartPermission(this));
-            } else {
-                autostartLayout.setVisibility(View.GONE);
-                autostartDivider.setVisibility(View.GONE);
-            }
-        }
-
-        if (DatabaseUtil.isFirstRun()) {
-            showAutoUpdatePolicyDialog();
-        }
-
-        if (handleQsTileIntent(getIntent())) {
-            moveTaskToBack(true);
         }
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (handleQsTileIntent(intent)) {
-            moveTaskToBack(true);
+    private fun setupToolbarMenu() {
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.github -> {
+                    openLink(REPO_URL)
+                    true
+                }
+                R.id.check_update -> {
+                    showToast(R.string.checking_for_update)
+                    checkForUpdate(silent = false)
+                    true
+                }
+                R.id.auto_update -> {
+                    item.isChecked = !item.isChecked
+                    DatabaseUtil.autoUpdate = item.isChecked
+                    true
+                }
+                R.id.use_system_font -> {
+                    item.isChecked = !item.isChecked
+                    DatabaseUtil.useSystemFont = item.isChecked
+                    showRestartAppDialog()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshMenu();
-        refreshWindowSwitch();
-        refreshNotificationSwitch();
-        refreshAccessibilitySwitch();
-    }
+    private fun setupAutostartSection(
+        layout: LinearLayout, divider: MaterialDivider, button: Button
+    ) {
+        if (BuildConfig.FLAVOR != "global") return
 
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(updateReceiver);
-        super.onDestroy();
-    }
-
-    private int getScreenWidth() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
-            android.graphics.Insets insets = windowMetrics.getWindowInsets()
-                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
-            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        if (AutostartUtil.isAutoStartPermissionAvailable(this)) {
+            layout.visibility = View.VISIBLE
+            divider.visibility = View.VISIBLE
+            button.setOnClickListener { AutostartUtil.requestAutoStartPermission(this) }
         } else {
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            return displayMetrics.widthPixels;
+            layout.visibility = View.GONE
+            divider.visibility = View.GONE
         }
     }
 
-    private boolean handleQsTileIntent(Intent intent) {
-        if (intent.getBooleanExtra(EXTRA_FROM_QS_TILE, false)) {
-            showWindow.setChecked(true);
-            showWindow.callOnClick();
-            return DatabaseUtil.isShowingWindow();
-        }
-        return false;
+    // -- State queries --
+
+    private fun handleQsTileIntent(intent: Intent): Boolean {
+        if (!intent.getBooleanExtra(EXTRA_FROM_QS_TILE, false)) return false
+        showWindow.isChecked = true
+        showWindow.callOnClick()
+        return PopupManager.isActive
     }
 
-    private boolean isCommonPermissionsGranted() {
-        return !isAccessibilityNotStarted() && isUsageStatsGranted();
-    }
+    private fun isCommonPermissionsGranted(): Boolean =
+        !isAccessibilityNotStarted() && isUsageStatsGranted()
 
-    private boolean isSystemOverlayGranted() {
-        return Settings.canDrawOverlays(this);
-    }
+    private fun isSystemOverlayGranted(): Boolean =
+        Settings.canDrawOverlays(this)
 
-    private boolean isNotificationGranted() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                checkSelfPermission(POST_NOTIFICATIONS) == PERMISSION_GRANTED;
-    }
+    private fun isNotificationGranted(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
-    private boolean isUsageStatsGranted() {
-        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                Process.myUid(), getPackageName());
-        if (mode == AppOpsManager.MODE_DEFAULT) {
-            return checkCallingOrSelfPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED;
-        }
-        return mode == AppOpsManager.MODE_ALLOWED;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private boolean isAccessibilityNotStarted() {
-        return BuildConfig.FLAVOR.equals("global") &&
-                DatabaseUtil.shouldUseAccessibility() &&
-                AccessibilityMonitoringService.getInstance() == null;
-    }
-
-    private void applyTheme() {
-        boolean useSystemFont = DatabaseUtil.shouldUseSystemFont();
-        if (useSystemFont) {
-            setTheme(R.style.AppTheme_SystemFont);
+    private fun isUsageStatsGranted(): Boolean {
+        val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = appOps.checkOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), packageName
+        )
+        return if (mode == AppOpsManager.MODE_DEFAULT) {
+            checkCallingOrSelfPermission(PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
         } else {
-            setTheme(R.style.AppTheme);
+            mode == AppOpsManager.MODE_ALLOWED
         }
     }
 
-    private void checkForUpdateIfAllowed() {
-        if (DatabaseUtil.shouldAutoUpdate()) {
-            checkForUpdate(true);
+    private fun isAccessibilityNotStarted(): Boolean =
+        BuildConfig.FLAVOR == "global" &&
+                DatabaseUtil.useAccessibility &&
+                AccessibilityMonitoringService.instance == null
+
+    // -- UI updates --
+
+    private fun applyTheme() {
+        setTheme(
+            if (DatabaseUtil.useSystemFont) R.style.AppTheme_SystemFont
+            else R.style.AppTheme
+        )
+    }
+
+    private fun refreshMenu() {
+        val customMenu = toolbar.menu.findItem(R.id.menu)?.subMenu ?: return
+        customMenu.findItem(R.id.auto_update)?.isChecked = DatabaseUtil.autoUpdate
+        customMenu.findItem(R.id.use_system_font)?.isChecked = DatabaseUtil.useSystemFont
+    }
+
+    private fun refreshWindowSwitch() {
+        showWindow.isChecked = PopupManager.isActive
+    }
+
+    private fun refreshNotificationSwitch() {
+        if (!isNotificationGranted()) {
+            DatabaseUtil.showNotification = false
+            showNotification.isChecked = false
+            return
+        }
+        showNotification.isChecked = DatabaseUtil.showNotification
+    }
+
+    private fun refreshAccessibilitySwitch() {
+        useAccessibility.isChecked = DatabaseUtil.useAccessibility
+    }
+
+    // -- Screen measurement --
+
+    private fun getScreenWidth(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
         }
     }
 
-    private void checkForUpdate(boolean silent) {
+    // -- Service management --
+
+    private fun startPackageMonitoringService() {
+        val intent = Intent(this, PackageMonitoringService::class.java)
+        applicationContext.startService(intent)
+        applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    // -- Permission requests --
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun requestSystemOverlayPermission() {
+        if (Settings.canDrawOverlays(this)) return
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.system_overlay_title)
+            .setMessage(getString(R.string.system_overlay_description, getString(R.string.app_name)))
+            .setPositiveButton(R.string.settings) { dialog, _ ->
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                    .setData(Uri.parse("package:$packageName"))
+                startActivity(intent)
+                dialog.dismiss()
+            }
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun requestCommonPermissions() {
+        requestAccessibilityIfNeeded()
+        requestUsageStatsIfNeeded()
+    }
+
+    private fun requestAccessibilityIfNeeded() {
+        if (!isAccessibilityNotStarted()) return
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.accessibility_permission_title)
+            .setMessage(getString(R.string.accessibility_permission_description, getString(R.string.app_name)))
+            .setPositiveButton(R.string.settings) { dialog, _ ->
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                dialog.dismiss()
+            }
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun requestUsageStatsIfNeeded() {
+        if (isUsageStatsGranted()) return
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.usage_access_title)
+            .setMessage(getString(R.string.usage_access_description, getString(R.string.app_name)))
+            .setPositiveButton(R.string.settings) { dialog, _ ->
+                startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                dialog.dismiss()
+            }
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    // -- Dialogs --
+
+    private fun checkForUpdateIfAllowed() {
+        if (DatabaseUtil.autoUpdate) {
+            checkForUpdate(silent = true)
+        }
+    }
+
+    private fun checkForUpdate(silent: Boolean) {
         try {
-            Volley.newRequestQueue(this)
-                    .add(getVersionCheckRequest(silent));
-        } catch (Exception ignored) {
-            handleErrorResponse(silent);
+            Volley.newRequestQueue(this).add(buildVersionCheckRequest(silent))
+        } catch (_: Exception) {
+            handleUpdateError(silent)
         }
     }
 
-    private JsonObjectRequest getVersionCheckRequest(boolean silent) {
-        JsonObjectRequest request = new JsonObjectRequest(GET,
-                API_URL + "/releases/latest",
-                null,
-                response -> {
-                    try {
-                        processUpdateResponse(response, silent);
-                    } catch (Exception ignored) {
-                        handleErrorResponse(silent);
-                    }
-                },
-                error -> handleErrorResponse(silent));
-        request.setShouldRetryConnectionErrors(true);
-        request.setShouldCache(false);
-        return request;
+    private fun buildVersionCheckRequest(silent: Boolean): JsonObjectRequest {
+        return JsonObjectRequest(
+            GET, "$API_URL/releases/latest", null,
+            { response ->
+                try {
+                    processUpdateResponse(response, silent)
+                } catch (_: Exception) {
+                    handleUpdateError(silent)
+                }
+            },
+            { handleUpdateError(silent) }
+        ).apply {
+            setShouldRetryConnectionErrors(true)
+            setShouldCache(false)
+        }
     }
 
-    private void handleErrorResponse(boolean silent) {
+    private fun handleUpdateError(silent: Boolean) {
         if (!silent) {
-            showToast(R.string.update_check_failed);
-            openLink(REPO_URL + "/releases/latest");
+            showToast(R.string.update_check_failed)
+            openLink("$REPO_URL/releases/latest")
         }
     }
 
-    private void processUpdateResponse(JSONObject response, boolean silent) throws Exception {
-        String tag = response.getString("tag_name");
-        String serverVersion = tag.replaceAll("[^0-9]", "");
-        String currentVersion = BuildConfig.VERSION_NAME.replaceAll("[^0-9]", "");
+    private fun processUpdateResponse(response: JSONObject, silent: Boolean) {
+        val tag = response.getString("tag_name")
+        val serverVersion = tag.replace(Regex("[^0-9]"), "").toInt()
+        val currentVersion = BuildConfig.VERSION_NAME.replace(Regex("[^0-9]"), "").toInt()
 
-        if (parseInt(serverVersion) > parseInt(currentVersion)) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.update_available)
-                    .setMessage(getString(R.string.new_version_available, tag))
-                    .setPositiveButton(R.string.download, (dialog, which) -> {
-                        openLink(REPO_URL + "/releases/tag/" + tag);
-                        dialog.dismiss();
-                    })
-                    .setNeutralButton(R.string.later, (dialog, which) -> dialog.dismiss())
-                    .show();
+        if (serverVersion > currentVersion) {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.update_available)
+                .setMessage(getString(R.string.new_version_available, tag))
+                .setPositiveButton(R.string.download) { dialog, _ ->
+                    openLink("$REPO_URL/releases/tag/$tag")
+                    dialog.dismiss()
+                }
+                .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
+                .show()
         } else if (!silent) {
-            showToast(R.string.already_using_latest);
+            showToast(R.string.already_using_latest)
         }
     }
 
-    private void showAutoUpdatePolicyDialog() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.auto_update_check)
-                .setMessage(R.string.auto_update_desc)
-                .setPositiveButton(R.string.enable, (dialog, which) -> {
-                    dialog.dismiss();
-                    DatabaseUtil.setAutoUpdate(true);
-                    refreshMenu();
-                })
-                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .setOnDismissListener(dialog -> DatabaseUtil.setFirstRun(false))
-                .show();
+    private fun showAutoUpdatePolicyDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.auto_update_check)
+            .setMessage(R.string.auto_update_desc)
+            .setPositiveButton(R.string.enable) { dialog, _ ->
+                dialog.dismiss()
+                DatabaseUtil.autoUpdate = true
+                refreshMenu()
+            }
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setOnDismissListener { DatabaseUtil.isFirstRun = false }
+            .show()
     }
 
-    private void showRestartAppDialog() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.restart_required)
-                .setMessage(R.string.restart_app)
-                .setPositiveButton(R.string.restart, (dialog, which) -> {
-                    dialog.dismiss();
-                    if (showWindow.isChecked()) {
-                        DatabaseUtil.setShowingWindow(false);
-                        NotificationReceiver.cancelNotification();
-                        PopupManager.dismiss(this);
-                        showWindow.setChecked(false);
-                    }
-                    finishAndRemoveTask();
-                })
-                .setNeutralButton(R.string.later, (dialog, which) -> dialog.dismiss())
-                .show();
+    private fun showRestartAppDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.restart_required)
+            .setMessage(R.string.restart_app)
+            .setPositiveButton(R.string.restart) { dialog, _ ->
+                dialog.dismiss()
+                if (PopupManager.isActive) {
+                    PopupManager.dismiss()
+                }
+                finishAndRemoveTask()
+            }
+            .setNeutralButton(R.string.later) { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
-    private void showGlobalVersionDownloadDialog() {
-        String base = getString(R.string.global_version_description);
-        Spanned message = HtmlCompat.fromHtml(base, HtmlCompat.FROM_HTML_MODE_COMPACT);
-
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.global_version)
-                .setMessage(message)
-                .setPositiveButton(R.string.download, (dialog, which) -> {
-                    dialog.dismiss();
-                    openLink(REPO_URL + "/releases/latest");
-                })
-                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .show();
+    private fun showGlobalVersionDownloadDialog() {
+        val message = HtmlCompat.fromHtml(
+            getString(R.string.global_version_description),
+            HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.global_version)
+            .setMessage(message)
+            .setPositiveButton(R.string.download) { dialog, _ ->
+                dialog.dismiss()
+                openLink("$REPO_URL/releases/latest")
+            }
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
-    private void showConfigureWidthDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.layout_configure_width, null);
-        TextInputLayout widthInput = dialogView.findViewById(R.id.width);
-        TextView helperText = dialogView.findViewById(R.id.helper);
+    private fun showConfigureWidthDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.layout_configure_width, null)
+        val widthInput = dialogView.findViewById<TextInputLayout>(R.id.width)
+        val helperText = dialogView.findViewById<TextView>(R.id.helper)
 
-        int minWidth = 500;
-        int screenWidth = getScreenWidth();
-        int userWidth = DatabaseUtil.getUserWidth();
+        val minWidth = 500
+        val screenWidth = getScreenWidth()
+        val userWidth = DatabaseUtil.userWidth
 
         if (userWidth != -1) {
-            widthInput.getEditText().setText(String.valueOf(userWidth));
+            widthInput.editText?.setText(userWidth.toString())
         }
-        helperText.setText(getString(R.string.configure_width_help, minWidth, screenWidth));
+        helperText.text = getString(R.string.configure_width_help, minWidth, screenWidth)
 
-        AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.configure_width_title)
-                .setView(dialogView)
-                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .setPositiveButton(R.string.save, null)
-                .create();
+        val alertDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.configure_width_title)
+            .setView(dialogView)
+            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.save, null)
+            .create()
 
-        alertDialog.setOnShowListener(dialog -> {
-            Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            saveButton.setOnClickListener(v -> {
-                String input = widthInput.getEditText().getText().toString();
+        alertDialog.setOnShowListener {
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                handleWidthSave(widthInput, minWidth, screenWidth, alertDialog)
+            }
+        }
 
-                if (input.trim().isEmpty()) {
-                    DatabaseUtil.setUserWidth(-1);
-                    dialog.dismiss();
-                    showToast(R.string.saved);
-                    return;
-                }
-
-                int width = parseInt(input);
-                if (width < minWidth) {
-                    widthInput.setError(getString(R.string.low_width_error_msg, minWidth));
-                    return;
-                } else if (width > screenWidth) {
-                    widthInput.setError(getString(R.string.high_width_error_msg, screenWidth));
-                    return;
-                }
-
-                DatabaseUtil.setUserWidth(width);
-                dialog.dismiss();
-                showToast(R.string.saved);
-            });
-        });
-
-        alertDialog.show();
+        alertDialog.show()
     }
 
-    private void startPackageMonitoringService() {
-        Intent intent = new Intent(this, PackageMonitoringService.class);
-        getApplicationContext().startService(intent);
-        getApplicationContext().bindService(
-                intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
+    private fun handleWidthSave(
+        widthInput: TextInputLayout, minWidth: Int, screenWidth: Int, dialog: AlertDialog
+    ) {
+        val input = widthInput.editText?.text?.toString()?.trim().orEmpty()
 
-    private void refreshMenu() {
-        SubMenu customMenu = toolbar.getMenu().findItem(R.id.menu).getSubMenu();
-        if (customMenu != null) {
-            customMenu.findItem(R.id.auto_update)
-                    .setChecked(DatabaseUtil.shouldAutoUpdate());
-            customMenu.findItem(R.id.use_system_font)
-                    .setChecked(DatabaseUtil.shouldUseSystemFont());
+        if (input.isEmpty()) {
+            DatabaseUtil.userWidth = -1
+            dialog.dismiss()
+            showToast(R.string.saved)
+            return
+        }
+
+        val width = input.toIntOrNull() ?: return
+        when {
+            width < minWidth -> {
+                widthInput.error = getString(R.string.low_width_error_msg, minWidth)
+            }
+            width > screenWidth -> {
+                widthInput.error = getString(R.string.high_width_error_msg, screenWidth)
+            }
+            else -> {
+                DatabaseUtil.userWidth = width
+                dialog.dismiss()
+                showToast(R.string.saved)
+            }
         }
     }
 
-    private void refreshWindowSwitch() {
-        showWindow.setChecked(DatabaseUtil.isShowingWindow());
+    // -- Utilities --
+
+    private fun openLink(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    private void refreshNotificationSwitch() {
-        if (!isNotificationGranted()) {
-            DatabaseUtil.setShowNotification(false);
-            showNotification.setChecked(false);
-            return;
-        }
-        showNotification.setChecked(DatabaseUtil.isShowNotification());
+    private fun showToast(@StringRes message: Int) {
+        Snackbar.make(baseView, message, Snackbar.LENGTH_SHORT).show()
     }
 
-    private void refreshAccessibilitySwitch() {
-        useAccessibility.setChecked(DatabaseUtil.shouldUseAccessibility());
-    }
-
-    private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU &&
-                checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
-            notificationPermissionLauncher.launch(POST_NOTIFICATIONS);
-        }
-    }
-
-    private void requestSystemOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.system_overlay_title)
-                    .setMessage(getString(R.string.system_overlay_description, getString(R.string.app_name)))
-                    .setPositiveButton(R.string.settings, (dialog, which) -> {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                                .setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                        dialog.dismiss();
-                    })
-                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .show();
-        }
-    }
-
-    private void requestCommonPermissions() {
-        if (isAccessibilityNotStarted()) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.accessibility_permission_title)
-                    .setMessage(getString(R.string.accessibility_permission_description, getString(R.string.app_name)))
-                    .setPositiveButton(R.string.settings, (dialog, button) -> {
-                        startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                        dialog.dismiss();
-                    })
-                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .show();
-        }
-
-        if (!isUsageStatsGranted()) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle(R.string.usage_access_title)
-                    .setMessage(getString(R.string.usage_access_description, getString(R.string.app_name)))
-                    .setPositiveButton(R.string.settings, (di, btn) -> {
-                        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-                        di.dismiss();
-                    })
-                    .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .show();
-        }
-    }
-
-    private void openLink(String url) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-    }
-
-    private void showToast(@StringRes int message) {
-        Snackbar.make(baseView, message, Snackbar.LENGTH_SHORT).show();
+    companion object {
+        const val EXTRA_FROM_QS_TILE = "from_qs_tile"
     }
 }

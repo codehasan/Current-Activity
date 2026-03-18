@@ -14,106 +14,104 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.receivers;
+package io.github.ratul.topactivity.receivers
 
-import static android.app.PendingIntent.FLAG_IMMUTABLE;
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static androidx.core.app.NotificationCompat.Action;
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.annotation.StringRes
+import androidx.core.app.NotificationCompat
+import io.github.ratul.topactivity.App
+import io.github.ratul.topactivity.R
+import io.github.ratul.topactivity.managers.PopupManager
+import io.github.ratul.topactivity.managers.PopupStateListener
+import io.github.ratul.topactivity.utils.DatabaseUtil
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+class NotificationReceiver : BroadcastReceiver() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import io.github.ratul.topactivity.App;
-import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.ui.MainActivity;
-import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.managers.PopupManager;
-
-public class NotificationReceiver extends BroadcastReceiver {
-    public static final int NOTIFICATION_ID = 62345;
-    public static final String CHANNEL_ID = "activity_info";
-    public static final int ACTION_COPY = 1;
-    public static final int ACTION_STOP = 2;
-    public static final String EXTRA_NOTIFICATION_ACTION = "command";
-
-    public static void showNotification(
-            @NonNull Context context, @NonNull String title, String message) {
-        if (!DatabaseUtil.isShowNotification()) {
-            return;
-        }
-        NotificationManagerCompat notificationManager = App.getInstance().getNotificationManager();
-        if (notificationManager.areNotificationsEnabled()) {
-            Notification notification = buildNotification(context, title, message);
-            notificationManager.notify(NOTIFICATION_ID, notification);
+    override fun onReceive(context: Context, intent: Intent) {
+        when (intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1)) {
+            ACTION_COPY -> {
+                val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return
+                val msg = intent.getStringExtra(Intent.EXTRA_ASSIST_CONTEXT) ?: return
+                App.copyString(context, text, msg)
+            }
+            ACTION_STOP -> PopupManager.dismiss()
         }
     }
 
-    public static void cancelNotification() {
-        App.getInstance().getNotificationManager()
-                .cancel(NOTIFICATION_ID);
-    }
+    companion object {
+        const val NOTIFICATION_ID = 62345
+        const val CHANNEL_ID = "activity_info"
+        private const val ACTION_COPY = 1
+        private const val ACTION_STOP = 2
+        private const val EXTRA_NOTIFICATION_ACTION = "command"
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        int command = intent.getIntExtra(EXTRA_NOTIFICATION_ACTION, -1);
-
-        switch (command) {
-            case ACTION_COPY:
-                App.copyString(context,
-                        intent.getStringExtra(Intent.EXTRA_TEXT),
-                        intent.getStringExtra(Intent.EXTRA_ASSIST_CONTEXT));
-                break;
-            case ACTION_STOP:
-                DatabaseUtil.setShowingWindow(false);
-                NotificationReceiver.cancelNotification();
-                PopupManager.dismiss(context);
-                context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
-                break;
+        val listener = object : PopupStateListener {
+            override fun onPopupDismissed() = cancelNotification()
+            override fun onActivityInfoChanged(packageName: String, className: String) {
+                if (DatabaseUtil.showNotification) {
+                    showNotification(App.instance, packageName, className)
+                }
+            }
         }
-    }
 
-    private static Notification buildNotification(Context context, String pkg, String cls) {
-        Action copyPkg = new Action(R.drawable.ic_package, context.getString(R.string.package_label),
-                getCopyPendingIntent(context, 3429872, pkg, R.string.package_copied));
-        Action copyClass = new Action(R.drawable.ic_class, context.getString(R.string.class_label),
-                getCopyPendingIntent(context, 3429873, cls, R.string.class_copied));
-        Action stop = new Action(R.drawable.ic_cancel, context.getString(R.string.stop),
-                getStopPendingIntent(context));
+        fun showNotification(context: Context, title: String, message: String) {
+            val notificationManager = App.instance.notificationManager
+            if (!notificationManager.areNotificationsEnabled()) return
 
-        return new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
-                .setContentTitle(pkg)
+            val copyPkg = NotificationCompat.Action(
+                R.drawable.ic_package, context.getString(R.string.package_label),
+                getCopyPendingIntent(context, 3429872, title, R.string.package_copied)
+            )
+            val copyClass = NotificationCompat.Action(
+                R.drawable.ic_class, context.getString(R.string.class_label),
+                getCopyPendingIntent(context, 3429873, message, R.string.class_copied)
+            )
+            val stop = NotificationCompat.Action(
+                R.drawable.ic_cancel, context.getString(R.string.stop),
+                getStopPendingIntent(context)
+            )
+
+            val notification = NotificationCompat.Builder(context.applicationContext, CHANNEL_ID)
+                .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_logo)
-                .setContentText(cls)
+                .setContentText(message)
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .addAction(copyPkg)
                 .addAction(copyClass)
                 .addAction(stop)
-                .build();
-    }
+                .build()
 
-    private static PendingIntent getCopyPendingIntent(
-            Context context, int requestCode, String text, @StringRes int message) {
-        Intent intent = new Intent(context, NotificationReceiver.class)
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
+
+        fun cancelNotification() {
+            App.instance.notificationManager.cancel(NOTIFICATION_ID)
+        }
+
+        private fun getCopyPendingIntent(
+            context: Context, requestCode: Int, text: String, @StringRes message: Int
+        ): PendingIntent {
+            val intent = Intent(context, NotificationReceiver::class.java)
                 .putExtra(EXTRA_NOTIFICATION_ACTION, ACTION_COPY)
                 .putExtra(Intent.EXTRA_TEXT, text)
-                .putExtra(Intent.EXTRA_ASSIST_CONTEXT, context.getString(message));
-        return PendingIntent.getBroadcast(context,
-                requestCode, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
-    }
+                .putExtra(Intent.EXTRA_ASSIST_CONTEXT, context.getString(message))
+            return PendingIntent.getBroadcast(
+                context, requestCode, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
 
-    private static PendingIntent getStopPendingIntent(Context context) {
-        Intent intent = new Intent(context, NotificationReceiver.class)
-                .putExtra(EXTRA_NOTIFICATION_ACTION, ACTION_STOP);
-        return PendingIntent.getBroadcast(context,
-                908435, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
+        private fun getStopPendingIntent(context: Context): PendingIntent {
+            val intent = Intent(context, NotificationReceiver::class.java)
+                .putExtra(EXTRA_NOTIFICATION_ACTION, ACTION_STOP)
+            return PendingIntent.getBroadcast(
+                context, 908435, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
     }
 }

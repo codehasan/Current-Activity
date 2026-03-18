@@ -14,191 +14,225 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.managers;
+package io.github.ratul.topactivity.managers
 
-import static io.github.ratul.topactivity.App.copyString;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.PixelFormat
+import android.os.Build
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
+import io.github.ratul.topactivity.App
+import io.github.ratul.topactivity.R
+import io.github.ratul.topactivity.services.QuickSettingsTileService
+import io.github.ratul.topactivity.utils.DatabaseUtil
+import kotlin.math.min
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
+interface PopupStateListener {
+    fun onPopupShown() {}
+    fun onPopupDismissed() {}
+    fun onActivityInfoChanged(packageName: String, className: String) {}
+}
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.view.ContextThemeWrapper;
+object PopupManager {
 
-import io.github.ratul.topactivity.R;
-import io.github.ratul.topactivity.receivers.NotificationReceiver;
-import io.github.ratul.topactivity.services.QuickSettingsTileService;
-import io.github.ratul.topactivity.ui.MainActivity;
-import io.github.ratul.topactivity.utils.DatabaseUtil;
+    private var windowManager: WindowManager? = null
+    private var packageManager: PackageManager? = null
+    private var baseView: View? = null
+    private var layoutParams: WindowManager.LayoutParams? = null
+    private var appNameView: TextView? = null
+    private var packageNameView: TextView? = null
+    private var classNameView: TextView? = null
 
-/**
- * Created by Ratul on 04/05/2022.
- */
-public class PopupManager {
-    private static WindowManager.LayoutParams layoutParams;
-    private static WindowManager windowManager;
-    private static PackageManager packageManager;
-    private static View baseView;
-    private static int xInitCord = 0;
-    private static int yInitCord = 0;
-    private static int xInitMargin = 0;
-    private static int yInitMargin = 0;
-    private static TextView appName, packageName, className;
+    private val listeners = mutableSetOf<PopupStateListener>()
 
-    public static void show(
-            @NonNull Context context, @NonNull String pkg, @NonNull String cls) {
+    val isActive: Boolean
+        get() = baseView?.isAttachedToWindow == true
+
+    fun addListener(listener: PopupStateListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: PopupStateListener) {
+        listeners.remove(listener)
+    }
+
+    fun show(context: Context, pkg: String, cls: String) {
         if (windowManager == null || baseView == null) {
-            init(context.getApplicationContext());
+            initView(context.applicationContext)
         }
 
-        if (!isViewVisible()) {
-            int userWidth = DatabaseUtil.getUserWidth();
-            if (userWidth != -1) {
-                layoutParams.width = userWidth;
-            } else {
-                double displaySize = Math.min(1100, DatabaseUtil.getDisplayWidth());
-                layoutParams.width = (int) (displaySize * 0.65);
-            }
-            windowManager.addView(baseView, layoutParams);
-            QuickSettingsTileService.updateTile(context);
+        val wasInactive = !isActive
+        if (wasInactive) {
+            attachView()
+            DatabaseUtil.wasShowingWindow = true
+            notifyListeners { it.onPopupShown() }
+            QuickSettingsTileService.requestUpdate(context)
         }
 
-        boolean isPackageChanged = !packageName.getText().toString().equals(pkg);
-        boolean isClassChanged = !className.getText().toString().equals(cls);
-
-        if (isPackageChanged) {
-            String name = getAppName(pkg);
-            if (name != null) {
-                appName.setText(name);
-            } else {
-                appName.setText(R.string.unknown);
-            }
-            packageName.setText(pkg);
-        }
-
-        if (isClassChanged) {
-            className.setText(cls);
-        }
-
-        if (isPackageChanged || isClassChanged) {
-            NotificationReceiver.showNotification(context, pkg, cls);
-        }
+        updateContent(pkg, cls)
     }
 
-    public static void dismiss(@NonNull Context context) {
-        if (windowManager != null && isViewVisible()) {
-            try {
-                windowManager.removeView(baseView);
-            } catch (Exception ignored) {
-            }
+    fun dismiss() {
+        if (isActive) {
+            detachView()
         }
-
-        // Reset all static variables
-        layoutParams = null;
-        windowManager = null;
-        packageManager = null;
-        baseView = null;
-        appName = null;
-        packageName = null;
-        className = null;
-
-        QuickSettingsTileService.updateTile(context);
+        releaseResources()
+        DatabaseUtil.wasShowingWindow = false
+        notifyListeners { it.onPopupDismissed() }
+        QuickSettingsTileService.requestUpdate(App.instance)
     }
 
-    public static boolean isViewVisible() {
-        return baseView != null && baseView.isAttachedToWindow();
+    private fun notifyListeners(action: (PopupStateListener) -> Unit) {
+        listeners.forEach(action)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private static void init(@NonNull Context context) {
-        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        packageManager = context.getPackageManager();
+    private fun initView(context: Context) {
+        windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        packageManager = context.packageManager
 
-        layoutParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
-                        WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        layoutParams = createLayoutParams()
 
-        layoutParams.gravity = Gravity.CENTER;
-        layoutParams.windowAnimations = android.R.style.Animation_Toast;
-
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(context,
-                DatabaseUtil.shouldUseSystemFont() ? R.style.AppTheme_SystemFont : R.style.AppTheme);
+        val wrapper = ContextThemeWrapper(
+            context,
+            if (DatabaseUtil.useSystemFont) R.style.AppTheme_SystemFont else R.style.AppTheme
+        )
         baseView = LayoutInflater.from(wrapper)
-                .inflate(R.layout.layout_activity_info, null, false);
-        appName = baseView.findViewById(R.id.app_name);
-        packageName = baseView.findViewById(R.id.package_name);
-        className = baseView.findViewById(R.id.class_name);
-        ImageView closeBtn = baseView.findViewById(R.id.closeBtn);
+            .inflate(R.layout.layout_activity_info, null, false)
 
-        View.OnLongClickListener copyListener = v -> {
-            TextView textView = (TextView) v;
-            String message;
+        appNameView = baseView!!.findViewById(R.id.app_name)
+        packageNameView = baseView!!.findViewById(R.id.package_name)
+        classNameView = baseView!!.findViewById(R.id.class_name)
+        val closeBtn = baseView!!.findViewById<ImageView>(R.id.closeBtn)
 
-            if (v.getId() == R.id.package_name) {
-                message = context.getString(R.string.package_copied);
-            } else if (v.getId() == R.id.class_name) {
-                message = context.getString(R.string.class_copied);
-            } else {
-                message = context.getString(R.string.copied);
+        val copyListener = View.OnLongClickListener { v ->
+            val textView = v as TextView
+            val message = when (v.id) {
+                R.id.package_name -> context.getString(R.string.package_copied)
+                R.id.class_name -> context.getString(R.string.class_copied)
+                else -> context.getString(R.string.copied)
             }
-            copyString(context, textView.getText().toString(), message);
-            return true;
-        };
+            App.copyString(context, textView.text.toString(), message)
+            true
+        }
 
-        closeBtn.setOnClickListener(v -> {
-            DatabaseUtil.setShowingWindow(false);
-            NotificationReceiver.cancelNotification();
-            dismiss(context);
-            context.sendBroadcast(new Intent(MainActivity.ACTION_STATE_CHANGED));
-        });
-
-        packageName.setOnLongClickListener(copyListener);
-        className.setOnLongClickListener(copyListener);
-
-        baseView.setOnTouchListener((view, event) -> {
-            int xCord = (int) event.getRawX();
-            int yCord = (int) event.getRawY();
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    xInitCord = xCord;
-                    yInitCord = yCord;
-                    xInitMargin = layoutParams.x;
-                    yInitMargin = layoutParams.y;
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    int xDiffMove = xCord - xInitCord;
-                    int yDiffMove = yCord - yInitCord;
-                    layoutParams.x = xInitMargin + xDiffMove;
-                    layoutParams.y = yInitMargin + yDiffMove;
-                    windowManager.updateViewLayout(view, layoutParams);
-                    return true;
-            }
-            return false;
-        });
+        closeBtn.setOnClickListener { dismiss() }
+        packageNameView!!.setOnLongClickListener(copyListener)
+        classNameView!!.setOnLongClickListener(copyListener)
+        baseView!!.setOnTouchListener(DragTouchListener())
     }
 
-    private static String getAppName(@NonNull String pkg) {
+    private fun createLayoutParams() = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        else
+            @Suppress("DEPRECATION")
+            WindowManager.LayoutParams.TYPE_PHONE,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT
+    ).apply {
+        gravity = Gravity.CENTER
+        windowAnimations = android.R.style.Animation_Toast
+    }
+
+    private fun attachView() {
+        val params = layoutParams ?: return
+        val userWidth = DatabaseUtil.userWidth
+        if (userWidth != -1) {
+            params.width = userWidth
+        } else {
+            val displaySize = min(1100, DatabaseUtil.displayWidth)
+            params.width = (displaySize * 0.65).toInt()
+        }
+        windowManager?.addView(baseView, params)
+    }
+
+    private fun detachView() {
         try {
-            return packageManager.getApplicationLabel(
-                    packageManager.getApplicationInfo(pkg, 0)).toString();
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
+            windowManager?.removeView(baseView)
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun releaseResources() {
+        layoutParams = null
+        windowManager = null
+        packageManager = null
+        baseView = null
+        appNameView = null
+        packageNameView = null
+        classNameView = null
+    }
+
+    private fun updateContent(pkg: String, cls: String) {
+        val pkgView = packageNameView ?: return
+        val clsView = classNameView ?: return
+
+        val isPackageChanged = pkgView.text.toString() != pkg
+        val isClassChanged = clsView.text.toString() != cls
+
+        if (isPackageChanged) {
+            appNameView?.text = getAppName(pkg) ?: App.instance.getString(R.string.unknown)
+            pkgView.text = pkg
+        }
+
+        if (isClassChanged) {
+            clsView.text = cls
+        }
+
+        if (isPackageChanged || isClassChanged) {
+            notifyListeners { it.onActivityInfoChanged(pkg, cls) }
+        }
+    }
+
+    private fun getAppName(pkg: String): String? {
+        return try {
+            packageManager?.getApplicationLabel(
+                packageManager!!.getApplicationInfo(pkg, 0)
+            )?.toString()
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        }
+    }
+
+    private inner class DragTouchListener : View.OnTouchListener {
+        private var xInitCord = 0
+        private var yInitCord = 0
+        private var xInitMargin = 0
+        private var yInitMargin = 0
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(view: View, event: MotionEvent): Boolean {
+            val params = layoutParams ?: return false
+            val xCord = event.rawX.toInt()
+            val yCord = event.rawY.toInt()
+
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    xInitCord = xCord
+                    yInitCord = yCord
+                    xInitMargin = params.x
+                    yInitMargin = params.y
+                    return true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    params.x = xInitMargin + (xCord - xInitCord)
+                    params.y = yInitMargin + (yCord - yInitCord)
+                    windowManager?.updateViewLayout(view, params)
+                    return true
+                }
+            }
+            return false
         }
     }
 }

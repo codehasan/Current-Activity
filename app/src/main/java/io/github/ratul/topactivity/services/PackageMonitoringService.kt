@@ -14,119 +14,102 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.services;
+package io.github.ratul.topactivity.services
 
-import static android.app.PendingIntent.FLAG_IMMUTABLE;
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.Service
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
+import android.content.Context
+import android.content.Intent
+import android.os.Binder
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.SystemClock
+import android.util.Log
+import io.github.ratul.topactivity.BuildConfig
+import io.github.ratul.topactivity.managers.PopupManager
 
-import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
+class PackageMonitoringService : Service() {
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.app.usage.UsageEvents;
-import android.app.usage.UsageStatsManager;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.util.Log;
+    private val binder = LocalBinder()
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var usageStats: UsageStatsManager
 
-import androidx.core.util.Pair;
-
-import io.github.ratul.topactivity.BuildConfig;
-import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.managers.PopupManager;
-
-/**
- * Created by Wen on 16/02/2017.
- * Refactored by Ratul on 04/05/2022.
- */
-public class PackageMonitoringService extends Service {
-    private final IBinder binder = new LocalBinder();
-    private final Handler handler = new Handler();
-    private Runnable observerTask;
-    private UsageStatsManager usageStats;
-
-    public class LocalBinder extends Binder {
-        public PackageMonitoringService getService() {
-            return PackageMonitoringService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        usageStats = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        observerTask = () -> {
-            if (!DatabaseUtil.isShowingWindow()) {
-                handler.removeCallbacks(observerTask);
-                stopSelf();
-                return;
+    private val observerTask = object : Runnable {
+        override fun run() {
+            if (!PopupManager.isActive) {
+                handler.removeCallbacks(this)
+                stopSelf()
+                return
             }
 
-            Pair<String, String> currentApp = getForegroundApp();
-            String currentPkgName = currentApp.first;
-            String currentClassName = currentApp.second;
-
-            if (!isNullOrEmpty(currentPkgName) && !isNullOrEmpty(currentClassName)) {
+            val (pkg, cls) = getForegroundApp()
+            if (!pkg.isNullOrEmpty() && !cls.isNullOrEmpty()) {
                 if (BuildConfig.DEBUG) {
-                    Log.d("PackageMonitoring", "Pkg: " + currentPkgName + ", Class: " + currentClassName);
+                    Log.d("PackageMonitoring", "Pkg: $pkg, Class: $cls")
                 }
-                if (PopupManager.isViewVisible()) {
-                    PopupManager.show(this, currentPkgName, currentClassName);
+                if (PopupManager.isActive) {
+                    PopupManager.show(this@PackageMonitoringService, pkg, cls)
                 }
             }
-            handler.postDelayed(observerTask, 500);
-        };
+            handler.postDelayed(this, 500)
+        }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        handler.removeCallbacks(observerTask);
-        handler.post(observerTask);
-        return START_STICKY;
+    inner class LocalBinder : Binder() {
+        val service: PackageMonitoringService get() = this@PackageMonitoringService
     }
 
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        Intent intent = new Intent(this, getClass());
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(),
-                264593, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE);
-        AlarmManager alarmService = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmService.set(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 500, pendingIntent);
-        super.onTaskRemoved(rootIntent);
+    override fun onBind(intent: Intent?): IBinder = binder
+
+    override fun onCreate() {
+        super.onCreate()
+        usageStats = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
     }
 
-    private Pair<String, String> getForegroundApp() {
-        long currentTime = System.currentTimeMillis();
-        // Query events in the last 10 seconds
-        UsageEvents usageEvents = usageStats.queryEvents(currentTime - 10000, currentTime);
-        String latestPackage = null;
-        String latestClass = null;
-        long latestTimestamp = 0;
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        handler.removeCallbacks(observerTask)
+        handler.post(observerTask)
+        return START_STICKY
+    }
 
-        UsageEvents.Event event = new UsageEvents.Event();
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        val intent = Intent(this, this::class.java)
+        val pendingIntent = PendingIntent.getService(
+            applicationContext, 264593, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val alarmService = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmService.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 500,
+            pendingIntent
+        )
+        super.onTaskRemoved(rootIntent)
+    }
+
+    private fun getForegroundApp(): Pair<String?, String?> {
+        val currentTime = System.currentTimeMillis()
+        val usageEvents = usageStats.queryEvents(currentTime - 10000, currentTime)
+        var latestPackage: String? = null
+        var latestClass: String? = null
+        var latestTimestamp = 0L
+
+        val event = UsageEvents.Event()
         while (usageEvents.hasNextEvent()) {
-            usageEvents.getNextEvent(event);
-
-            if (event.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                if (event.getTimeStamp() > latestTimestamp) {
-                    latestTimestamp = event.getTimeStamp();
-                    latestPackage = event.getPackageName();
-                    latestClass = event.getClassName();
-                }
+            usageEvents.getNextEvent(event)
+            if (event.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND &&
+                event.timeStamp > latestTimestamp
+            ) {
+                latestTimestamp = event.timeStamp
+                latestPackage = event.packageName
+                latestClass = event.className
             }
         }
 
-        return new Pair<>(latestPackage, latestClass);
+        return Pair(latestPackage, latestClass)
     }
 }

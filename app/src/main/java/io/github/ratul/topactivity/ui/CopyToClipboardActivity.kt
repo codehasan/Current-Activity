@@ -14,45 +14,33 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.ui;
+package io.github.ratul.topactivity.ui
 
-import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
+import android.content.ClipData
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import io.github.ratul.topactivity.App
+import io.github.ratul.topactivity.R
 
-import android.content.ClipData;
-import android.content.Intent;
-import android.os.Bundle;
+class CopyToClipboardActivity : AppCompatActivity() {
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import io.github.ratul.topactivity.App;
-import io.github.ratul.topactivity.R;
-
-/**
- * Created by Ratul on 04/05/2022.
- */
-public class CopyToClipboardActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        copyToClipboard(getIntent());
-        finish();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        copyToClipboard(intent)
+        finish()
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        copyToClipboard(intent);
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        copyToClipboard(intent)
     }
 
-    private void copyToClipboard(Intent intent) {
-        if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if (!isNullOrEmpty(text)) {
-                ClipData clipData = ClipData.newPlainText(getString(R.string.app_name), text);
-                App.getInstance().getClipboardManager()
-                        .setPrimaryClip(clipData);
-            }
+    private fun copyToClipboard(intent: Intent) {
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+        if (!text.isNullOrEmpty()) {
+            val clipData = ClipData.newPlainText(getString(R.string.app_name), text)
+            App.instance.clipboardManager.setPrimaryClip(clipData)
         }
     }
 }

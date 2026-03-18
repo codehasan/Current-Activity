@@ -14,98 +14,92 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity;
+package io.github.ratul.topactivity
 
-import static io.github.ratul.topactivity.receivers.NotificationReceiver.CHANNEL_ID;
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Build
+import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
+import io.github.ratul.topactivity.managers.PopupManager
+import io.github.ratul.topactivity.receivers.NotificationReceiver
+import io.github.ratul.topactivity.ui.CopyToClipboardActivity
 
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.widget.Toast;
+class App : Application() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationManagerCompat;
+    lateinit var sharedPreferences: SharedPreferences
+        private set
 
-import io.github.ratul.topactivity.ui.CopyToClipboardActivity;
+    lateinit var notificationManager: NotificationManagerCompat
+        private set
 
-public class App extends Application {
-    public static final String REPO_URL = "https://github.com/codehasan/Current-Activity";
-    public static final String API_URL = "https://api.github.com/repos/codehasan/Current-Activity";
-    private static App instance;
-    private ClipboardManager clipboardManager;
-    private SharedPreferences sharedPreferences;
-    private NotificationManagerCompat notificationManager;
+    lateinit var clipboardManager: ClipboardManager
+        private set
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        instance = this;
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        instance = this
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
-        clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        sharedPreferences = getSharedPreferences(getPackageName(), 0);
-        notificationManager = NotificationManagerCompat.from(this);
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        sharedPreferences = getSharedPreferences(packageName, 0)
+        notificationManager = NotificationManagerCompat.from(this)
+
+        PopupManager.addListener(NotificationReceiver.listener)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    getString(R.string.notification_channel_name),
-                    NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription(getString(R.string.notification_channel_description));
-            notificationManager.createNotificationChannel(channel);
+            val channel = NotificationChannel(
+                NotificationReceiver.CHANNEL_ID,
+                getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = getString(R.string.notification_channel_description)
+            }
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
-    public SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
-    }
+    companion object {
+        const val REPO_URL = "https://github.com/codehasan/Current-Activity"
+        const val API_URL = "https://api.github.com/repos/codehasan/Current-Activity"
 
-    public NotificationManagerCompat getNotificationManager() {
-        return notificationManager;
-    }
+        lateinit var instance: App
+            private set
 
-    public ClipboardManager getClipboardManager() {
-        return clipboardManager;
-    }
-
-    public static App getInstance() {
-        return instance;
-    }
-
-    public static void copyString(Context context, String str, String msg) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            ClipData clip = ClipData.newPlainText(context.getString(R.string.app_name), str);
-            getInstance().getClipboardManager().setPrimaryClip(clip);
-        } else {
-            Intent copyActivity = new Intent(context, CopyToClipboardActivity.class)
+        fun copyString(context: Context, str: String, msg: String) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val clip = ClipData.newPlainText(context.getString(R.string.app_name), str)
+                instance.clipboardManager.setPrimaryClip(clip)
+            } else {
+                val copyActivity = Intent(context, CopyToClipboardActivity::class.java)
                     .putExtra(Intent.EXTRA_TEXT, str)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(copyActivity);
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(copyActivity)
+            }
+            showToast(context, msg)
         }
-        showToast(context, msg);
-    }
 
-    public static void showToast(@NonNull Context context, @StringRes int message) {
-        showToast(context, context.getString(message));
-    }
+        fun showToast(context: Context, message: Int) {
+            showToast(context, context.getString(message))
+        }
 
-    public static void showToast(@NonNull Context context, @NonNull String message) {
-        try {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        } catch (Exception ignored) {
+        fun showToast(context: Context, message: String) {
             try {
-                Toast.makeText(instance, message, Toast.LENGTH_SHORT).show();
-            } catch (Exception ignored2) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+                try {
+                    Toast.makeText(instance, message, Toast.LENGTH_SHORT).show()
+                } catch (_: Exception) {
+                }
             }
         }
     }

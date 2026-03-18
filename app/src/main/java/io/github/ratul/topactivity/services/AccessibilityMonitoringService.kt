@@ -14,76 +14,60 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package io.github.ratul.topactivity.services;
+package io.github.ratul.topactivity.services
 
-import static io.github.ratul.topactivity.utils.NullSafety.isNullOrEmpty;
+import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.util.Log
+import android.view.accessibility.AccessibilityEvent
+import io.github.ratul.topactivity.BuildConfig
+import io.github.ratul.topactivity.managers.PopupManager
 
-import android.accessibilityservice.AccessibilityService;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.util.Log;
-import android.view.accessibility.AccessibilityEvent;
-
-import io.github.ratul.topactivity.BuildConfig;
-import io.github.ratul.topactivity.utils.DatabaseUtil;
-import io.github.ratul.topactivity.managers.PopupManager;
-
-/**
- * Created by Wen on 16/02/2017.
- * Refactored by Ratul on 04/05/2022.
- */
 @SuppressLint("AccessibilityPolicy")
-public class AccessibilityMonitoringService extends AccessibilityService {
-    private static AccessibilityMonitoringService instance;
+class AccessibilityMonitoringService : AccessibilityService() {
 
-    public static AccessibilityMonitoringService getInstance() {
-        return instance;
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (!PopupManager.isActive) return
+
+        val pkgName = event.packageName?.toString() ?: return
+        val className = event.className?.toString() ?: return
+
+        if (isSystemClass(className)) return
+
+        if (BuildConfig.DEBUG) {
+            Log.d("AccessibilityService", "Pkg: $pkgName, Class: $className")
+        }
+        PopupManager.show(this, pkgName, className)
     }
 
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (PopupManager.isViewVisible() && DatabaseUtil.isShowingWindow()) {
-            CharSequence pkgName = event.getPackageName();
-            CharSequence className = event.getClassName();
+    override fun onInterrupt() {}
 
-            if (!isNullOrEmpty(pkgName) &&
-                    !isNullOrEmpty(className) &&
-                    !isSystemClass(className.toString())) {
-                if (BuildConfig.DEBUG) {
-                    Log.d("AccessibilityService", "Pkg: " + pkgName + ", Class: " + className);
-                }
-                PopupManager.show(this, pkgName.toString(), className.toString());
-            }
+    override fun onServiceConnected() {
+        instance = this
+        super.onServiceConnected()
+    }
+
+    override fun onRebind(intent: Intent) {
+        instance = this
+        super.onRebind(intent)
+    }
+
+    override fun onUnbind(intent: Intent): Boolean {
+        instance = null
+        return true
+    }
+
+    private fun isSystemClass(className: String): Boolean {
+        return try {
+            ClassLoader.getSystemClassLoader().loadClass(className) != null
+        } catch (_: ClassNotFoundException) {
+            false
         }
     }
 
-    @Override
-    public void onInterrupt() {
-    }
-
-    @Override
-    protected void onServiceConnected() {
-        instance = this;
-        super.onServiceConnected();
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        instance = this;
-        super.onRebind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        instance = null;
-        return true;
-    }
-
-    private boolean isSystemClass(String className) {
-        try {
-            return ClassLoader.getSystemClassLoader().loadClass(className) != null;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+    companion object {
+        var instance: AccessibilityMonitoringService? = null
+            private set
     }
 }
