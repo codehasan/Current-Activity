@@ -522,10 +522,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return;
-        }
-        if (checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU &&
+                checkSelfPermission(POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
             notificationPermissionLauncher.launch(POST_NOTIFICATIONS);
         }
     }
