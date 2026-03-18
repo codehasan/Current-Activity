@@ -32,9 +32,66 @@ import java.util.Map;
 import java.util.Objects;
 
 public class NullSafety {
+
+    /**
+     * Returns {@code defaultObj} if given {@code obj} is {@code null}.
+     * Otherwise, returns {@code obj}.
+     *
+     * @throws NullPointerException if {@code defaultObj} is {@code null}
+     */
     @NonNull
     public static <T> T requireNonNullElse(@Nullable T obj, @NonNull T defaultObj) {
         return (obj != null) ? obj : Objects.requireNonNull(defaultObj, "defaultObj");
+    }
+
+    /**
+     * Returns {@code defaultStr} if given {@code str} is {@code null} or empty.
+     * Otherwise, returns {@code str}.
+     *
+     * @throws NullPointerException if {@code defaultStr} is {@code null}
+     */
+    @NonNull
+    public static CharSequence defaultIfEmpty(@Nullable CharSequence str, @NonNull CharSequence defaultStr) {
+        return isNullOrEmpty(str) ? Objects.requireNonNull(defaultStr, "defaultStr") : str;
+    }
+
+    /**
+     * Returns an instance of the given {@link Class} if the given {@link Object} is an instance
+     * of it and not null. Otherwise, returns null.
+     */
+    @Nullable
+    public static <T> T safeCast(@Nullable Object obj, @NonNull Class<T> clazz) {
+        if (clazz.isInstance(obj)) {
+            return clazz.cast(obj);
+        }
+        return null;
+    }
+
+    /**
+     * Quietly close the given {@link AutoCloseable} object.
+     */
+    public static void closeQuietly(@Nullable AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception ignored) {
+                // Ignored intentionally
+            }
+        }
+    }
+
+    /**
+     * Returns {@code true} if and only if the given {@link Boolean} is {@code true} and not {@code null}.
+     */
+    public static boolean isTrue(@Nullable Boolean bool) {
+        return Boolean.TRUE.equals(bool);
+    }
+
+    /**
+     * Returns {@code true} if and only if the given {@link Boolean} is {@code false} and not {@code null}.
+     */
+    public static boolean isFalse(@Nullable Boolean bool) {
+        return Boolean.FALSE.equals(bool);
     }
 
     /**
