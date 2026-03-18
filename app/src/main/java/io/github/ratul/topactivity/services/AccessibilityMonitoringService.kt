@@ -19,9 +19,7 @@ package io.github.ratul.topactivity.services
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import io.github.ratul.topactivity.BuildConfig
 import io.github.ratul.topactivity.managers.PopupManager
 
 @SuppressLint("AccessibilityPolicy")
@@ -35,9 +33,6 @@ class AccessibilityMonitoringService : AccessibilityService() {
 
         if (isSystemClass(className)) return
 
-        if (BuildConfig.DEBUG) {
-            Log.d("AccessibilityService", "Pkg: $pkgName, Class: $className")
-        }
         PopupManager.show(this, pkgName, className)
     }
 
