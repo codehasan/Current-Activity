@@ -25,9 +25,28 @@ object DatabaseUtil {
         get() = prefs.getInt("width", 720)
         set(value) = prefs.edit().putInt("width", value).apply()
 
+    /** Stored as string for ListPreference compatibility. */
+    var serviceMode: Int
+        get() = prefs.getString("service_mode", "0")?.toIntOrNull() ?: 0
+        set(value) = prefs.edit().putString("service_mode", value.toString()).apply()
+
+    /** Stored as string for ListPreference compatibility. */
+    var scanSpeed: Int
+        get() = prefs.getString("scan_speed", "1")?.toIntOrNull() ?: 1
+        set(value) = prefs.edit().putString("scan_speed", value.toString()).apply()
+
+    /** Stored as string for ListPreference compatibility. */
+    var historySize: Int
+        get() = prefs.getString("history_size", "20")?.toIntOrNull() ?: 20
+        set(value) = prefs.edit().putString("history_size", value.toString()).apply()
+
+    /** Stored as string for EditTextPreference compatibility. */
     var userWidth: Int
-        get() = prefs.getInt("user_width", -1)
-        set(value) = prefs.edit().putInt("user_width", value).apply()
+        get() = prefs.getString("user_width", null)?.toIntOrNull() ?: -1
+        set(value) {
+            val str = if (value == -1) null else value.toString()
+            prefs.edit().putString("user_width", str).apply()
+        }
 
     var useAccessibility: Boolean
         get() = prefs.getBoolean("has_access", false)

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/group_service"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.ListPreference
+            android:defaultValue="0"
+            android:entries="@array/service_mode_entries"
+            android:entryValues="@array/service_mode_values"
+            android:key="service_mode"
+            android:title="@string/service_mode"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="has_access"
+            android:summary="@string/use_accessibility_service_desc"
+            android:title="@string/use_accessibility_service"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/layout_material_switch" />
+
+        <androidx.preference.ListPreference
+            android:defaultValue="1"
+            android:entries="@array/scan_speed_entries"
+            android:entryValues="@array/scan_speed_values"
+            android:key="scan_speed"
+            android:title="@string/scan_speed"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <androidx.preference.ListPreference
+            android:defaultValue="20"
+            android:entries="@array/history_size_entries"
+            android:entryValues="@array/history_size_values"
+            android:key="history_size"
+            android:title="@string/history_size"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <androidx.preference.EditTextPreference
+            android:key="user_width"
+            android:summary="@string/window_size_desc"
+            android:title="@string/window_size"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="enable_autostart"
+            android:summary="@string/enable_autostart_desc"
+            android:title="@string/enable_autostart"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Group: Miscellaneous -->
+    <PreferenceCategory
+        android:title="@string/group_miscellaneous"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="auto_update"
+            android:summary="@string/auto_update_desc_short"
+            android:title="@string/auto_update_check"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/layout_material_switch" />
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="system_font"
+            android:summary="@string/use_system_font_desc"
+            android:title="@string/use_system_font"
+            app:iconSpaceReserved="false"
+            app:widgetLayout="@layout/layout_material_switch" />
+
+        <Preference
+            android:key="check_update"
+            android:title="@string/check_for_update"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Footer -->
+    <PreferenceCategory app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="footer"
+            android:layout="@layout/layout_preference_footer"
+            android:selectable="false"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

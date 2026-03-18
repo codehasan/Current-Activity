@@ -57,4 +57,62 @@
     <string name="restart_app">Please restart the app for the new changes to take effect.</string>
     <string name="global_version">Global Version</string>
     <string name="global_version_description"><![CDATA[Upgrade to the Global Version to unleash:<br><br> • <b>Unrestricted Control</b>: Full Accessibility Service integration.<br> • <b>Total Visibility</b>: Detect every single app on your device.<br> • <b>Unstoppable Performance</b>: Native Autostart checks to prevent background killing.<br><br>You must uninstall this version first before installing the Global edition.]]></string>
+
+    <!-- Settings Activity -->
+    <string name="group_service">Service</string>
+    <string name="group_miscellaneous">Miscellaneous</string>
+
+    <string name="service_mode">Service mode</string>
+    <string name="service_mode_desc">Choose how activity info is displayed</string>
+    <string name="scan_speed">Activity scan speed</string>
+    <string name="scan_speed_desc">How often to check for foreground activity changes</string>
+    <string name="history_size">Activity history size</string>
+    <string name="history_size_desc">Maximum number of activity entries to keep</string>
+    <string name="window_size">Window size</string>
+    <string name="window_size_desc">Set the width of the floating popup window</string>
+    <string name="enable_autostart">Enable autostart</string>
+    <string name="enable_autostart_desc">Prevent the system from killing the service</string>
+    <string name="auto_update_desc_short">Check GitHub for updates on startup</string>
+    <string name="use_system_font_desc">Use device default font instead of custom font</string>
+    <string name="window_size_auto">Auto</string>
+    <string name="window_size_value">%d px</string>
+    <string name="made_with_love">Made with ❤ from Bangladesh</string>
+
+    <string-array name="service_mode_entries">
+        <item>Popup + Notification</item>
+        <item>Notification only</item>
+        <item>Popup only</item>
+    </string-array>
+
+    <string-array name="service_mode_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="scan_speed_entries">
+        <item>Fast</item>
+        <item>Medium</item>
+        <item>Slow</item>
+    </string-array>
+
+    <string-array name="scan_speed_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="history_size_entries">
+        <item>10</item>
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="history_size_values">
+        <item>10</item>
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
 </resources>
