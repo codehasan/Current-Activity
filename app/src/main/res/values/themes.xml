@@ -73,28 +73,28 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
-    <style name="Material.ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
+    <style name="Material.ToolbarTitle" parent="@style/TextAppearance.Material3.TitleLarge">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="AppCompat.TitleStyle.Dialog" parent="RtlOverlay.DialogWindowTitle.AppCompat">
+    <style name="AppCompat.TitleStyle.Dialog" parent="@style/RtlOverlay.DialogWindowTitle.AppCompat">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 
-    <style name="AppCompat.ButtonStyle.Dialog" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <style name="AppCompat.ButtonStyle.Dialog" parent="@style/Widget.Material3.Button.TextButton.Dialog.Flush">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 
-    <style name="AppCompat.Dialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+    <style name="AppCompat.Dialog" parent="@style/ThemeOverlay.Material3.Dialog.Alert">
         <item name="android:windowTitleStyle">@style/AppCompat.TitleStyle.Dialog</item>
         <item name="buttonBarButtonStyle">@style/AppCompat.ButtonStyle.Dialog</item>
     </style>
 
-    <style name="Material.Button" parent="Widget.Material3.Button">
+    <style name="Material.Button" parent="@style/Widget.Material3.Button">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
