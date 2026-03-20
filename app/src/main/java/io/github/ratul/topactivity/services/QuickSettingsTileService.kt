@@ -18,70 +18,36 @@ package io.github.ratul.topactivity.services
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import androidx.core.content.ContextCompat
-import io.github.ratul.topactivity.managers.PopupManager
-import io.github.ratul.topactivity.managers.PopupStateListener
-import io.github.ratul.topactivity.ui.MainActivity
+import io.github.ratul.topactivity.repository.DataRepository
+import io.github.ratul.topactivity.ui.SettingsActivity
 
 class QuickSettingsTileService : TileService() {
 
-    private val tileUpdateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            syncTileState()
-        }
-    }
-
-    private val popupListener = object : PopupStateListener {
-        override fun onPopupShown() = syncTileState()
-        override fun onPopupDismissed() = syncTileState()
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        PopupManager.addListener(popupListener)
-    }
-
-    override fun onDestroy() {
-        PopupManager.removeListener(popupListener)
-        super.onDestroy()
-    }
-
     override fun onTileAdded() {
-        syncTileState()
+        updateTileState()
     }
 
     override fun onStartListening() {
-        ContextCompat.registerReceiver(
-            applicationContext, tileUpdateReceiver,
-            IntentFilter(ACTION_UPDATE_TILE), ContextCompat.RECEIVER_EXPORTED
-        )
-        syncTileState()
+        updateTileState()
         super.onStartListening()
-    }
-
-    override fun onStopListening() {
-        applicationContext.unregisterReceiver(tileUpdateReceiver)
-        super.onStopListening()
     }
 
     @SuppressLint("StartActivityAndCollapseDeprecated")
     override fun onClick() {
-        if (PopupManager.isActive) {
-            PopupManager.dismiss()
+        val serviceState = DataRepository.appState.value
+        if (serviceState.running) {
+            DataRepository.updateStatus(false)
+            updateTileState()
             return
         }
 
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, SettingsActivity::class.java)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .putExtra(MainActivity.EXTRA_FROM_QS_TILE, true)
+            .putExtra(SettingsActivity.EXTRA_FROM_QS_TILE, true)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startActivityAndCollapse(
@@ -91,26 +57,16 @@ class QuickSettingsTileService : TileService() {
                 )
             )
         } else {
-            @Suppress("DEPRECATION")
             startActivityAndCollapse(intent)
         }
+
+        updateTileState()
     }
 
-    private fun syncTileState() {
+    private fun updateTileState() {
         val tile = qsTile ?: return
-        tile.state = if (PopupManager.isActive) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
+        val serviceState = DataRepository.appState.value
+        tile.state = if (serviceState.running) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
         tile.updateTile()
-    }
-
-    companion object {
-        private const val ACTION_UPDATE_TILE = "io.github.ratul.topactivity.ACTION_UPDATE_TILE"
-
-        fun requestUpdate(context: Context) {
-            TileService.requestListeningState(
-                context.applicationContext,
-                ComponentName(context, QuickSettingsTileService::class.java)
-            )
-            context.sendBroadcast(Intent(ACTION_UPDATE_TILE))
-        }
     }
 }

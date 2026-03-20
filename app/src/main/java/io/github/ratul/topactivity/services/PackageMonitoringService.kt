@@ -28,9 +28,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
-import io.github.ratul.topactivity.BuildConfig
-import io.github.ratul.topactivity.managers.PopupManager
+import io.github.ratul.topactivity.repository.DataRepository
 
 class PackageMonitoringService : Service() {
 
@@ -40,20 +38,18 @@ class PackageMonitoringService : Service() {
 
     private val observerTask = object : Runnable {
         override fun run() {
-            if (!PopupManager.isActive) {
+            val serviceState = DataRepository.appState.value
+
+            if (!serviceState.running) {
                 handler.removeCallbacks(this)
                 stopSelf()
                 return
             }
 
             val (pkg, cls) = getForegroundApp()
+
             if (!pkg.isNullOrEmpty() && !cls.isNullOrEmpty()) {
-                if (BuildConfig.DEBUG) {
-                    Log.d("PackageMonitoring", "Pkg: $pkg, Class: $cls")
-                }
-                if (PopupManager.isActive) {
-                    PopupManager.show(this@PackageMonitoringService, pkg, cls)
-                }
+                DataRepository.updateData(pkg, cls)
             }
             handler.postDelayed(this, 500)
         }
@@ -101,7 +97,7 @@ class PackageMonitoringService : Service() {
         val event = UsageEvents.Event()
         while (usageEvents.hasNextEvent()) {
             usageEvents.getNextEvent(event)
-            if (event.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND &&
+            if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED &&
                 event.timeStamp > latestTimestamp
             ) {
                 latestTimestamp = event.timeStamp

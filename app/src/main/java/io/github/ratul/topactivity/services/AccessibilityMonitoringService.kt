@@ -20,20 +20,20 @@ import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
-import io.github.ratul.topactivity.managers.PopupManager
+import io.github.ratul.topactivity.repository.DataRepository
 
 @SuppressLint("AccessibilityPolicy")
 class AccessibilityMonitoringService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (!PopupManager.isActive) return
+        if (!DataRepository.appState.value.running) return
 
         val pkgName = event.packageName?.toString() ?: return
         val className = event.className?.toString() ?: return
 
         if (isSystemClass(className)) return
 
-        PopupManager.show(this, pkgName, className)
+        DataRepository.updateData(pkgName, className)
     }
 
     override fun onInterrupt() {}
