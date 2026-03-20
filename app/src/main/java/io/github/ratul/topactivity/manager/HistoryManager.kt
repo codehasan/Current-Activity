@@ -27,8 +27,10 @@ import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.ratul.topactivity.App
 import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.extensions.getScreenSize
+import io.github.ratul.topactivity.extensions.value
 import io.github.ratul.topactivity.repository.DataRepository
 import io.github.ratul.topactivity.repository.HistoryItem
 import io.github.ratul.topactivity.utils.DatabaseUtil
@@ -138,6 +140,8 @@ class HistoryManager(private val context: Context) {
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val pkgText: TextView = view.findViewById(R.id.item_package_name)
             val clsText: TextView = view.findViewById(R.id.item_class_name)
+            val copyPkg: ImageView = view.findViewById(R.id.copy_pkg)
+            val copyCls: ImageView = view.findViewById(R.id.copy_cls)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -150,11 +154,28 @@ class HistoryManager(private val context: Context) {
             val item = items[position]
             holder.pkgText.text = item.pkg
             holder.clsText.text = item.cls
+
+            holder.copyPkg.setOnClickListener {
+                App.copyString(
+                    it.context,
+                    holder.pkgText.value(),
+                    it.context.getString(R.string.package_copied)
+                )
+            }
+
+            holder.copyCls.setOnClickListener {
+                App.copyString(
+                    it.context,
+                    holder.clsText.value(),
+                    it.context.getString(R.string.class_copied)
+                )
+            }
         }
 
         override fun getItemCount(): Int = items.size
 
         fun addItem(newItem: HistoryItem) {
+            // Avoid adding duplicate items
             if (items.isNotEmpty() &&
                 items[0].pkg == newItem.pkg &&
                 items[0].cls == newItem.cls
