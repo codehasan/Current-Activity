@@ -34,8 +34,8 @@ import io.github.ratul.topactivity.utils.DatabaseUtil
 import io.github.ratul.topactivity.utils.WindowManagerUtil.getLayoutParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,10 +43,10 @@ import kotlinx.coroutines.withContext
 class PopupManager(private val context: Context) {
 
     private val popupScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private var collectionJob: Job? = null
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var baseView: View? = null
+    private var historyManager: HistoryManager? = null
 
     fun show() {
         if (baseView != null) return
@@ -88,7 +88,11 @@ class PopupManager(private val context: Context) {
         }
 
         closeBtn.setOnClickListener { DataRepository.updateStatus(false) }
-        historyBtn.setOnClickListener { HistoryManager(context).show() }
+        historyBtn.setOnClickListener {
+            if (historyManager?.isActive() == true) return@setOnClickListener
+            historyManager = HistoryManager(context)
+            historyManager?.show()
+        }
         packageName.setOnLongClickListener(copyListener)
         className.setOnLongClickListener(copyListener)
         view.setOnTouchListener(DragTouchManager(windowManager, layoutParams))
@@ -98,7 +102,7 @@ class PopupManager(private val context: Context) {
         packageName.text = serviceState.pkg
         appName.text = getAppName(serviceState.pkg) ?: context.getString(R.string.unknown)
 
-        collectionJob = popupScope.launch {
+        popupScope.launch {
             DataRepository.appState.collectLatest { state ->
                 if (!state.running) {
                     hide()
@@ -123,13 +127,12 @@ class PopupManager(private val context: Context) {
         }
     }
 
-    fun hide() {
+    private fun hide() {
         baseView?.let {
             windowManager.removeView(it)
             baseView = null
         }
-        collectionJob?.cancel()
-        collectionJob = null
+        popupScope.cancel()
     }
 
     private fun mapPreferenceToWindowSize(value: String): Double {

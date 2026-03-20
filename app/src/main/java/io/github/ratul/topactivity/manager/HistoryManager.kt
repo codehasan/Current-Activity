@@ -37,19 +37,20 @@ import io.github.ratul.topactivity.utils.DatabaseUtil
 import io.github.ratul.topactivity.utils.WindowManagerUtil.getLayoutParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HistoryManager(private val context: Context) {
 
     private val popupScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private var collectionJob: Job? = null
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var baseView: View? = null
     private var historyAdapter: HistoryAdapter? = null
+
+    fun isActive(): Boolean = baseView?.isAttachedToWindow == true
 
     fun show() {
         if (baseView != null) return
@@ -91,7 +92,7 @@ class HistoryManager(private val context: Context) {
         closeBtn.setOnClickListener { hide() }
         view.setOnTouchListener(DragTouchManager(windowManager, layoutParams))
 
-        collectionJob = popupScope.launch {
+        popupScope.launch {
             DataRepository.appState.collectLatest { state ->
                 if (!state.running) {
                     hide()
@@ -110,8 +111,7 @@ class HistoryManager(private val context: Context) {
             windowManager.removeView(it)
             baseView = null
         }
-        collectionJob?.cancel()
-        collectionJob = null
+        popupScope.cancel()
     }
 
     private fun mapPreferenceToWindowSize(value: String): Double {

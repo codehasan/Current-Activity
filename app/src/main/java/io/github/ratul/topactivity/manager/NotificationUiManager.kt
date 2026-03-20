@@ -27,16 +27,16 @@ import io.github.ratul.topactivity.receivers.NotificationActionReceiver
 import io.github.ratul.topactivity.repository.DataRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class NotificationUiManager(private val context: Context) {
 
     private val notificationManager = NotificationManagerCompat.from(context)
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private var collectionJob: Job? = null
+    private val popupScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private val packageLabel = context.getString(R.string.package_label)
     private val classLabel = context.getString(R.string.class_label)
@@ -47,12 +47,12 @@ class NotificationUiManager(private val context: Context) {
 
     fun show() {
         if (!notificationManager.areNotificationsEnabled()) return
-        if (collectionJob?.isActive == true) return
+        if (popupScope.isActive) return
 
         val serviceState = DataRepository.appState.value
         updateNotification(serviceState.pkg, serviceState.cls)
 
-        collectionJob = scope.launch {
+        popupScope.launch {
             DataRepository.appState.collectLatest { state ->
                 if (!state.running) {
                     hide()
@@ -66,10 +66,9 @@ class NotificationUiManager(private val context: Context) {
         }
     }
 
-    fun hide() {
+    private fun hide() {
         notificationManager.cancel(NOTIFICATION_ID)
-        collectionJob?.cancel()
-        collectionJob = null
+        popupScope.cancel()
     }
 
     @SuppressLint("MissingPermission")
