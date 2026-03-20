@@ -182,23 +182,7 @@ class SettingsActivity : AppCompatActivity() {
             return
         }
 
-        val accessibilityNot = isAccessibilityNotStarted()
-        val usageStats = isUsageStatsGranted()
-        val notification = isNotificationGranted()
-        val systemOverlay = isSystemOverlayGranted()
-
-        if (accessibilityNot) requestAccessibilityPermission()
-        if (!usageStats) requestUsageStatsPermission()
-        if (!notification) requestNotificationPermission()
-
-        val serviceMode = DatabaseUtil.serviceMode
-        if (serviceMode == "0" && !systemOverlay) requestSystemOverlayPermission()
-
-        if (accessibilityNot or
-            !usageStats or
-            !notification or
-            (serviceMode == "0" && !systemOverlay)
-        ) return
+        if (!requestMissingPermissions()) return
 
         DataRepository.updateStatus(true)
         val intent = Intent(this, PackageMonitoringService::class.java)
@@ -206,6 +190,20 @@ class SettingsActivity : AppCompatActivity() {
         applicationContext.bindService(intent, serviceConnection, BIND_AUTO_CREATE)
         ServiceManager(this).show()
         DataRepository.updateData(packageName, this::class.java.name)
+    }
+
+    private fun requestMissingPermissions(): Boolean {
+        val needsOverlay = DatabaseUtil.serviceMode == "0" && !isSystemOverlayGranted()
+
+        val missing = listOf(
+            isAccessibilityNotStarted() to ::requestAccessibilityPermission,
+            !isUsageStatsGranted() to ::requestUsageStatsPermission,
+            !isNotificationGranted() to ::requestNotificationPermission,
+            needsOverlay to ::requestSystemOverlayPermission,
+        )
+
+        missing.filter { it.first }.forEach { it.second() }
+        return missing.none { it.first }
     }
 
     private fun showAutoUpdatePolicyDialog() {
