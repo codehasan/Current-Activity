@@ -196,16 +196,16 @@ class SettingsActivity : AppCompatActivity() {
         val systemOverlay = isSystemOverlayGranted()
 
         if (accessibilityNot) requestAccessibilityPermission()
-        if (usageStats.not()) requestUsageStatsPermission()
-        if (notification.not()) requestNotificationPermission()
+        if (!usageStats) requestUsageStatsPermission()
+        if (!notification) requestNotificationPermission()
 
         val serviceMode = DatabaseUtil.serviceMode
         if (serviceMode == "0" && !systemOverlay) requestSystemOverlayPermission()
 
         if (accessibilityNot or
-            usageStats.not() or
-            notification.not() or
-            systemOverlay.not()
+            !usageStats or
+            !notification or
+            !systemOverlay
         ) return
 
         DataRepository.updateStatus(true)
