@@ -16,64 +16,43 @@
  */
 package io.github.ratul.topactivity.utils
 
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import io.github.ratul.topactivity.App
 
 object DatabaseUtil {
-    private val prefs get() = App.instance.sharedPreferences
 
-    var displayWidth: Int
-        get() = prefs.getInt("width", 720)
-        set(value) = prefs.edit().putInt("width", value).apply()
+    private val prefs get() = PreferenceManager.getDefaultSharedPreferences(App.instance)
 
-    /** Stored as string for ListPreference compatibility. */
-    var serviceMode: Int
-        get() = prefs.getString("service_mode", "0")?.toIntOrNull() ?: 0
-        set(value) = prefs.edit().putString("service_mode", value.toString()).apply()
+    var serviceMode: String
+        get() = prefs.getString("service_mode", "0") ?: "0"
+        set(value) = prefs.edit { putString("service_mode", value) }
 
-    /** Stored as string for ListPreference compatibility. */
-    var scanSpeed: Int
-        get() = prefs.getString("scan_speed", "1")?.toIntOrNull() ?: 1
-        set(value) = prefs.edit().putString("scan_speed", value.toString()).apply()
+    var scanSpeed: String
+        get() = prefs.getString("scan_speed", "1") ?: "1"
+        set(value) = prefs.edit { putString("scan_speed", value) }
 
-    /** Stored as string for ListPreference compatibility. */
-    var historySize: Int
-        get() = prefs.getString("history_size", "20")?.toIntOrNull() ?: 20
-        set(value) = prefs.edit().putString("history_size", value.toString()).apply()
+    var historySize: String
+        get() = prefs.getString("history_size", "1") ?: "1"
+        set(value) = prefs.edit { putString("history_size", value) }
 
-    /** Stored as string for EditTextPreference compatibility. */
-    var userWidth: Int
-        get() = prefs.getString("user_width", null)?.toIntOrNull() ?: -1
-        set(value) {
-            val str = if (value == -1) null else value.toString()
-            prefs.edit().putString("user_width", str).apply()
-        }
+    var windowSize: String
+        get() = prefs.getString("window_size", "1") ?: "1"
+        set(value) = prefs.edit { putString("window_size", value) }
 
     var useAccessibility: Boolean
-        get() = prefs.getBoolean("has_access", false)
-        set(value) = prefs.edit().putBoolean("has_access", value).apply()
-
-    var showNotification: Boolean
-        get() = prefs.getBoolean("show_notification", false)
-        set(value) = prefs.edit().putBoolean("show_notification", value).apply()
+        get() = prefs.getBoolean("use_accessibility", false)
+        set(value) = prefs.edit { putBoolean("use_accessibility", value) }
 
     var autoUpdate: Boolean
         get() = prefs.getBoolean("auto_update", false)
-        set(value) = prefs.edit().putBoolean("auto_update", value).apply()
+        set(value) = prefs.edit { putBoolean("auto_update", value) }
 
     var useSystemFont: Boolean
         get() = prefs.getBoolean("system_font", false)
-        set(value) = prefs.edit().putBoolean("system_font", value).apply()
+        set(value) = prefs.edit { putBoolean("system_font", value) }
 
     var isFirstRun: Boolean
         get() = prefs.getBoolean("first_run", true)
-        set(value) = prefs.edit().putBoolean("first_run", value).apply()
-
-    /**
-     * Persistence hint for restoring popup state after process death.
-     * NOT the source of truth for whether the popup is currently visible —
-     * use [io.github.ratul.topactivity.managers.PopupManager.isActive] for that.
-     */
-    var wasShowingWindow: Boolean
-        get() = prefs.getBoolean("is_show_window", false)
-        set(value) = prefs.edit().putBoolean("is_show_window", value).apply()
+        set(value) = prefs.edit { putBoolean("first_run", value) }
 }
