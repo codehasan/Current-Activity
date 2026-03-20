@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="popupWindowIconSize">28dp</dimen>
+    <dimen name="popupWindowCopyIconSize">12dp</dimen>
 </resources>
