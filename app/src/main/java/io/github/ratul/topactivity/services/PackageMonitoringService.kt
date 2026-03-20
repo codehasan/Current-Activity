@@ -21,7 +21,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
-import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.Handler
@@ -29,12 +28,14 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.SystemClock
 import io.github.ratul.topactivity.repository.DataRepository
+import io.github.ratul.topactivity.utils.DatabaseUtil
 
 class PackageMonitoringService : Service() {
 
     private val binder = LocalBinder()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var usageStats: UsageStatsManager
+    private var scanSpeed = mapPreferenceToScanSpeed("1")
 
     private val observerTask = object : Runnable {
         override fun run() {
@@ -51,7 +52,7 @@ class PackageMonitoringService : Service() {
             if (!pkg.isNullOrEmpty() && !cls.isNullOrEmpty()) {
                 DataRepository.updateData(pkg, cls)
             }
-            handler.postDelayed(this, 500)
+            handler.postDelayed(this, scanSpeed)
         }
     }
 
@@ -63,10 +64,11 @@ class PackageMonitoringService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        usageStats = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        usageStats = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        scanSpeed = mapPreferenceToScanSpeed(DatabaseUtil.scanSpeed)
         handler.removeCallbacks(observerTask)
         handler.post(observerTask)
         return START_STICKY
@@ -87,9 +89,17 @@ class PackageMonitoringService : Service() {
         super.onTaskRemoved(rootIntent)
     }
 
+    private fun mapPreferenceToScanSpeed(value: String): Long {
+        return when (value) {
+            "0" -> 100
+            "1" -> 200
+            else -> 500
+        }
+    }
+
     private fun getForegroundApp(): Pair<String?, String?> {
         val currentTime = System.currentTimeMillis()
-        val usageEvents = usageStats.queryEvents(currentTime - 10000, currentTime)
+        val usageEvents = usageStats.queryEvents(currentTime - 1000, currentTime)
         var latestPackage: String? = null
         var latestClass: String? = null
         var latestTimestamp = 0L
