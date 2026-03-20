@@ -17,9 +17,6 @@ import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.services.AccessibilityMonitoringService
 import io.github.ratul.topactivity.utils.DatabaseUtil
 
-fun AppCompatActivity.isCommonPermissionsGranted() =
-    !isAccessibilityNotStarted() && isUsageStatsGranted() && isNotificationGranted()
-
 fun AppCompatActivity.isSystemOverlayGranted() = Settings.canDrawOverlays(this)
 
 fun AppCompatActivity.isNotificationGranted() =
