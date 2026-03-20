@@ -16,8 +16,11 @@
  */
 package io.github.ratul.topactivity.extensions
 
+import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.TypedValue
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
@@ -29,6 +32,15 @@ fun TextView.value() = text.toString()
 fun FloatingActionButton.setStatus(active: Boolean) {
     setImageResource(if (active) R.drawable.ic_stop else R.drawable.ic_start)
 }
+
+fun Context.dp2px(dp: Float): Int =
+    TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        resources.displayMetrics
+    ).toInt()
+
+fun View.dp2px(dp: Float): Int = context.dp2px(dp)
 
 fun WindowManager.getScreenSize(): Pair<Int, Int> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
