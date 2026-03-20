@@ -16,8 +16,6 @@
  */
 package io.github.ratul.topactivity.services
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
@@ -26,7 +24,6 @@ import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.os.SystemClock
 import io.github.ratul.topactivity.repository.DataRepository
 import io.github.ratul.topactivity.utils.DatabaseUtil
 
@@ -72,21 +69,6 @@ class PackageMonitoringService : Service() {
         handler.removeCallbacks(observerTask)
         handler.post(observerTask)
         return START_STICKY
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        val intent = Intent(this, this::class.java)
-        val pendingIntent = PendingIntent.getService(
-            applicationContext, 264593, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val alarmService = getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmService.set(
-            AlarmManager.ELAPSED_REALTIME,
-            SystemClock.elapsedRealtime() + 500,
-            pendingIntent
-        )
-        super.onTaskRemoved(rootIntent)
     }
 
     private fun mapPreferenceToScanSpeed(value: String): Long {
