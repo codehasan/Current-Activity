@@ -16,6 +16,8 @@
  */
 package io.github.ratul.topactivity.repository
 
+import io.github.ratul.topactivity.BuildConfig
+import io.github.ratul.topactivity.ui.CopyToClipboardActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +41,11 @@ object DataRepository {
     }
 
     fun updateData(newPkg: String, newCls: String) {
+        // Prevent adding copy activity
+        if (newPkg == BuildConfig.APPLICATION_ID &&
+            newCls == CopyToClipboardActivity::class.java.name
+        ) return
+
         val currentState = _appState.value
         // Prevent rapid duplicate emissions
         if (currentState.pkg == newPkg && currentState.cls == newCls) return
