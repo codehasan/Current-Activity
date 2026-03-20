@@ -49,6 +49,9 @@ class NotificationUiManager(private val context: Context) {
         if (!notificationManager.areNotificationsEnabled()) return
         if (collectionJob?.isActive == true) return
 
+        val serviceState = DataRepository.appState.value
+        updateNotification(serviceState.pkg, serviceState.cls)
+
         collectionJob = scope.launch {
             DataRepository.appState.collectLatest { state ->
                 if (!state.running) {
@@ -61,9 +64,6 @@ class NotificationUiManager(private val context: Context) {
                 }
             }
         }
-
-        val serviceState = DataRepository.appState.value
-        updateNotification(serviceState.pkg, serviceState.cls)
     }
 
     fun hide() {

@@ -108,6 +108,11 @@ class PopupManager(private val context: Context) {
         className.setOnLongClickListener(copyListener)
         view.setOnTouchListener(DragTouchListener(windowManager, layoutParams))
 
+        val serviceState = DataRepository.appState.value
+        className.text = serviceState.cls
+        packageName.text = serviceState.pkg
+        appName.text = getAppName(serviceState.pkg) ?: context.getString(R.string.unknown)
+
         collectionJob = popupScope.launch {
             DataRepository.appState.collectLatest { state ->
                 if (!state.running) {
@@ -131,11 +136,6 @@ class PopupManager(private val context: Context) {
                 }
             }
         }
-
-        val serviceState = DataRepository.appState.value
-        className.text = serviceState.cls
-        packageName.text = serviceState.pkg
-        appName.text = getAppName(serviceState.pkg) ?: context.getString(R.string.unknown)
     }
 
     fun hide() {
