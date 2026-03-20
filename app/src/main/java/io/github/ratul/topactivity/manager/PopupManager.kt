@@ -16,14 +16,10 @@
  */
 package io.github.ratul.topactivity.manager
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.PixelFormat
-import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -35,6 +31,7 @@ import io.github.ratul.topactivity.extensions.getScreenSize
 import io.github.ratul.topactivity.extensions.value
 import io.github.ratul.topactivity.repository.DataRepository
 import io.github.ratul.topactivity.utils.DatabaseUtil
+import io.github.ratul.topactivity.utils.WindowManagerUtil.getLayoutParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -51,9 +48,6 @@ class PopupManager(private val context: Context) {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var baseView: View? = null
 
-    val isShown: Boolean
-        get() = baseView?.isAttachedToWindow == true
-
     fun show() {
         if (baseView != null) return
 
@@ -66,20 +60,11 @@ class PopupManager(private val context: Context) {
             .inflate(R.layout.layout_activity_info, null)
         baseView = view
 
-        val layoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            else
-                @Suppress("DEPRECATION")
-                WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        )
-
         val (displayWidth, displayHeight) = windowManager.getScreenSize()
-        val viewSize = (displayWidth * 0.65).toInt()
+        val scaleFactor = mapPreferenceToWindowSize(DatabaseUtil.windowSize)
+        val viewSize = (displayWidth * scaleFactor).toInt()
+
+        val layoutParams = getLayoutParams()
         layoutParams.gravity = Gravity.TOP or Gravity.START
         layoutParams.width = viewSize
         layoutParams.x = (displayWidth / 2) - (viewSize / 2)
@@ -91,6 +76,7 @@ class PopupManager(private val context: Context) {
         val packageName = view.findViewById<TextView>(R.id.package_name)
         val className = view.findViewById<TextView>(R.id.class_name)
         val closeBtn = view.findViewById<ImageView>(R.id.closeBtn)
+        val historyBtn = view.findViewById<ImageView>(R.id.historyBtn)
 
         val copyListener = View.OnLongClickListener { v ->
             val textView = v as TextView
@@ -104,9 +90,10 @@ class PopupManager(private val context: Context) {
         }
 
         closeBtn.setOnClickListener { DataRepository.updateStatus(false) }
+        historyBtn.setOnClickListener { HistoryManager(context).show() }
         packageName.setOnLongClickListener(copyListener)
         className.setOnLongClickListener(copyListener)
-        view.setOnTouchListener(DragTouchListener(windowManager, layoutParams))
+        view.setOnTouchListener(DragTouchManager(windowManager, layoutParams))
 
         val serviceState = DataRepository.appState.value
         className.text = serviceState.cls
@@ -147,6 +134,14 @@ class PopupManager(private val context: Context) {
         collectionJob = null
     }
 
+    private fun mapPreferenceToWindowSize(value: String): Double {
+        return when (value) {
+            "0" -> 0.65
+            "1" -> 0.50
+            else -> 0.45
+        }
+    }
+
     private fun getAppName(pkg: String): String? {
         return try {
             val pm = context.packageManager
@@ -154,41 +149,6 @@ class PopupManager(private val context: Context) {
             pm.getApplicationLabel(info).toString()
         } catch (_: PackageManager.NameNotFoundException) {
             null
-        }
-    }
-
-    private class DragTouchListener(
-        private val windowManager: WindowManager,
-        private val params: WindowManager.LayoutParams
-    ) :
-        View.OnTouchListener {
-        private var xInitCord = 0
-        private var yInitCord = 0
-        private var xInitMargin = 0
-        private var yInitMargin = 0
-
-        @SuppressLint("ClickableViewAccessibility")
-        override fun onTouch(view: View, event: MotionEvent): Boolean {
-            val xCord = event.rawX.toInt()
-            val yCord = event.rawY.toInt()
-
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    xInitCord = xCord
-                    yInitCord = yCord
-                    xInitMargin = params.x
-                    yInitMargin = params.y
-                    return true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    params.x = xInitMargin + (xCord - xInitCord)
-                    params.y = yInitMargin + (yCord - yInitCord)
-                    windowManager.updateViewLayout(view, params)
-                    return true
-                }
-            }
-            return false
         }
     }
 }
