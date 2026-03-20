@@ -4,7 +4,7 @@
     <string name="check_for_update">Проверить обновления</string>
     <string name="checking_for_update">Проверка обновлений</string>
     <string name="update_available">Доступно обновление</string>
-    <string name="new_version_available">Доступна новая версия %s. Хотите скачать её?\n\nПользователи F-Droid могут дождаться обновления в F-Droid, которое обычно появляется в течение нескольких часов в репозитории IzzyOnDroid и через несколько дней в репозитории F-Droid.org.</string>
+    <string name="new_version_available">Доступна новая версия %1$s. Хотите скачать её?\n\nПользователи F-Droid могут дождаться обновления в F-Droid, которое обычно появляется в течение нескольких часов в репозитории IzzyOnDroid и через несколько дней в репозитории F-Droid.org.</string>
     <string name="download">Загрузить</string>
     <string name="already_using_latest">У вас уже установлена последняя версия</string>
     <string name="update_check_failed">Не удалось проверить обновления</string>
@@ -17,11 +17,11 @@
     <string name="enable">Включить</string>
     <string name="settings">Настройки</string>
     <string name="system_overlay_title">Наложение поверх других окон</string>
-    <string name="system_overlay_description">Пожалуйста, разрешите \'%s\' отображаться поверх других приложений</string>
+    <string name="system_overlay_description">Пожалуйста, разрешите \'%1$s\' отображаться поверх других приложений</string>
     <string name="accessibility_permission_title">Спец. возможности</string>
-    <string name="accessibility_permission_description">Пожалуйста, включите службу спец. Возможностей для \'%s\'</string>
+    <string name="accessibility_permission_description">Пожалуйста, включите службу спец. Возможностей для \'%1$s\'</string>
     <string name="usage_access_title">Доступ к данным об использовании</string>
-    <string name="usage_access_description">Пожалуйста, разрешите доступ к данным об использовании для \'%s\'</string>
+    <string name="usage_access_description">Пожалуйста, разрешите доступ к данным об использовании для \'%1$s\'</string>
     <string name="copied">Скопировано</string>
     <string name="package_copied">Пакет скопирован</string>
     <string name="class_copied">Класс скопирован</string>

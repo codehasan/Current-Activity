@@ -4,7 +4,7 @@
     <string name="check_for_update">检查更新</string>
     <string name="checking_for_update">正在检查更新…</string>
     <string name="update_available">有可用更新</string>
-    <string name="new_version_available">新版本 %s 已可用。是否要下载？\n\nF-Droid 用户可以等待 F-Droid 上的更新，该更新通常会在几小时内到达 IzzyOnDroid 仓库，并在几天内到达 F-Droid.org 仓库。</string>
+    <string name="new_version_available">新版本 %1$s 已可用。是否要下载？\n\nF-Droid 用户可以等待 F-Droid 上的更新，该更新通常会在几小时内到达 IzzyOnDroid 仓库，并在几天内到达 F-Droid.org 仓库。</string>
     <string name="download">下载</string>
     <string name="already_using_latest">已是最新版本</string>
     <string name="update_check_failed">更新检查失败，请稍后重试</string>
@@ -17,11 +17,11 @@
     <string name="enable">启用</string>
     <string name="settings">设置</string>
     <string name="system_overlay_title">悬浮窗权限</string>
-    <string name="system_overlay_description">请为\"%s\"授予\"显示在其他应用上层\"权限</string>
+    <string name="system_overlay_description">请为\"%1$s\"授予\"显示在其他应用上层\"权限</string>
     <string name="accessibility_permission_title">无障碍权限</string>
-    <string name="accessibility_permission_description">请为\"%s\"启用无障碍服务</string>
+    <string name="accessibility_permission_description">请为\"%1$s\"启用无障碍服务</string>
     <string name="usage_access_title">使用情况访问权限</string>
-    <string name="usage_access_description">请为\"%s\"授予\"使用情况访问\"权限</string>
+    <string name="usage_access_description">请为\"%1$s\"授予\"使用情况访问\"权限</string>
     <string name="copied">已复制</string>
     <string name="package_copied">包名已复制</string>
     <string name="class_copied">类名已复制</string>
