@@ -7,32 +7,17 @@
     <string name="check_for_update">Check for update</string>
     <string name="checking_for_update">Checking for update</string>
     <string name="update_available">Update Available</string>
-    <string name="new_version_available">A new version %s is available. Do you want to download it?</string>
+    <string name="new_version_available">A new version %s is available. Do you want to download it?\n\nF-Droid users can wait for the update from F-Droid, which usually arrives within a few hours with the IzzyOnDroid repo, and a few days with F-Droid.org's repo.</string>
     <string name="download">Download</string>
     <string name="already_using_latest">Already on the latest version</string>
     <string name="update_check_failed">Failed to check for update</string>
     <string name="unknown">Unknown</string>
     <string name="package_label">Package</string>
     <string name="class_label">Class</string>
-    <string name="configure_width_title">Configure Width</string>
-    <string name="configure_width_hint">Width</string>
-    <string name="configure_width_help">Set an empty value to use default calculated width or enter a width between %d and %d</string>
-    <string name="low_width_error_msg">Width should be greater than %d</string>
-    <string name="high_width_error_msg">Width should be less than %d</string>
     <string name="cancel">Cancel</string>
-    <string name="save">Save</string>
-    <string name="saved">Saved</string>
-    <string name="show_floating_window">Show Floating Window</string>
-    <string name="use_notification">Use Notification</string>
-    <string name="use_notification_desc">Show a notification to observe activity info</string>
     <string name="use_accessibility_service">Use Accessibility Service</string>
     <string name="use_accessibility_service_desc">Improve package monitoring significantly</string>
-    <string name="use_autostart">Use Autostart</string>
-    <string name="use_autostart_desc">Fix accessibility service problems</string>
     <string name="enable">Enable</string>
-    <string name="set_window_size">Set Window Size</string>
-    <string name="set_window_size_desc">Change the width of popup window</string>
-    <string name="configure">Configure</string>
     <string name="settings">Settings</string>
     <string name="system_overlay_title">System Overlay</string>
     <string name="system_overlay_description">Please allow draw over other apps permission for \'%s\'</string>
@@ -46,73 +31,21 @@
     <string name="stop">Stop</string>
     <string name="notification_channel_name">Activity Info</string>
     <string name="notification_channel_description">Shows current activity info</string>
-    <string name="autostart_open_failed">Failed to open Autostart</string>
-    <string name="menu">Menu</string>
     <string name="auto_update_check">Auto update check</string>
-    <string name="auto_update_desc">To ensure you have the latest features and bug fixes, this app can check GitHub for new versions on startup. \n\nNote: This connects to the internet. You can disable this at any time in the menu.</string>
+    <string name="auto_update_desc">To ensure you have the latest features and bug fixes, this app can check at GitHub for new versions. There won\'t be any automated installs, behind your back.\n\nThese updates would not go through the additional screening performed at e.g. IzzyOnDroid or F-Droid.\n\nYou can still turn it on/off later.</string>
     <string name="use_system_font">Use system font</string>
     <string name="restart_required">Restart Required</string>
     <string name="restart">Restart</string>
     <string name="later">Later</string>
-    <string name="restart_app">Please restart the app for the new changes to take effect.</string>
-    <string name="global_version">Global Version</string>
-    <string name="global_version_description"><![CDATA[Upgrade to the Global Version to unleash:<br><br> • <b>Unrestricted Control</b>: Full Accessibility Service integration.<br> • <b>Total Visibility</b>: Detect every single app on your device.<br> • <b>Unstoppable Performance</b>: Native Autostart checks to prevent background killing.<br><br>You must uninstall this version first before installing the Global edition.]]></string>
-
-    <!-- Settings Activity -->
     <string name="group_service">Service</string>
     <string name="group_miscellaneous">Miscellaneous</string>
-
     <string name="service_mode">Service mode</string>
-    <string name="service_mode_desc">Choose how activity info is displayed</string>
     <string name="scan_speed">Activity scan speed</string>
-    <string name="scan_speed_desc">How often to check for foreground activity changes</string>
     <string name="history_size">Activity history size</string>
-    <string name="history_size_desc">Maximum number of activity entries to keep</string>
-    <string name="window_size">Window size</string>
-    <string name="window_size_desc">Set the width of the floating popup window</string>
-    <string name="enable_autostart">Enable autostart</string>
+    <string name="window_size">Popup window size</string>
+    <string name="enable_autostart">Enable Autostart</string>
     <string name="enable_autostart_desc">Prevent the system from killing the service</string>
     <string name="auto_update_desc_short">Check GitHub for updates on startup</string>
     <string name="use_system_font_desc">Use device default font instead of custom font</string>
-    <string name="window_size_auto">Auto</string>
-    <string name="window_size_value">%d px</string>
-    <string name="made_with_love">Made with ❤ from Bangladesh</string>
-
-    <string-array name="service_mode_entries">
-        <item>Popup + Notification</item>
-        <item>Notification only</item>
-        <item>Popup only</item>
-    </string-array>
-
-    <string-array name="service_mode_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="scan_speed_entries">
-        <item>Fast</item>
-        <item>Medium</item>
-        <item>Slow</item>
-    </string-array>
-
-    <string-array name="scan_speed_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="history_size_entries">
-        <item>10</item>
-        <item>20</item>
-        <item>50</item>
-        <item>100</item>
-    </string-array>
-
-    <string-array name="history_size_values">
-        <item>10</item>
-        <item>20</item>
-        <item>50</item>
-        <item>100</item>
-    </string-array>
+    <string name="activity_history">Activity History</string>
 </resources>
