@@ -80,6 +80,7 @@ class HistoryManager(private val context: Context) {
         historyAdapter = HistoryAdapter(serviceState.history, historySize)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = historyAdapter
+        recyclerView.itemAnimator = null
 
         clearBtn.setOnClickListener {
             DataRepository.clearHistory()
@@ -94,9 +95,10 @@ class HistoryManager(private val context: Context) {
                     hide()
                     return@collectLatest
                 }
-
-                historyAdapter?.addItem(HistoryItem(state.pkg, state.cls))
-                recyclerView.scrollToPosition(0)
+                if (state.history.isNotEmpty()) {
+                    historyAdapter?.addItem(HistoryItem(state.pkg, state.cls))
+                    recyclerView.scrollToPosition(0)
+                }
             }
         }
     }
