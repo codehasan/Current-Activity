@@ -17,11 +17,14 @@
 package io.github.ratul.topactivity.ui
 
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.google.android.material.snackbar.Snackbar
 import io.github.ratul.topactivity.R
+import io.github.ratul.topactivity.repository.DataRepository
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -47,5 +50,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
         autoUpdate = findPreference("auto_update")!!
         useSystemFont = findPreference("system_font")!!
         checkUpdate = findPreference("check_update")!!
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val attachedActivity = activity ?: return
+        val changeListener = RestartOnChange(attachedActivity)
+
+        useSystemFont.onPreferenceChangeListener = changeListener
+    }
+
+    class RestartOnChange(private val activity: FragmentActivity) :
+        Preference.OnPreferenceChangeListener {
+
+        override fun onPreferenceChange(
+            preference: Preference,
+            newValue: Any?
+        ): Boolean {
+            Snackbar.make(
+                activity.window.decorView.rootView,
+                R.string.restart_required,
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(R.string.restart) {
+                DataRepository.updateStatus(false)
+                activity.finishAffinity()
+            }.show()
+            return true
+        }
     }
 }

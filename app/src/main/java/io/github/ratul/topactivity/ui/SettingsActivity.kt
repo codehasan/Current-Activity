@@ -36,7 +36,6 @@ import androidx.preference.Preference
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import io.github.ratul.topactivity.App.Companion.REPO_URL
 import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.extensions.isAccessibilityNotStarted
@@ -140,17 +139,6 @@ class SettingsActivity : AppCompatActivity() {
             true
         }
 
-        fragment.useSystemFont.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _, _ ->
-                Snackbar.make(baseView, R.string.restart_required, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.restart) {
-                        stopService()
-                        finish()
-                    }
-                    .show()
-                true
-            }
-
         if (handleQsTileIntent(intent)) {
             moveTaskToBack(true)
         }
@@ -213,6 +201,7 @@ class SettingsActivity : AppCompatActivity() {
         applicationContext.startService(intent)
         applicationContext.bindService(intent, serviceConnection, BIND_AUTO_CREATE)
         ServiceManager(this).show()
+        DataRepository.updateData(packageName, this::class.java.name)
     }
 
     private fun showAutoUpdatePolicyDialog() {
