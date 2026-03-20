@@ -60,15 +60,13 @@ class PopupManager(private val context: Context) {
             .inflate(R.layout.layout_activity_info, null)
         baseView = view
 
-        val (displayWidth, displayHeight) = windowManager.getScreenSize()
+        val (displayWidth, _) = windowManager.getScreenSize()
         val scaleFactor = mapPreferenceToWindowSize(DatabaseUtil.windowSize)
         val viewSize = (displayWidth * scaleFactor).toInt()
 
         val layoutParams = getLayoutParams()
-        layoutParams.gravity = Gravity.TOP or Gravity.START
+        layoutParams.gravity = Gravity.CENTER
         layoutParams.width = viewSize
-        layoutParams.x = (displayWidth / 2) - (viewSize / 2)
-        layoutParams.y = (displayHeight / 2)
 
         windowManager.addView(baseView, layoutParams)
 
