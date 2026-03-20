@@ -21,6 +21,7 @@ import io.github.ratul.topactivity.ui.CopyToClipboardActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 data class HistoryItem(val pkg: String, val cls: String)
 
@@ -37,7 +38,7 @@ object DataRepository {
     private val historyDeque = ArrayDeque<HistoryItem>(50)
 
     fun updateStatus(isRunning: Boolean) {
-        _appState.value = _appState.value.copy(running = isRunning)
+        _appState.update { it.copy(running = isRunning) }
     }
 
     @Synchronized
@@ -47,28 +48,25 @@ object DataRepository {
             newCls == CopyToClipboardActivity::class.java.name
         ) return
 
-        val currentState = _appState.value
-        // Prevent rapid duplicate emissions
-        if (currentState.pkg == newPkg
-            && currentState.cls == newCls
-        ) return
+        _appState.update { currentState ->
+            // Prevent rapid duplicate emissions
+            if (currentState.pkg == newPkg && currentState.cls == newCls) return@update currentState
 
-        val newItem = HistoryItem(newPkg, newCls)
-        historyDeque.addFirst(newItem)
-        if (historyDeque.size >= 50) historyDeque.removeLast()
+            val newItem = HistoryItem(newPkg, newCls)
+            historyDeque.addFirst(newItem)
+            if (historyDeque.size >= 50) historyDeque.removeLast()
 
-        _appState.value = currentState.copy(
-            pkg = newPkg,
-            cls = newCls,
-            history = historyDeque.toList()
-        )
+            currentState.copy(
+                pkg = newPkg,
+                cls = newCls,
+                history = historyDeque.toList()
+            )
+        }
     }
 
     @Synchronized
     fun clearHistory() {
         historyDeque.clear()
-        _appState.value = _appState.value.copy(
-            history = emptyList()
-        )
+        _appState.update { it.copy(history = emptyList()) }
     }
 }
