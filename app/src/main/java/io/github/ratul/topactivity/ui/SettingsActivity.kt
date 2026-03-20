@@ -37,7 +37,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.ratul.topactivity.App.Companion.REPO_URL
 import io.github.ratul.topactivity.R
-import io.github.ratul.topactivity.extensions.isAccessibilityNotStarted
 import io.github.ratul.topactivity.extensions.isNotificationGranted
 import io.github.ratul.topactivity.extensions.isSystemOverlayGranted
 import io.github.ratul.topactivity.extensions.isUsageStatsGranted
@@ -190,7 +189,6 @@ class SettingsActivity : AppCompatActivity() {
         val needsOverlay = DatabaseUtil.serviceMode == "0" && !isSystemOverlayGranted()
 
         val missing = listOf(
-            isAccessibilityNotStarted() to ::requestAccessibilityPermission,
             !isUsageStatsGranted() to ::requestUsageStatsPermission,
             !isNotificationGranted() to ::requestNotificationPermission,
             needsOverlay to ::requestSystemOverlayPermission,
@@ -213,15 +211,6 @@ class SettingsActivity : AppCompatActivity() {
                 Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
                     .setData("package:$packageName".toUri())
             )
-        }
-    }
-
-    private fun requestAccessibilityPermission() {
-        showPermissionDialog(
-            R.string.accessibility_permission_title,
-            getString(R.string.accessibility_permission_description, getString(R.string.app_name))
-        ) {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
     }
 

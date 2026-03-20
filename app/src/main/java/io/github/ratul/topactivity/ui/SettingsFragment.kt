@@ -29,7 +29,6 @@ import io.github.ratul.topactivity.repository.DataRepository
 class SettingsFragment : PreferenceFragmentCompat() {
 
     lateinit var serviceMode: ListPreference
-    lateinit var useAccessibility: SwitchPreferenceCompat
     lateinit var scanSpeed: ListPreference
     lateinit var historySize: ListPreference
     lateinit var windowSize: ListPreference
@@ -42,7 +41,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         serviceMode = findPreference("service_mode")!!
-        useAccessibility = findPreference("use_accessibility")!!
         scanSpeed = findPreference("scan_speed")!!
         historySize = findPreference("history_size")!!
         windowSize = findPreference("window_size")!!

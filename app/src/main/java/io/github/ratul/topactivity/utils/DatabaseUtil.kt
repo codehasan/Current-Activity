@@ -40,10 +40,6 @@ object DatabaseUtil {
         get() = prefs.getString("window_size", "1") ?: "1"
         set(value) = prefs.edit { putString("window_size", value) }
 
-    var useAccessibility: Boolean
-        get() = prefs.getBoolean("use_accessibility", false)
-        set(value) = prefs.edit { putBoolean("use_accessibility", value) }
-
     var autoUpdate: Boolean
         get() = prefs.getBoolean("auto_update", false)
         set(value) = prefs.edit { putBoolean("auto_update", value) }
