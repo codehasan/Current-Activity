@@ -44,10 +44,8 @@ object DataRepository {
         if (currentState.pkg == newPkg && currentState.cls == newCls) return
 
         val newItem = HistoryItem(newPkg, newCls)
-        historyDeque.addLast(newItem)
-        if (historyDeque.size > 50) {
-            historyDeque.removeFirst()
-        }
+        historyDeque.addFirst(newItem)
+        if (historyDeque.size >= 50) historyDeque.removeLast()
 
         _appState.value = currentState.copy(
             pkg = newPkg,
