@@ -32,6 +32,15 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/historyBtn"
+            android:layout_width="@dimen/popupWindowIconSize"
+            android:layout_height="@dimen/popupWindowIconSize"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_history" />
+
+        <ImageView
             android:id="@+id/closeBtn"
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
