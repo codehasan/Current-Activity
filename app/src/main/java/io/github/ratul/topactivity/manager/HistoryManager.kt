@@ -106,7 +106,7 @@ class HistoryManager(private val context: Context) {
         }
     }
 
-    fun hide() {
+    private fun hide() {
         baseView?.let {
             windowManager.removeView(it)
             baseView = null
