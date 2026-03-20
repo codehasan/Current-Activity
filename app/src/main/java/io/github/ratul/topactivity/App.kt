@@ -23,18 +23,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
-import io.github.ratul.topactivity.managers.PopupManager
-import io.github.ratul.topactivity.receivers.NotificationReceiver
+import io.github.ratul.topactivity.manager.NotificationUiManager
 import io.github.ratul.topactivity.ui.CopyToClipboardActivity
 
 class App : Application() {
-
-    lateinit var sharedPreferences: SharedPreferences
-        private set
 
     lateinit var notificationManager: NotificationManagerCompat
         private set
@@ -51,14 +46,11 @@ class App : Application() {
         super.onCreate()
         instance = this
         clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        sharedPreferences = getSharedPreferences(packageName, 0)
         notificationManager = NotificationManagerCompat.from(this)
-
-        PopupManager.addListener(NotificationReceiver.listener)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                NotificationReceiver.CHANNEL_ID,
+                NotificationUiManager.CHANNEL_ID,
                 getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
@@ -69,8 +61,9 @@ class App : Application() {
     }
 
     companion object {
-        const val REPO_URL = "https://github.com/codehasan/Current-Activity"
-        const val API_URL = "https://api.github.com/repos/codehasan/Current-Activity"
+        const val REPO = "codehasan/Current-Activity"
+        const val REPO_URL = "https://github.com/$REPO"
+        const val API_URL = "https://api.github.com/repos/$REPO"
 
         lateinit var instance: App
             private set
