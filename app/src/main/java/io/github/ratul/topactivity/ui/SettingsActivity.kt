@@ -18,7 +18,6 @@ package io.github.ratul.topactivity.ui
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.ComponentName
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
@@ -26,7 +25,7 @@ import android.os.IBinder
 import android.provider.Settings
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
@@ -61,29 +60,24 @@ import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
 
-    private val popupScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     lateinit var appUpdateManager: AppUpdateManager
-
     lateinit var baseView: CoordinatorLayout
     lateinit var fabStart: FloatingActionButton
     lateinit var fragment: SettingsFragment
 
-    private var monitoringService: PackageMonitoringService? = null
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var isServiceBound = false
 
-    private val notificationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { _ -> }
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            monitoringService = (service as PackageMonitoringService.LocalBinder).service
             isServiceBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
             isServiceBound = false
-            monitoringService = null
         }
     }
 
@@ -93,6 +87,31 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
+        initViews()
+        setupToolbar()
+        setupFab()
+        setupPreferences()
+        setupAutoUpdate()
+
+        if (handleQsTileIntent(intent)) moveTaskToBack(true)
+    }
+
+    override fun onDestroy() {
+        if (isServiceBound) {
+            applicationContext.unbindService(serviceConnection)
+            isServiceBound = false
+        }
+        DataRepository.updateStatus(false)
+        scope.cancel()
+        super.onDestroy()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (handleQsTileIntent(intent)) moveTaskToBack(true)
+    }
+
+    private fun initViews() {
         fabStart = findViewById(R.id.start)
         baseView = findViewById(R.id.main)
         fragment =
@@ -104,81 +123,50 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
 
-        if (DatabaseUtil.isFirstRun) showAutoUpdatePolicyDialog()
-        if (DatabaseUtil.autoUpdate) appUpdateManager.checkForUpdate(true)
-
-        popupScope.launch {
-            DataRepository.appState.collectLatest { state ->
-                fabStart.setStatus(state.running)
-            }
-        }
-        fabStart.setOnClickListener { onFabStartClicked() }
-
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        topAppBar.setOnMenuItemClickListener { item ->
+    private fun setupToolbar() {
+        findViewById<MaterialToolbar>(R.id.topAppBar).setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.github -> {
-                    openLink(REPO_URL)
-                    true
+                    openLink(REPO_URL); true
                 }
 
                 else -> false
             }
         }
+    }
 
+    private fun setupFab() {
+        scope.launch {
+            DataRepository.appState.collectLatest { state ->
+                fabStart.setStatus(state.running)
+            }
+        }
+        fabStart.setOnClickListener { onFabStartClicked() }
+    }
+
+    private fun setupPreferences() {
         fragment.enableAutostart.isVisible = isAutoStartPermissionAvailable(this)
         fragment.enableAutostart.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             requestAutoStartPermission(this)
             true
         }
-
         fragment.checkUpdate.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             showMessage(R.string.checking_for_update)
             appUpdateManager.checkForUpdate()
             true
         }
-
-        if (handleQsTileIntent(intent)) {
-            moveTaskToBack(true)
-        }
     }
 
-    override fun onDestroy() {
-        if (isServiceBound) {
-            applicationContext.unbindService(serviceConnection)
-            isServiceBound = false
-        }
-        stopService()
-        popupScope.cancel()
-        super.onDestroy()
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-
-        if (handleQsTileIntent(intent)) {
-            moveTaskToBack(true)
-        }
-    }
-
-    private fun handleQsTileIntent(intent: Intent): Boolean {
-        val fromQsTile = intent.getBooleanExtra(EXTRA_FROM_QS_TILE, false)
-
-        return if (fromQsTile) {
-            onFabStartClicked()
-            DataRepository.appState.value.running
-        } else false
-    }
-
-    private fun stopService() {
-        DataRepository.updateStatus(false)
+    private fun setupAutoUpdate() {
+        if (DatabaseUtil.isFirstRun) showAutoUpdatePolicyDialog()
+        if (DatabaseUtil.autoUpdate) appUpdateManager.checkForUpdate(true)
     }
 
     private fun onFabStartClicked() {
-        val serviceState = DataRepository.appState.value
-        if (serviceState.running) {
-            stopService()
+        if (DataRepository.appState.value.running) {
+            DataRepository.updateStatus(false)
             return
         }
 
@@ -190,6 +178,12 @@ class SettingsActivity : AppCompatActivity() {
         applicationContext.bindService(intent, serviceConnection, BIND_AUTO_CREATE)
         ServiceManager(this).show()
         DataRepository.updateData(packageName, this::class.java.name)
+    }
+
+    private fun handleQsTileIntent(intent: Intent): Boolean {
+        if (!intent.getBooleanExtra(EXTRA_FROM_QS_TILE, false)) return false
+        onFabStartClicked()
+        return DataRepository.appState.value.running
     }
 
     private fun requestMissingPermissions(): Boolean {
@@ -206,82 +200,69 @@ class SettingsActivity : AppCompatActivity() {
         return missing.none { it.first }
     }
 
-    private fun showAutoUpdatePolicyDialog() {
-        val clickListener = DialogInterface.OnClickListener { dialog, btn ->
-            dialog.dismiss()
-
-            when (btn) {
-                AlertDialog.BUTTON_POSITIVE -> {
-                    DatabaseUtil.autoUpdate = true
-                    fragment.autoUpdate.isChecked = true
-                    appUpdateManager.checkForUpdate(true)
-                }
-
-                AlertDialog.BUTTON_NEUTRAL -> {
-                    DatabaseUtil.autoUpdate = false
-                    fragment.autoUpdate.isChecked = false
-                }
-            }
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.auto_update_check)
-            .setMessage(R.string.auto_update_desc)
-            .setPositiveButton(R.string.enable, clickListener)
-            .setNeutralButton(R.string.cancel, clickListener)
-            .setOnDismissListener { DatabaseUtil.isFirstRun = false }
-            .show()
-    }
-
     private fun requestNotificationPermission() {
         notificationPermissionLauncher.launch(POST_NOTIFICATIONS)
     }
 
     private fun requestSystemOverlayPermission() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.system_overlay_title)
-            .setMessage(
-                getString(
-                    R.string.system_overlay_description,
-                    getString(R.string.app_name)
-                )
-            )
-            .setPositiveButton(R.string.settings) { dialog, _ ->
-                dialog.dismiss()
-                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+        showPermissionDialog(
+            R.string.system_overlay_title,
+            getString(R.string.system_overlay_description, getString(R.string.app_name))
+        ) {
+            startActivity(
+                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
                     .setData("package:$packageName".toUri())
-                startActivity(intent)
-            }
-            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            .show()
+            )
+        }
     }
 
     private fun requestAccessibilityPermission() {
+        showPermissionDialog(
+            R.string.accessibility_permission_title,
+            getString(R.string.accessibility_permission_description, getString(R.string.app_name))
+        ) {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+    }
+
+    private fun requestUsageStatsPermission() {
+        showPermissionDialog(
+            R.string.usage_access_title,
+            getString(R.string.usage_access_description, getString(R.string.app_name))
+        ) {
+            startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
+    }
+
+    private fun showPermissionDialog(
+        @StringRes titleRes: Int,
+        message: String,
+        onSettings: () -> Unit
+    ) {
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.accessibility_permission_title)
-            .setMessage(
-                getString(
-                    R.string.accessibility_permission_description,
-                    getString(R.string.app_name)
-                )
-            )
-            .setPositiveButton(R.string.settings) { dialog, _ ->
-                dialog.dismiss()
-                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-            }
+            .setTitle(titleRes)
+            .setMessage(message)
+            .setPositiveButton(R.string.settings) { dialog, _ -> dialog.dismiss(); onSettings() }
             .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
-    private fun requestUsageStatsPermission() {
+    private fun showAutoUpdatePolicyDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.usage_access_title)
-            .setMessage(getString(R.string.usage_access_description, getString(R.string.app_name)))
-            .setPositiveButton(R.string.settings) { dialog, _ ->
+            .setTitle(R.string.auto_update_check)
+            .setMessage(R.string.auto_update_desc)
+            .setPositiveButton(R.string.enable) { dialog, _ ->
                 dialog.dismiss()
-                startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                DatabaseUtil.autoUpdate = true
+                fragment.autoUpdate.isChecked = true
+                appUpdateManager.checkForUpdate(true)
             }
-            .setNeutralButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setNeutralButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+                DatabaseUtil.autoUpdate = false
+                fragment.autoUpdate.isChecked = false
+            }
+            .setOnDismissListener { DatabaseUtil.isFirstRun = false }
             .show()
     }
 
