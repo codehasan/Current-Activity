@@ -80,8 +80,8 @@
     </style>
 
     <style name="AppCompat.TitleStyle.Dialog" parent="@style/RtlOverlay.DialogWindowTitle.AppCompat">
-        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
-        <item name="fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="android:fontFamily">?attr/appFontFamilyBody</item>
+        <item name="fontFamily">?attr/appFontFamilyBody</item>
     </style>
 
     <style name="AppCompat.ButtonStyle.Dialog" parent="@style/Widget.Material3.Button.TextButton.Dialog.Flush">
