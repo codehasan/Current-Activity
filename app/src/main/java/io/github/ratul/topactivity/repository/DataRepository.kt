@@ -40,6 +40,7 @@ object DataRepository {
         _appState.value = _appState.value.copy(running = isRunning)
     }
 
+    @Synchronized
     fun updateData(newPkg: String, newCls: String) {
         // Prevent adding copy activity
         if (newPkg == BuildConfig.APPLICATION_ID &&
@@ -48,7 +49,9 @@ object DataRepository {
 
         val currentState = _appState.value
         // Prevent rapid duplicate emissions
-        if (currentState.pkg == newPkg && currentState.cls == newCls) return
+        if (currentState.pkg == newPkg
+            && currentState.cls == newCls
+        ) return
 
         val newItem = HistoryItem(newPkg, newCls)
         historyDeque.addFirst(newItem)
@@ -61,6 +64,7 @@ object DataRepository {
         )
     }
 
+    @Synchronized
     fun clearHistory() {
         historyDeque.clear()
         _appState.value = _appState.value.copy(
