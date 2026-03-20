@@ -81,7 +81,7 @@ class PackageMonitoringService : Service() {
 
     private fun getForegroundApp(): Pair<String?, String?> {
         val currentTime = System.currentTimeMillis()
-        val usageEvents = usageStats.queryEvents(currentTime - 1000, currentTime)
+        val usageEvents = usageStats.queryEvents(currentTime - 5000, currentTime)
         var latestPackage: String? = null
         var latestClass: String? = null
         var latestTimestamp = 0L
