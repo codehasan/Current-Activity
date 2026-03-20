@@ -36,6 +36,7 @@
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
             android:layout_gravity="center"
+            android:background="?selectableItemBackground"
             android:importantForAccessibility="no"
             android:scaleType="fitXY"
             android:src="@drawable/ic_history" />
@@ -45,6 +46,7 @@
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
             android:layout_gravity="center"
+            android:background="?selectableItemBackground"
             android:importantForAccessibility="no"
             android:scaleType="fitXY"
             android:src="@drawable/ic_close" />

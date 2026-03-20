@@ -36,6 +36,7 @@
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
             android:layout_gravity="center"
+            android:background="?selectableItemBackground"
             android:importantForAccessibility="no"
             android:scaleType="fitXY"
             android:src="@drawable/ic_dustbin" />
@@ -45,15 +46,17 @@
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
             android:layout_gravity="center"
+            android:background="?selectableItemBackground"
             android:importantForAccessibility="no"
             android:scaleType="fitXY"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <io.github.ratul.topactivity.ui.MaxHeightRecyclerView
         android:id="@+id/recycler_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false" />
+        android:maxHeight="200dp"
+        android:scrollbars="none" />
 
 </LinearLayout>
