@@ -145,6 +145,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        if (isServiceBound) {
+            applicationContext.unbindService(serviceConnection)
+            isServiceBound = false
+        }
         stopService()
         popupScope.cancel()
         super.onDestroy()
@@ -193,7 +197,7 @@ class SettingsActivity : AppCompatActivity() {
         if (accessibilityNot or
             !usageStats or
             !notification or
-            !systemOverlay
+            (serviceMode == "0" && !systemOverlay)
         ) return
 
         DataRepository.updateStatus(true)
