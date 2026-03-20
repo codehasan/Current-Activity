@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="accessibility_service_description">本应用使用无障碍服务以监控窗口状态变化。所有处理均在本地完成，不会收集或上传任何数据。</string>
     <string name="check_for_update">检查更新</string>
     <string name="checking_for_update">正在检查更新…</string>
     <string name="update_available">有可用更新</string>
@@ -11,10 +12,14 @@
     <string name="package_label">包名</string>
     <string name="class_label">类名</string>
     <string name="cancel">取消</string>
+    <string name="use_accessibility_service">启用无障碍服务</string>
+    <string name="use_accessibility_service_desc">显著提升监控准确性</string>
     <string name="enable">启用</string>
     <string name="settings">设置</string>
     <string name="system_overlay_title">悬浮窗权限</string>
     <string name="system_overlay_description">请为\"%1$s\"授予\"显示在其他应用上层\"权限</string>
+    <string name="accessibility_permission_title">无障碍权限</string>
+    <string name="accessibility_permission_description">请为\"%1$s\"启用无障碍服务</string>
     <string name="usage_access_title">使用情况访问权限</string>
     <string name="usage_access_description">请为\"%1$s\"授予\"使用情况访问\"权限</string>
     <string name="copied">已复制</string>
