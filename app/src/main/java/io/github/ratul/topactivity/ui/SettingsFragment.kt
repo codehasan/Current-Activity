@@ -17,12 +17,10 @@
 package io.github.ratul.topactivity.ui
 
 import android.os.Bundle
-import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import io.github.ratul.topactivity.App
 import io.github.ratul.topactivity.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -31,7 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     lateinit var useAccessibility: SwitchPreferenceCompat
     lateinit var scanSpeed: ListPreference
     lateinit var historySize: ListPreference
-    lateinit var windowSize: EditTextPreference
+    lateinit var windowSize: ListPreference
     lateinit var enableAutostart: Preference
     lateinit var autoUpdate: SwitchPreferenceCompat
     lateinit var useSystemFont: SwitchPreferenceCompat
@@ -41,10 +39,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         serviceMode = findPreference("service_mode")!!
-        useAccessibility = findPreference("has_access")!!
+        useAccessibility = findPreference("use_accessibility")!!
         scanSpeed = findPreference("scan_speed")!!
         historySize = findPreference("history_size")!!
-        windowSize = findPreference("user_width")!!
+        windowSize = findPreference("window_size")!!
         enableAutostart = findPreference("enable_autostart")!!
         autoUpdate = findPreference("auto_update")!!
         useSystemFont = findPreference("system_font")!!

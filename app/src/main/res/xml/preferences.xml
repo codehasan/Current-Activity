@@ -2,7 +2,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="@string/group_service"
         app:iconSpaceReserved="false">
 
@@ -17,10 +17,11 @@
 
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="false"
-            android:key="has_access"
+            android:key="use_accessibility"
             android:summary="@string/use_accessibility_service_desc"
             android:title="@string/use_accessibility_service"
             app:iconSpaceReserved="false"
+            app:isPreferenceVisible="@bool/global_version"
             app:widgetLayout="@layout/layout_material_switch" />
 
         <androidx.preference.ListPreference
@@ -33,7 +34,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <androidx.preference.ListPreference
-            android:defaultValue="20"
+            android:defaultValue="1"
             android:entries="@array/history_size_entries"
             android:entryValues="@array/history_size_values"
             android:key="history_size"
@@ -41,22 +42,24 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
-        <androidx.preference.EditTextPreference
-            android:key="user_width"
-            android:summary="@string/window_size_desc"
+        <androidx.preference.ListPreference
+            android:defaultValue="1"
+            android:entries="@array/window_size_entries"
+            android:entryValues="@array/window_size_values"
+            android:key="window_size"
             android:title="@string/window_size"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
 
-        <Preference
+        <androidx.preference.Preference
             android:key="enable_autostart"
             android:summary="@string/enable_autostart_desc"
             android:title="@string/enable_autostart"
             app:iconSpaceReserved="false" />
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <!-- Group: Miscellaneous -->
-    <PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="@string/group_miscellaneous"
         app:iconSpaceReserved="false">
 
@@ -76,22 +79,11 @@
             app:iconSpaceReserved="false"
             app:widgetLayout="@layout/layout_material_switch" />
 
-        <Preference
+        <androidx.preference.Preference
             android:key="check_update"
             android:title="@string/check_for_update"
             app:iconSpaceReserved="false" />
 
-    </PreferenceCategory>
-
-    <!-- Footer -->
-    <PreferenceCategory app:iconSpaceReserved="false">
-
-        <Preference
-            android:key="footer"
-            android:layout="@layout/layout_preference_footer"
-            android:selectable="false"
-            app:iconSpaceReserved="false" />
-
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
