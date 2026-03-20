@@ -33,6 +33,15 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/clearBtn"
+            android:layout_width="@dimen/popupWindowIconSize"
+            android:layout_height="@dimen/popupWindowIconSize"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_dustbin" />
+
+        <ImageView
             android:id="@+id/closeBtn"
             android:layout_width="@dimen/popupWindowIconSize"
             android:layout_height="@dimen/popupWindowIconSize"
