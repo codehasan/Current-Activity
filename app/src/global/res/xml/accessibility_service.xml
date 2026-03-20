@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:accessibilityEventTypes="typeWindowStateChanged|typeWindowsChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:accessibilityFlags="flagReportViewIds"
-    android:canRetrieveWindowContent="true"
+    android:accessibilityFlags="flagDefault"
     android:description="@string/accessibility_service_description"
     android:notificationTimeout="100"
     tools:isAccessibilityTool="true" />
