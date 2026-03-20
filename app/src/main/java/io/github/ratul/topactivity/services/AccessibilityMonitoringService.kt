@@ -31,8 +31,6 @@ class AccessibilityMonitoringService : AccessibilityService() {
         val pkgName = event.packageName?.toString() ?: return
         val className = event.className?.toString() ?: return
 
-        if (isSystemClass(className)) return
-
         DataRepository.updateData(pkgName, className)
     }
 
@@ -51,14 +49,6 @@ class AccessibilityMonitoringService : AccessibilityService() {
     override fun onUnbind(intent: Intent): Boolean {
         instance = null
         return true
-    }
-
-    private fun isSystemClass(className: String): Boolean {
-        return try {
-            ClassLoader.getSystemClassLoader().loadClass(className) != null
-        } catch (_: ClassNotFoundException) {
-            false
-        }
     }
 
     companion object {
