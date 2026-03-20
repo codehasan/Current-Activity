@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class NotificationUiManager(private val context: Context) {
@@ -47,7 +46,6 @@ class NotificationUiManager(private val context: Context) {
 
     fun show() {
         if (!notificationManager.areNotificationsEnabled()) return
-        if (popupScope.isActive) return
 
         val serviceState = DataRepository.appState.value
         updateNotification(serviceState.pkg, serviceState.cls)
