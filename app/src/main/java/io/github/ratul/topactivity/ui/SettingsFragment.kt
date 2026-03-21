@@ -17,11 +17,13 @@
 package io.github.ratul.topactivity.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.repository.DataRepository
@@ -50,6 +52,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         autoUpdate = findPreference("auto_update")!!
         useSystemFont = findPreference("system_font")!!
         checkUpdate = findPreference("check_update")!!
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        listView.isVerticalScrollBarEnabled = false
+        listView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
     }
 
     override fun onStart() {
