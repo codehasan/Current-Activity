@@ -31,6 +31,7 @@ import io.github.ratul.topactivity.App
 import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.extensions.getScreenSize
 import io.github.ratul.topactivity.extensions.value
+import io.github.ratul.topactivity.manager.PopupManager.Companion.mapPreferenceToWindowSize
 import io.github.ratul.topactivity.repository.DataRepository
 import io.github.ratul.topactivity.repository.HistoryItem
 import io.github.ratul.topactivity.utils.DatabaseUtil
@@ -114,14 +115,6 @@ class HistoryManager(private val context: Context) {
         popupScope.cancel()
     }
 
-    private fun mapPreferenceToWindowSize(value: String): Double {
-        return when (value) {
-            "0" -> 0.65
-            "1" -> 0.50
-            else -> 0.45
-        }
-    }
-
     private fun mapPreferenceToHistorySize(value: String): Int {
         return when (value) {
             "0" -> 50
@@ -135,7 +128,7 @@ class HistoryManager(private val context: Context) {
         private val historySize: Int
     ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
-        private val items: MutableList<HistoryItem> = initialList.toMutableList()
+        private val items: MutableList<HistoryItem> = initialList.take(historySize).toMutableList()
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val pkgText: TextView = view.findViewById(R.id.item_package_name)
