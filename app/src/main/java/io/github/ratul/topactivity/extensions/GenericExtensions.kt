@@ -16,7 +16,9 @@
  */
 package io.github.ratul.topactivity.extensions
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -59,5 +61,19 @@ fun WindowManager.getScreenSize(): Pair<Int, Int> {
         @Suppress("DEPRECATION")
         defaultDisplay.getMetrics(displayMetrics)
         Pair(displayMetrics.widthPixels, displayMetrics.heightPixels)
+    }
+}
+
+fun PackageManager.isActivity(pkg: String, cls: String): Boolean {
+    return try {
+        val component = ComponentName(pkg, cls)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            getActivityInfo(component, 0)
+        } else {
+            getActivityInfo(component, PackageManager.ComponentInfoFlags.of(0))
+        }
+        true
+    } catch (_: PackageManager.NameNotFoundException) {
+        false
     }
 }

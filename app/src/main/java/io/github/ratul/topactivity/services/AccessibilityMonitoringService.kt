@@ -19,19 +19,33 @@ package io.github.ratul.topactivity.services
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.LruCache
 import android.view.accessibility.AccessibilityEvent
+import io.github.ratul.topactivity.extensions.isActivity
 import io.github.ratul.topactivity.repository.DataRepository
 
 @SuppressLint("AccessibilityPolicy")
 class AccessibilityMonitoringService : AccessibilityService() {
 
+    private val activityCache = LruCache<String, Boolean>(500)
+
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!DataRepository.appState.value.running) return
 
-        val pkgName = event.packageName?.toString() ?: return
-        val className = event.className?.toString() ?: return
+        val pkg = event.packageName?.toString() ?: return
+        val cls = event.className?.toString() ?: return
+        val cacheKey = "$pkg/$cls"
 
-        DataRepository.updateData(pkgName, className)
+        val isCachedActivity = activityCache[cacheKey]
+        if (isCachedActivity != null) {
+            if (isCachedActivity) DataRepository.updateData(pkg, cls)
+            return
+        }
+
+        val isActivity = packageManager.isActivity(pkg, cls)
+        activityCache.put(cacheKey, isActivity)
+
+        if (isActivity) DataRepository.updateData(pkg, cls)
     }
 
     override fun onInterrupt() {}
@@ -49,6 +63,11 @@ class AccessibilityMonitoringService : AccessibilityService() {
     override fun onUnbind(intent: Intent): Boolean {
         instance = null
         return true
+    }
+
+    override fun onDestroy() {
+        instance = null
+        super.onDestroy()
     }
 
     companion object {
