@@ -135,14 +135,6 @@ class PopupManager(private val context: Context) {
         popupScope.cancel()
     }
 
-    private fun mapPreferenceToWindowSize(value: String): Double {
-        return when (value) {
-            "0" -> 0.65
-            "1" -> 0.50
-            else -> 0.45
-        }
-    }
-
     private fun getAppName(pkg: String): String? {
         return try {
             val pm = context.packageManager
@@ -150,6 +142,16 @@ class PopupManager(private val context: Context) {
             pm.getApplicationLabel(info).toString()
         } catch (_: PackageManager.NameNotFoundException) {
             null
+        }
+    }
+
+    companion object {
+        fun mapPreferenceToWindowSize(value: String): Double {
+            return when (value) {
+                "0" -> 0.80
+                "1" -> 0.65
+                else -> 0.50
+            }
         }
     }
 }
