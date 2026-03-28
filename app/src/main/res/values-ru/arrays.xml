@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="service_mode_entries">
+        <item>Всплывающее окно + Уведомление</item>
+        <item>Только уведомление</item>
+    </string-array>
+
+    <string-array name="scan_speed_entries">
+        <item>Экстремальная</item>
+        <item>Быстрая</item>
+        <item>Средняя</item>
+        <item>Медленная</item>
+    </string-array>
+
+    <string-array name="history_size_entries">
+        <item>Большой</item>
+        <item>Средний</item>
+        <item>Маленький</item>
+    </string-array>
+
+    <string-array name="window_size_entries">
+        <item>Большой</item>
+        <item>Средний</item>
+        <item>Маленький</item>
+    </string-array>
+</resources>
