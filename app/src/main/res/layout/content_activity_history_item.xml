@@ -19,10 +19,10 @@
 
         <TextView
             android:id="@+id/item_package_name"
+            style="@style/PopupWindow.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="?attr/appFontFamilyTitle"
             android:textColor="#FFFFFF"
             android:textSize="12sp" />
 
@@ -50,11 +50,11 @@
 
         <TextView
             android:id="@+id/item_class_name"
+            style="@style/PopupWindow.Body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_weight="1"
-            android:fontFamily="?attr/appFontFamilyBody"
             android:textColor="#E0E0E0"
             android:textSize="12sp" />
 

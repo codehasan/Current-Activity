@@ -52,13 +52,12 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/NonInteractiveText"
+            style="@style/PopupWindow.Body"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:layout_marginEnd="1dp"
             android:background="#60111111"
-            android:fontFamily="?attr/appFontFamilyBody"
             android:gravity="center"
             android:padding="8dp"
             android:text="@string/package_label"
@@ -67,11 +66,11 @@
 
         <TextView
             android:id="@+id/package_name"
+            style="@style/PopupWindow.Body"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:background="#60111111"
-            android:fontFamily="?attr/appFontFamilyBody"
             android:padding="8dp"
             android:singleLine="false"
             android:textColor="#FFFFFF"
@@ -85,13 +84,12 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/NonInteractiveText"
+            style="@style/PopupWindow.Body"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:layout_marginEnd="1dp"
             android:background="#60111111"
-            android:fontFamily="?attr/appFontFamilyBody"
             android:gravity="center"
             android:padding="8dp"
             android:text="@string/class_label"
@@ -100,11 +98,11 @@
 
         <TextView
             android:id="@+id/class_name"
+            style="@style/PopupWindow.Body"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:background="#60111111"
-            android:fontFamily="?attr/appFontFamilyBody"
             android:padding="8dp"
             android:singleLine="false"
             android:textColor="#FFFFFF"

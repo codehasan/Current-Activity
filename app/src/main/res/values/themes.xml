@@ -85,6 +85,11 @@
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
     </style>
 
+    <style name="PopupWindow.Body" parent="@style/NonInteractiveText">
+        <item name="android:fontFamily">?attr/appFontFamilyBody</item>
+        <item name="fontFamily">?attr/appFontFamilyBody</item>
+    </style>
+
     <style name="Material.ToolbarTitle" parent="@style/TextAppearance.Material3.TitleLarge">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>
