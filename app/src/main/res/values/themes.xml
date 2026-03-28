@@ -73,6 +73,18 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
+    <style name="NonInteractiveText" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:clickable">false</item>
+        <item name="android:longClickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
+    <style name="PopupWindow.Title" parent="@style/NonInteractiveText">
+        <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
+        <item name="fontFamily">?attr/appFontFamilyTitle</item>
+    </style>
+
     <style name="Material.ToolbarTitle" parent="@style/TextAppearance.Material3.TitleLarge">
         <item name="android:fontFamily">?attr/appFontFamilyTitle</item>
         <item name="fontFamily">?attr/appFontFamilyTitle</item>

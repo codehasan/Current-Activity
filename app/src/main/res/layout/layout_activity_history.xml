@@ -13,23 +13,14 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/PopupWindow.Title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:ellipsize="end"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:fontFamily="?attr/appFontFamilyTitle"
-            android:maxLines="1"
+            android:layout_weight="1"
             android:padding="8dp"
             android:text="@string/activity_history"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/clearBtn"
@@ -56,6 +47,7 @@
         android:id="@+id/recycler_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#60808080"
         android:maxHeight="200dp"
         android:overScrollMode="never"
         android:scrollbars="none" />
