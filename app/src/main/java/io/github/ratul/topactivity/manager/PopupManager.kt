@@ -92,9 +92,10 @@ class PopupManager(private val context: Context) {
         view.setOnTouchListener(DragTouchManager(windowManager, layoutParams))
 
         val serviceState = DataRepository.appState.value
+        val defaultAppName = context.getString(R.string.unknown)
         className.text = serviceState.cls
         packageName.text = serviceState.pkg
-        appName.text = getAppName(serviceState.pkg) ?: context.getString(R.string.unknown)
+        appName.text = getAppName(serviceState.pkg) ?: defaultAppName
 
         popupScope.launch {
             DataRepository.appState.collectLatest { state ->
@@ -112,8 +113,9 @@ class PopupManager(private val context: Context) {
 
                 if (isPackageChanged) {
                     packageName.text = state.pkg
+                    appName.text = defaultAppName
                     val fetchedData = withContext(Dispatchers.IO) {
-                        getAppName(state.pkg) ?: context.getString(R.string.unknown)
+                        getAppName(state.pkg) ?: defaultAppName
                     }
                     appName.text = fetchedData
                 }
