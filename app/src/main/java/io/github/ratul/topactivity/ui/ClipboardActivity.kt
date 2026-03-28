@@ -21,9 +21,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.github.ratul.topactivity.App
-import io.github.ratul.topactivity.R
+import io.github.ratul.topactivity.BuildConfig
 
-class CopyToClipboardActivity : AppCompatActivity() {
+class ClipboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class CopyToClipboardActivity : AppCompatActivity() {
     private fun copyToClipboard(intent: Intent) {
         val text = intent.getStringExtra(Intent.EXTRA_TEXT)
         if (!text.isNullOrEmpty()) {
-            val clipData = ClipData.newPlainText(getString(R.string.app_name), text)
+            val clipData = ClipData.newPlainText(BuildConfig.APPLICATION_ID, text)
             App.instance.clipboardManager.setPrimaryClip(clipData)
         }
     }

@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".ui.CopyToClipboardActivity"
+            android:name=".ui.ClipboardActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:noHistory="true"

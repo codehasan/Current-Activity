@@ -17,7 +17,7 @@
 package io.github.ratul.topactivity.repository
 
 import io.github.ratul.topactivity.BuildConfig
-import io.github.ratul.topactivity.ui.CopyToClipboardActivity
+import io.github.ratul.topactivity.ui.ClipboardActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,7 +45,7 @@ object DataRepository {
     fun updateData(newPkg: String, newCls: String) {
         // Prevent adding copy activity
         if (newPkg == BuildConfig.APPLICATION_ID &&
-            newCls == CopyToClipboardActivity::class.java.name
+            newCls == ClipboardActivity::class.java.name
         ) return
 
         _appState.update { currentState ->

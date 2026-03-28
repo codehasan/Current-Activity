@@ -27,7 +27,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import io.github.ratul.topactivity.manager.NotificationUiManager
-import io.github.ratul.topactivity.ui.CopyToClipboardActivity
+import io.github.ratul.topactivity.ui.ClipboardActivity
 
 class App : Application() {
 
@@ -73,7 +73,7 @@ class App : Application() {
                 val clip = ClipData.newPlainText(context.getString(R.string.app_name), str)
                 instance.clipboardManager.setPrimaryClip(clip)
             } else {
-                val copyActivity = Intent(context, CopyToClipboardActivity::class.java)
+                val copyActivity = Intent(context, ClipboardActivity::class.java)
                     .putExtra(Intent.EXTRA_TEXT, str)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(copyActivity)
