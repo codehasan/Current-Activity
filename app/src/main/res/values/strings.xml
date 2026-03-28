@@ -37,7 +37,6 @@
     <string name="restart_required">Restart Required</string>
     <string name="restart">Restart</string>
     <string name="later">Later</string>
-    <string name="group_service">Service</string>
     <string name="group_miscellaneous">Miscellaneous</string>
     <string name="service_mode">Service mode</string>
     <string name="scan_speed">Activity scan speed</string>

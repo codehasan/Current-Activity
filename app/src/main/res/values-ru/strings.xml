@@ -34,7 +34,6 @@
     <string name="restart_required">Требуется перезапуск</string>
     <string name="restart">Перезапустить</string>
     <string name="later">Позже</string>
-    <string name="group_service">Сервис</string>
     <string name="group_miscellaneous">Разное</string>
     <string name="service_mode">Режим сервиса</string>
     <string name="scan_speed">Скорость сканирования активности</string>

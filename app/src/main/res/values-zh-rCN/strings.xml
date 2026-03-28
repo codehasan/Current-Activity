@@ -34,7 +34,6 @@
     <string name="restart_required">需要重启</string>
     <string name="restart">重启</string>
     <string name="later">稍后</string>
-    <string name="group_service">服务</string>
     <string name="group_miscellaneous">其他</string>
     <string name="service_mode">服务模式</string>
     <string name="scan_speed">活动扫描速度</string>
