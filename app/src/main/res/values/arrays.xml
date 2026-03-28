@@ -11,6 +11,7 @@
     </string-array>
 
     <string-array name="scan_speed_entries">
+        <item>Extreme</item>
         <item>Fast</item>
         <item>Medium</item>
         <item>Slow</item>
@@ -20,6 +21,7 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="history_size_entries">
