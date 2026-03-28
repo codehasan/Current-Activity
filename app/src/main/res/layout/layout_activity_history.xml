@@ -13,36 +13,51 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/title_history"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:fontFamily="?attr/appFontFamilyTitle"
+            android:maxLines="1"
             android:padding="8dp"
-            android:text="Activity History"
+            android:text="@string/activity_history"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/clearBtn"
+            android:layout_width="@dimen/popupWindowIconSize"
+            android:layout_height="@dimen/popupWindowIconSize"
+            android:layout_gravity="center"
+            android:background="?selectableItemBackground"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_dustbin" />
+
         <ImageView
             android:id="@+id/closeBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/popupWindowIconSize"
+            android:layout_height="@dimen/popupWindowIconSize"
             android:layout_gravity="center"
+            android:background="?selectableItemBackground"
+            android:importantForAccessibility="no"
             android:scaleType="fitXY"
             android:src="@drawable/ic_close" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#60808080" />
-
-    <androidx.recyclerview.widget.RecyclerView
+    <io.github.ratul.topactivity.ui.MaxHeightRecyclerView
         android:id="@+id/recycler_history"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="4dp"
-        android:clipToPadding="false" />
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
 </LinearLayout>

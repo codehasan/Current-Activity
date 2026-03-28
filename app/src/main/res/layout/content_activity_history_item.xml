@@ -2,36 +2,78 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:background="#60808080"
-    android:orientation="vertical">
+    android:background="#60808080">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="1dp"
+        android:layout_marginTop="1dp"
         android:background="#60111111"
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/item_package_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="?attr/appFontFamilyTitle"
-            android:textIsSelectable="true"
-            android:textColor="#AAAAAA"
-            android:textSize="11sp" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/item_class_name"
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:background="#4DD0E1" />
+
+            <TextView
+                android:id="@+id/item_package_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="?attr/appFontFamilyTitle"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/copy_pkg"
+                android:layout_width="@dimen/popupWindowCopyIconSize"
+                android:layout_height="@dimen/popupWindowCopyIconSize"
+                android:layout_gravity="center"
+                android:layout_marginStart="4dp"
+                android:background="?selectableItemBackground"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_copy" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:fontFamily="?attr/appFontFamilyBody"
-            android:textIsSelectable="true"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:background="#FFCA28" />
+
+            <TextView
+                android:id="@+id/item_class_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:fontFamily="?attr/appFontFamilyBody"
+                android:textColor="#E0E0E0"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/copy_cls"
+                android:layout_width="@dimen/popupWindowCopyIconSize"
+                android:layout_height="@dimen/popupWindowCopyIconSize"
+                android:layout_gravity="center"
+                android:layout_marginStart="4dp"
+                android:background="?selectableItemBackground"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_copy" />
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
