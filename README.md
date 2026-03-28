@@ -65,14 +65,14 @@ Don't forget to give this project a star! Thanks again!
 
 ## 💡 FAQs
 
-### Unable to enable AccessibilityService for Current Activity?
+### Unable to enable Accessibility Service for Current Activity?
 <details>
 <summary>Click to expand for the answer</summary>
 <br />
 
 1. Make sure you are using the global version, and not the version from Play Store.
 * **Solution:** Download global version from [Releases](https://github.com/codehasan/Current-Activity/releases/latest)
-2. In Chinese roms, sideloaded third party apps are initially restricted from using AccessibilityService.
+2. In Chinese roms, sideloaded third party apps are initially restricted from using Accessibility Service.
 * **Solution:** Watch this video in [YouTube](https://youtube.com/shorts/3mw_3TIF0y4)
 
 **Still having issues?** Please [open an issue here](https://github.com/codehasan/Current-Activity/issues) and include a screen recording or screenshot of the problem.
@@ -97,12 +97,12 @@ Don't forget to give this project a star! Thanks again!
 
 ---
 
-### AccessibilityService auto disabled or not working?
+### Accessibility Service auto disabled or not working?
 <details>
 <summary>Click to expand for the answer</summary>
 <br />
 
-Some Chinese phones like Xiaomi are known to disable AccessibilityServices automatically.
+Some Chinese phones like Xiaomi are known to disable Accessibility Services automatically.
   1. Check to see if there is an option called `Use Autostart` in Current Activity (Added in v2.0.0)
   2. Click on `Enable`
   3. Find **Current Activity** and enable
@@ -113,6 +113,20 @@ Watch these videos for more help,
 * Older versions of Xiaomi - [YouTube](https://youtube.com/shorts/DeBkBQnUH9A)
 
 **Still having issues?** Please [open an issue here](https://github.com/codehasan/Current-Activity/issues) and include a screen recording or screenshot of the problem.
+</details>
+
+---
+
+### Popup window not shown on Settings?
+<details>
+<summary>Click to expand for the answer</summary>
+<br />
+
+1. You need to enable developer options in Settings. If you don't know how to do it, search on Google.
+2. Open developer options, scroll down untill you see "Allow screen overlays on settings".
+3. Enable that option. Then close Current Activity and reopen to apply the changes.
+
+Watch this video for more help - [YouTube](https://youtube.com/shorts/0zE2uj5-Dcg)
 </details>
 
 ## 🙏 Credits
