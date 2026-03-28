@@ -21,7 +21,7 @@
         app:widgetLayout="@layout/layout_material_switch" />
 
     <androidx.preference.ListPreference
-        android:defaultValue="1"
+        android:defaultValue="2"
         android:entries="@array/scan_speed_entries"
         android:entryValues="@array/scan_speed_values"
         android:key="scan_speed"

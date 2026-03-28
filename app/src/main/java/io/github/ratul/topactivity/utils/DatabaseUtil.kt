@@ -29,7 +29,7 @@ object DatabaseUtil {
         set(value) = prefs.edit { putString("service_mode", value) }
 
     var scanSpeed: String
-        get() = prefs.getString("scan_speed", "1") ?: "1"
+        get() = prefs.getString("scan_speed", "2") ?: "2"
         set(value) = prefs.edit { putString("scan_speed", value) }
 
     var historySize: String

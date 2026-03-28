@@ -32,7 +32,7 @@ class PackageMonitoringService : Service() {
     private val binder = LocalBinder()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var usageStats: UsageStatsManager
-    private var scanSpeed = mapPreferenceToScanSpeed("1")
+    private var scanSpeed = mapPreferenceToScanSpeed("2")
 
     private val observerTask = object : Runnable {
         override fun run() {
@@ -73,8 +73,9 @@ class PackageMonitoringService : Service() {
 
     private fun mapPreferenceToScanSpeed(value: String): Long {
         return when (value) {
-            "0" -> 100
-            "1" -> 200
+            "0" -> 50
+            "1" -> 100
+            "2" -> 200
             else -> 500
         }
     }
