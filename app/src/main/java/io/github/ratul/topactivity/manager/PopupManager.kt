@@ -24,7 +24,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.view.ContextThemeWrapper
 import io.github.ratul.topactivity.App
 import io.github.ratul.topactivity.R
 import io.github.ratul.topactivity.extensions.getScreenSize
@@ -51,12 +50,7 @@ class PopupManager(private val context: Context) {
     fun show() {
         if (baseView != null) return
 
-        val wrapper = ContextThemeWrapper(
-            context,
-            if (DatabaseUtil.useSystemFont) R.style.AppTheme_SystemFont
-            else R.style.AppTheme
-        )
-        val view = LayoutInflater.from(wrapper)
+        val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_activity_info, null)
         baseView = view
 

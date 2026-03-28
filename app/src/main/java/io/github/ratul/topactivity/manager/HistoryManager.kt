@@ -24,7 +24,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.ratul.topactivity.App
@@ -56,12 +55,7 @@ class HistoryManager(private val context: Context) {
     fun show() {
         if (baseView != null) return
 
-        val wrapper = ContextThemeWrapper(
-            context,
-            if (DatabaseUtil.useSystemFont) R.style.AppTheme_SystemFont
-            else R.style.AppTheme
-        )
-        val view = LayoutInflater.from(wrapper)
+        val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_activity_history, null)
         baseView = view
 
