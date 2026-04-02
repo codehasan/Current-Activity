@@ -3,16 +3,13 @@
 
 # Current Activity
 
-**🔍 App Activity Inspector: Real-Time Foreground Status Monitor**
-
-An essential tool for **Android Developers** and **Reverse Engineers**  
-Instantly displays the *package name* and *class name* of the application currently in the
-foreground.  
-Quickly inspect any active app on your device for development or debugging.
-
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Android](https://img.shields.io/badge/Platform-Android%207%2B-green.svg)](https://www.android.com/)
 [![GitHub release](https://img.shields.io/github/v/release/codehasan/Current-Activity?include_prereleases)](https://github.com/codehasan/Current-Activity/releases/latest)
+
+Instantly displays the *package name* and *class name* of the application currently in the
+foreground.  
+Quickly inspect any active app on your device for development or debugging.
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' height="80">](https://play.google.com/store/apps/details?id=io.github.ratul.topactivity)
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80" alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/io.github.ratul.topactivity)
@@ -23,14 +20,9 @@ Quickly inspect any active app on your device for development or debugging.
 
 ## ⚠️ Important Note
 
-> **Note:** Google prohibits the usage of **QUERY_ALL_PACKAGES** permission and *
-*AccessibilityService** without a strong explanation. For that reason, the Play Store version of *
-*Current Activity** won't have either of these features. While the app will still function,
-> performance will vary.
+> **Note:** Google prohibits the usage of **QUERY_ALL_PACKAGES** permission and **AccessibilityService** without a strong explanation. For that reason, the Play Store version of **Current Activity** won't have either of these features. While the app will still function, performance will vary.
 >
-> **💡 Recommendation:** It is strongly recommended to use the latest **Global** version from [*
-*Releases**](https://github.com/codehasan/Current-Activity/releases/latest) rather than from **Play
-Store**.
+> **💡 Recommendation:** It is strongly recommended to use the latest **Global** version from [**Releases**](https://github.com/codehasan/Current-Activity/releases/latest) rather than from **Play Store**.
 
 ## ✨ Key Features
 
