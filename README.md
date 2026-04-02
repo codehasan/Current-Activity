@@ -165,7 +165,6 @@ Don't forget to give this project a star! Thanks again!
 
 [![License](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)](LICENSE)
 
-Current Activity is licensed under [**GNU General Public License v3.0
-**](https://www.gnu.org/licenses/gpl-3.0.html) or later.
+Current Activity is licensed under [**GNU General Public License v3.0**](https://www.gnu.org/licenses/gpl-3.0.html) or later.
 
 </div>
