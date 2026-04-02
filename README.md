@@ -33,7 +33,7 @@ Quickly inspect any active app on your device for development or debugging.
 - **🔧 Reverse Engineering:** Identify key components and packages in external applications for
   analysis.
 
-## 📸 How to copy text
+## 📋 How to copy text
 
 <div align="center">
   <img src="./.resources/images/how_to_copy_1.jpg" width="160" height="356" alt="Screenshot 1">
