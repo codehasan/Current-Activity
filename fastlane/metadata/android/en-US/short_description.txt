@@ -1,1 +1,1 @@
-shows current activity info in a moveable popup window
+Instantly displays the activity info of the running app in a live popup window!

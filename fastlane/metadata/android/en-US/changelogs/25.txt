@@ -1,0 +1,5 @@
+1. Added activity history page.
+2. Added notification only mode.
+3. Added preference to use system font.
+4. Added preference to customize scan speed.
+5. Refactored user interface.

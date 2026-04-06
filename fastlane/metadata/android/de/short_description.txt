@@ -1,1 +1,1 @@
-zeigt aktuelle Aktivitätsinformationen in einem beweglichen Popup-Fenster an
+Zeigt sofort die Aktivitätsinfo der laufenden App in einem Live-Popup-Fenster!
